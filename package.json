@@ -4,8 +4,14 @@
   "description": "A Star Wars trivia game",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Eric Tsai",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "jest": "^26.6.3",
+    "open": "^7.3.0"
+  },
+  "dependencies": {}
 }
