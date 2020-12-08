@@ -2,15 +2,22 @@
   "name": "star-wars-trivia",
   "version": "1.0.0",
   "description": "A Star Wars trivia game",
-  "main": "main.js",
+  "main": "app.js",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
+  },
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "start": "node server.js"
   },
   "author": "Eric Tsai",
   "license": "ISC",
   "devDependencies": {
     "express": "^4.17.1",
     "jest": "^26.6.3",
+    "jest-environment-node": "^26.6.2",
     "open": "^7.3.0"
   },
   "dependencies": {}

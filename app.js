@@ -1,18 +1,14 @@
-import sum from './sum.js'
+export async function getTotalNumPeople () {
+    try {
+        const response = await fetch("https://swapi.dev/api/people/");
+        const json = await response.json();
 
-// function sum (a,b) {
-//     return a+b;
-// }
-console.log(sum(3,1))
-
-
-
-// function getTotalNumPeople () {
-//     return fetch("https://swapi.dev/api/people/")
-//             .then(response => response.json())
-//             .then(json => json.count);
-// }
-
+        return json.count;
+    }
+    catch (e) {
+        return 0;
+    }
+}
 
 // const getRandomPeople = async (numPeople, totalNumPeople) => {
 //     let randomIdx;
