@@ -1,4 +1,4 @@
-export async function getTotalNumPeople () {
+export async function getTotalNumPeople() {
     try {
         const response = await fetch("https://swapi.dev/api/people/");
         const json = await response.json();
@@ -10,17 +10,20 @@ export async function getTotalNumPeople () {
     }
 }
 
-// const getRandomPeople = async (numPeople, totalNumPeople) => {
-//     let randomIdx;
-//     let indices = [];
-//     for (let i = 0; i < numPeople; i++) {
-//         randomIdx = Math.floor(Math.random() * totalNumPeople) + 1;
-//         if (!indices.includes(randomIdx)) {
-//             indices = [...indices, randomIdx];
-//         }
-//     }
+export function getRandomPeopleIndices(numPeople, totalNumPeople) {
+    let randomIdx;
+    let indices = [];
+    for (let i = 0; i < numPeople; i++) {
+        randomIdx = Math.floor(Math.random() * totalNumPeople) + 1;
+        if (!indices.includes(randomIdx)) {
+            indices = [...indices, randomIdx];
+        }
+    }
 
-//     console.log("indices: ", indices)
+    return indices;
+}
+
+// const getRandomPeople = async (numPeople, totalNumPeople) => {
 //     let randomPerson;
 //     let randomPeople = [];
 //     await indices.forEach(async idx => {
