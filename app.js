@@ -13,7 +13,10 @@ export async function getTotalNumPeople() {
 export function getRandomPeopleIndices(numPeople, totalNumPeople) {
     let randomIdx;
     let indices = [];
-    for (let i = 0; i < numPeople; i++) {
+    if (numPeople > totalNumPeople) {
+        numPeople = totalNumPeople;
+    }
+    while (indices.length < numPeople) {
         randomIdx = Math.floor(Math.random() * totalNumPeople) + 1;
         if (!indices.includes(randomIdx)) {
             indices = [...indices, randomIdx];
