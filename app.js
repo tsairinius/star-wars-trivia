@@ -10,35 +10,41 @@ export async function getTotalNumPeople() {
     }
 }
 
-export function getRandomPeopleIndices(numPeople, totalNumPeople) {
-    let randomIdx;
-    let indices = [];
+export function getRandomPeopleIds(numPeople, totalNumPeople) {
+    let randomId;
+    let idArray = [];
     if (numPeople > totalNumPeople) {
         numPeople = totalNumPeople;
     }
-    while (indices.length < numPeople) {
-        randomIdx = Math.floor(Math.random() * totalNumPeople) + 1;
-        if (!indices.includes(randomIdx)) {
-            indices = [...indices, randomIdx];
+    while (idArray.length < numPeople) {
+        randomId = Math.floor(Math.random() * totalNumPeople) + 1;
+        if (!idArray.includes(randomId)) {
+            idArray = [...idArray, randomId];
         }
     }
 
-    return indices;
+    return idArray;
 }
 
-// const getRandomPeople = async (numPeople, totalNumPeople) => {
-//     let randomPerson;
-//     let randomPeople = [];
-//     await indices.forEach(async idx => {
-//         randomPerson = await fetch(`https://swapi.dev/api/people/${idx}`).then(response => response.json());
-//         console.log("random person: ", randomPerson)
-//         randomPeople = [...randomPeople, randomPerson]
-//     })
 
-//     console.log("the people", randomPeople)
+fetch("https://swapi.dev/api/people/").then(response => response.json()).then(json => console.log(json))
 
-//     return randomPeople;
-// }
+export async function getPeople(idArray) {
+    let promise;
+    let promises = [];
+    idArray.forEach(id => {
+        promise = fetch(`https://swapi.dev/api/people/${id}`)
+                            .then(response => response.json());
+        promises = [...promises, promise];
+    });
+
+    const people = await Promise.all(promises);
+
+    console.log(people);
+
+}
+
+// getPeople([1, 2, 3])
 
 // const createBirthyearQuestion = () => {
 
