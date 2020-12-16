@@ -1,8 +1,11 @@
-const express = require('express');
-const path = require('path');
-const open = require('open');
+import express from 'express';
+import path from 'path';
+import open from 'open';
+
 const app = express();
 const port = 8000;
+
+const __dirname = path.resolve();
 
 app.use(express.static(__dirname));
 
