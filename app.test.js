@@ -115,6 +115,8 @@ describe("getPeople", () => {
         const peopleIds = [4, 2, 5];
         app.getPeople(peopleIds);
 
-        expect(fetch).toHaveBeenCalledTimes(3);
+        expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
+        expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
+        expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5")
     });
 })
