@@ -1,5 +1,4 @@
 import * as app from "./app.js";
-import { jest } from "@jest/globals";
 
 describe("getTotalNumPeople", () => {
     const numPeople = 15;
@@ -88,35 +87,35 @@ describe("getRandomPeopleIds", () => {
     });
 });
 
-describe("getPeople", () => {
-    // const people = [
-    //     {name: "Luke Skywalker", id: 1},
-    //     {name: "Han Solo", id: 2},
-    //     {name: "Leia Organa", id: 3},
-    //     {name: "Darth Vader", id: 4},
-    //     {name: "Obi-Wan Kenobi", id: 5}
-    // ];
+// describe("getPeople", () => {
+//     // const people = [
+//     //     {name: "Luke Skywalker", id: 1},
+//     //     {name: "Han Solo", id: 2},
+//     //     {name: "Leia Organa", id: 3},
+//     //     {name: "Darth Vader", id: 4},
+//     //     {name: "Obi-Wan Kenobi", id: 5}
+//     // ];
 
-    // const getPerson = id => {
-    //     let result;
-    //     people.forEach(person => {
-    //         if (person.id === id) {
-    //             result = person;
-    //         }
-    //     })
-    //     return result;
-    // }
+//     // const getPerson = id => {
+//     //     let result;
+//     //     people.forEach(person => {
+//     //         if (person.id === id) {
+//     //             result = person;
+//     //         }
+//     //     })
+//     //     return result;
+//     // }
 
-    // global.fetch = jest.fn((ids) => Promise.resolve(getPerson))
+//     // global.fetch = jest.fn((ids) => Promise.resolve(getPerson))
 
-    global.fetch = jest.fn();
+//     global.fetch = jest.fn();
 
-    test("Retrieves correct people based on ID's passed in", () => {
-        const peopleIds = [4, 2, 5];
-        app.getPeople(peopleIds);
+//     test("Retrieves correct people based on ID's passed in", () => {
+//         const peopleIds = [4, 2, 5];
+//         app.getPeople(peopleIds);
 
-        expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
-        expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
-        expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5")
-    });
-})
+//         expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
+//         expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
+//         expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5");
+//     });
+// })
