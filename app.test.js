@@ -1,17 +1,30 @@
 import * as app from "./app.js";
 
+global.fetch = jest.fn();
+
 describe("getTotalNumPeople", () => {
     const numPeople = 15;
-    global.fetch = jest.fn(() => Promise.resolve({
-        json: () => Promise.resolve({count: numPeople})
-    }));
+    beforeEach(() => {
+        fetch.mockClear();
+    });
 
     test("Get total number of people in Star Wars API", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({count: numPeople})
+        }));
         expect(await app.getTotalNumPeople()).toBe(numPeople);
     });
     
     test("Handles exception by returning zero", async () => {
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
+        expect(await app.getTotalNumPeople()).toBe(0);
+    });
+
+    test("When fetch response is not OK, return zero", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve(() => ({
+            ok: false
+        })));
         expect(await app.getTotalNumPeople()).toBe(0);
     });
 });
@@ -87,35 +100,45 @@ describe("getRandomPeopleIds", () => {
     });
 });
 
-// describe("getPeople", () => {
-//     // const people = [
-//     //     {name: "Luke Skywalker", id: 1},
-//     //     {name: "Han Solo", id: 2},
-//     //     {name: "Leia Organa", id: 3},
-//     //     {name: "Darth Vader", id: 4},
-//     //     {name: "Obi-Wan Kenobi", id: 5}
-//     // ];
+describe("getPeople", () => {
+    fetch.mockImplementation(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({name: "Luke"})
+    }));
 
-//     // const getPerson = id => {
-//     //     let result;
-//     //     people.forEach(person => {
-//     //         if (person.id === id) {
-//     //             result = person;
-//     //         }
-//     //     })
-//     //     return result;
-//     // }
+    const peopleIds = [4, 2, 5];
+    beforeEach(() => {
+        fetch.mockClear();
+    });
 
-//     // global.fetch = jest.fn((ids) => Promise.resolve(getPerson))
+    test("Fetches from correct endpoint based on ID's passed in", async () => {
+        await app.getPeople(peopleIds);
 
-//     global.fetch = jest.fn();
+        expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
+        expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
+        expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5");
+    });
 
-//     test("Retrieves correct people based on ID's passed in", () => {
-//         const peopleIds = [4, 2, 5];
-//         app.getPeople(peopleIds);
+    test("Array of person objects is returned", async () => {
+        const people = await app.getPeople(peopleIds);
+        people.forEach(person => expect(person.name).toBe("Luke"));
+    });
 
-//         expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
-//         expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
-//         expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5");
-//     });
-// })
+    test("If fetch for an ID is reject, no object is added to array of people", async () => {
+        fetch.mockImplementationOnce(() => Promise.reject());
+        const people = await app.getPeople(peopleIds);
+
+        expect(people.length).toBe(2);
+        people.forEach(person => expect(person.name).toBe("Luke"));
+    });
+
+    test("If fetch response for an ID is not OK, no object is added to array of people", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: false
+        }));
+        const people = await app.getPeople(peopleIds); 
+
+        expect(people.length).toBe(2);
+        people.forEach(person => expect(person.name).toBe("Luke"));
+    });
+})

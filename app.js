@@ -1,9 +1,12 @@
 export async function getTotalNumPeople() {
     try {
         const response = await fetch("https://swapi.dev/api/people/");
-        const json = await response.json();
-
-        return json.count;
+        if (response.ok) {
+            return await response.json().then(json => json.count);
+        }
+        else {
+            return 0;
+        }
     }
     catch (e) {
         return 0;
@@ -26,25 +29,24 @@ export function getRandomPeopleIds(numPeople, totalNumPeople) {
     return idArray;
 }
 
-
-// fetch("https://swapi.dev/api/people/").then(response => response.json()).then(json => console.log(json))
-
 export async function getPeople(idArray) {
     let promise;
     let promises = [];
     idArray.forEach(id => {
         promise = fetch(`https://swapi.dev/api/people/${id}`)
-                            .then(response => response.json());
+                    .then(response => response.ok ? 
+                        response.json() : Promise.reject(`Unable to retrieve person with ID ${id}`));
         promises = [...promises, promise];
     });
 
-    const people = await Promise.all(promises);
-
-    console.log(people);
-
+    const fulfilledResponses = await Promise.allSettled(promises)
+                                        .then(responses => responses.filter(response => response.status === "fulfilled"));
+    const people = fulfilledResponses.map(response => response.value);
+    return people;
 }
 
-// getPeople([1, 2, 3])
+(async () => console.log(await getPeople([0, 1, 2])))()
+
 
 // const createBirthyearQuestion = () => {
 
