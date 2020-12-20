@@ -16,9 +16,11 @@ describe("getTotalNumPeople", () => {
         expect(await app.getTotalNumPeople()).toBe(numPeople);
     });
     
-    test("Handles exception by returning zero", async () => {
+    test("Handles exception by returning zero and printing error message", async () => {
+        console.error = jest.fn();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
         expect(await app.getTotalNumPeople()).toBe(0);
+        expect(console.error).toHaveBeenCalledTimes(1);
     });
 
     test("When fetch response is not OK, return zero", async () => {

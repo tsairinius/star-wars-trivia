@@ -1,16 +1,16 @@
 export async function getTotalNumPeople() {
+    let totalNumPeople = 0;
     try {
         const response = await fetch("https://swapi.dev/api/people/");
         if (response.ok) {
-            return await response.json().then(json => json.count);
-        }
-        else {
-            return 0;
+            totalNumPeople = await response.json().then(json => json.count);
         }
     }
     catch (e) {
-        return 0;
+        console.error(`There was a problem accessing people data: ${e}`);
     }
+    
+    return totalNumPeople;
 }
 
 export function getRandomPeopleIds(numPeople, totalNumPeople) {
@@ -44,9 +44,6 @@ export async function getPeople(idArray) {
     const people = fulfilledResponses.map(response => response.value);
     return people;
 }
-
-(async () => console.log(await getPeople([0, 1, 2])))()
-
 
 // const createBirthyearQuestion = () => {
 
