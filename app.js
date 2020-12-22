@@ -13,20 +13,13 @@ export async function getTotalNumPeople() {
     return totalNumPeople;
 }
 
-export function getRandomPeopleIds(numPeople, totalNumPeople) {
-    let randomId;
-    let idArray = [];
-    if (numPeople > totalNumPeople) {
-        numPeople = totalNumPeople;
-    }
-    while (idArray.length < numPeople) {
-        randomId = Math.floor(Math.random() * totalNumPeople) + 1;
-        if (!idArray.includes(randomId)) {
-            idArray = [...idArray, randomId];
-        }
+export function getRandomPersonId(totalNumPeople) {
+    if (!Number.isInteger(totalNumPeople) || totalNumPeople <= 0) {
+        throw new TypeError("totalNumPeople is not a valid type");
     }
 
-    return idArray;
+    const randomNum = Math.random();
+    return Math.floor(randomNum * totalNumPeople) + 1;
 }
 
 export async function getPeople(idArray) {

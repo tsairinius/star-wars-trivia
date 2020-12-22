@@ -31,78 +31,34 @@ describe("getTotalNumPeople", () => {
     });
 });
 
-describe("getRandomPeopleIds", () => {
-    describe("Math.random generates unique numbers on each iteration (happy case)", () => {
-        const randomNumbers = [0, 0.3, 0.9];
-        const totalNumPeople = 10;
-        const numPeople = 3;
-    
-        beforeEach(() => {
-            Math.random = jest.fn();
-            randomNumbers.forEach(num => Math.random = Math.random.mockImplementationOnce(() => num));
-        })
-    
-        test("All returned ID's are unique", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            expect(idArray.some((value, idx) => idArray.indexOf(value) !== idx));
-        });
-    
-        test("All returned ID's are in the range 1 <= id <= (total number of people)", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            idArray.forEach(value => {
-                expect(value).toBeLessThanOrEqual(totalNumPeople);
-                expect(value).toBeGreaterThanOrEqual(1);
-            });
-        })
-    
-        test("Number of ID's returned is equal to number of people passed in", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            expect(idArray.length).toBe(numPeople);
-        });
+describe("getRandomPersonId", () => {
+    const totalNumPeople = 10;
+    const MathRandomMock = jest.spyOn(global.Math, "random");
+    beforeEach(() => {
+        MathRandomMock.mockClear();
     });
 
-    describe("Math.random generates duplicate numbers", () => {
-        const randomNumbers = [0, 0.3, 0.5, 0.3, 0.9];
-        const totalNumPeople = 10;
-        const numPeople = 4;
-    
-        beforeEach(() => {
-            Math.random = jest.fn();
-            randomNumbers.forEach(num => Math.random = Math.random.mockImplementationOnce(() => num));
-        })
-    
-        test("All returned ID's are unique", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            expect(idArray.some((value, idx) => idArray.indexOf(value) !== idx));
-        });
-    
-        test("All returned ID's are in the range 1 <= id <= (total number of people)", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            idArray.forEach(value => {
-                expect(value).toBeLessThanOrEqual(totalNumPeople);
-                expect(value).toBeGreaterThanOrEqual(1);
-            });
-        })
-    
-        test("Number of ID's returned is equal to number of people passed in", () => {
-            const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-            expect(idArray.length).toBe(numPeople);
-        });
+    test("Minimum value for an ID is 1", () => {
+        MathRandomMock.mockReturnValueOnce(0);
+        const id = app.getRandomPersonId(totalNumPeople);
+        expect(id).toBeGreaterThanOrEqual(1);
     });
 
-    test("Number of ID's returned cannot exceed total number of people passed in", () => {
-        const randomNumbers = [0, 0.3, 0.5, 0.7, 0.9];
-        const totalNumPeople = 3;
-        const numPeople = 5;
-        Math.random = jest.fn();
-        randomNumbers.forEach(num => Math.random = Math.random.mockImplementationOnce(() => num));
+    test("Maximum value for an ID is totalNumPeople", () => {
+        MathRandomMock.mockReturnValueOnce(0.99);
+        const id = app.getRandomPersonId(totalNumPeople);
+        expect(id).toBeLessThanOrEqual(totalNumPeople);
+    });
 
-        const idArray = app.getRandomPeopleIds(numPeople, totalNumPeople);
-        expect(idArray.length).toBe(totalNumPeople);
+    test("Error thrown if totalNumPeople passed in is not a number", () => {
+        const invalidArg = "invalidArg";
+        expect(() => {
+            app.getRandomPersonId(invalidArg)
+        }).toThrow(TypeError)
     });
 });
 
-describe("getPeople", () => {
+describe("getPersonWithId", () => {
     fetch.mockImplementation(() => Promise.resolve({
         ok: true,
         json: () => Promise.resolve({name: "Luke"})
