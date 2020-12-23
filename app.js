@@ -5,6 +5,9 @@ export async function getTotalNumPeople() {
         if (response.ok) {
             totalNumPeople = await response.json().then(json => json.count);
         }
+        else {
+            throw new Error(`HTTP error. Status: ${response.status}`)
+        }
     }
     catch (e) {
         console.error(`There was a problem accessing people data: ${e}`);
@@ -15,28 +18,32 @@ export async function getTotalNumPeople() {
 
 export function getRandomPersonId(totalNumPeople) {
     if (!Number.isInteger(totalNumPeople) || totalNumPeople <= 0) {
-        throw new TypeError("totalNumPeople is not a valid type");
+        throw new TypeError(`totalNumPeople (${totalNumPeople}) is not valid`);
     }
 
     const randomNum = Math.random();
     return Math.floor(randomNum * totalNumPeople) + 1;
 }
 
-export async function getPeople(idArray) {
-    let promise;
-    let promises = [];
-    idArray.forEach(id => {
-        promise = fetch(`https://swapi.dev/api/people/${id}`)
-                    .then(response => response.ok ? 
-                        response.json() : Promise.reject(`Unable to retrieve person with ID ${id}`));
-        promises = [...promises, promise];
-    });
+export async function getPersonWithId(id) {
+    let person = null;
+    try {
+        const response = await fetch(`https://swapi.dev/api/people/${id}`);
+        if (response.ok) {
+            person = await response.json();
+        }
+        else {
+            throw new Error(`HTTP error. Status: ${response.status}`)
+        }
+    }
+    catch (e) {
+        console.error(`There was a problem accessing person with ID ${id}: `, e)
+    }
 
-    const fulfilledResponses = await Promise.allSettled(promises)
-                                        .then(responses => responses.filter(response => response.status === "fulfilled"));
-    const people = fulfilledResponses.map(response => response.value);
-    return people;
+    return person;
 }
+
+// (async () => console.log(await getPersonWithId(0)))()
 
 // const createBirthyearQuestion = () => {
 

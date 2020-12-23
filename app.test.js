@@ -1,6 +1,7 @@
 import * as app from "./app.js";
 
 global.fetch = jest.fn();
+const consoleErrorMock = jest.spyOn(global.console, "error").mockImplementation();
 
 describe("getTotalNumPeople", () => {
     const numPeople = 15;
@@ -17,10 +18,10 @@ describe("getTotalNumPeople", () => {
     });
     
     test("Handles exception by returning zero and printing error message", async () => {
-        console.error = jest.fn();
+        // console.error = jest.fn();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
         expect(await app.getTotalNumPeople()).toBe(0);
-        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
     test("When fetch response is not OK, return zero", async () => {
@@ -64,39 +65,33 @@ describe("getPersonWithId", () => {
         json: () => Promise.resolve({name: "Luke"})
     }));
 
-    const peopleIds = [4, 2, 5];
+    const id = 4;
     beforeEach(() => {
         fetch.mockClear();
     });
 
-    test("Fetches from correct endpoint based on ID's passed in", async () => {
-        await app.getPeople(peopleIds);
-
-        expect(fetch).toHaveBeenNthCalledWith(1, "https://swapi.dev/api/people/4");
-        expect(fetch).toHaveBeenNthCalledWith(2, "https://swapi.dev/api/people/2");
-        expect(fetch).toHaveBeenNthCalledWith(3, "https://swapi.dev/api/people/5");
+    test("Fetches from correct endpoint based on ID passed in", async () => {
+        await app.getPersonWithId(id);
+        expect(fetch).toHaveBeenCalledWith("https://swapi.dev/api/people/4");
     });
 
-    test("Array of person objects is returned", async () => {
-        const people = await app.getPeople(peopleIds);
-        people.forEach(person => expect(person.name).toBe("Luke"));
+    test("Person object is returned", async () => {
+        const person = await app.getPersonWithId(id);
+        expect(person.name).toBe("Luke");
     });
 
-    test("If fetch for an ID is reject, no object is added to array of people", async () => {
+    test("If fetch for an ID is rejected, null is returned and error message printed", async () => {
         fetch.mockImplementationOnce(() => Promise.reject());
-        const people = await app.getPeople(peopleIds);
+        const person = await app.getPersonWithId(id);
 
-        expect(people.length).toBe(2);
-        people.forEach(person => expect(person.name).toBe("Luke"));
+        expect(person).toBe(null);
     });
 
-    test("If fetch response for an ID is not OK, no object is added to array of people", async () => {
+    test("If fetch response for an ID is not OK, null is returned and error message printed", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: false
         }));
-        const people = await app.getPeople(peopleIds); 
-
-        expect(people.length).toBe(2);
-        people.forEach(person => expect(person.name).toBe("Luke"));
+        const person = await app.getPersonWithId(id); 
+        expect(person).toBe(null);
     });
 })
