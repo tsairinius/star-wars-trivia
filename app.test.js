@@ -1,12 +1,13 @@
 import * as app from "./app.js";
+import * as CONSTANTS from "./constants";
 
 global.fetch = jest.fn();
-const consoleErrorMock = jest.spyOn(global.console, "error").mockImplementation();
+const consoleErrorMock = jest.spyOn(global.console, "error");
 
 describe("getTotalNumPeople", () => {
     const numPeople = 15;
     beforeEach(() => {
-        fetch.mockClear();
+        jest.clearAllMocks();
     });
 
     test("Get total number of people in Star Wars API", async () => {
@@ -17,18 +18,22 @@ describe("getTotalNumPeople", () => {
         expect(await app.getTotalNumPeople()).toBe(numPeople);
     });
     
-    test("Handles exception by returning zero and printing error message", async () => {
-        // console.error = jest.fn();
+    test("Returns default number of people and prints error if unable to access Star Wars API", async () => {
+        consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
-        expect(await app.getTotalNumPeople()).toBe(0);
+        expect(await app.getTotalNumPeople()).toBe(CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    test("When fetch response is not OK, return zero", async () => {
-        fetch.mockImplementationOnce(() => Promise.resolve(() => ({
-            ok: false
-        })));
-        expect(await app.getTotalNumPeople()).toBe(0);
+    test("When fetch response is not OK, throw error", async () => {
+        consoleErrorMock.mockReturnValueOnce();
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: false,
+            status: 404
+        }));
+
+        expect(await app.getTotalNumPeople()).toBe(CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -67,7 +72,7 @@ describe("getPersonWithId", () => {
 
     const id = 4;
     beforeEach(() => {
-        fetch.mockClear();
+        jest.clearAllMocks();
     });
 
     test("Fetches from correct endpoint based on ID passed in", async () => {
@@ -81,17 +86,22 @@ describe("getPersonWithId", () => {
     });
 
     test("If fetch for an ID is rejected, null is returned and error message printed", async () => {
-        fetch.mockImplementationOnce(() => Promise.reject());
+        consoleErrorMock.mockReturnValueOnce();
+        fetch.mockImplementationOnce(() => Promise.reject("API error"));
         const person = await app.getPersonWithId(id);
 
         expect(person).toBe(null);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
     test("If fetch response for an ID is not OK, null is returned and error message printed", async () => {
+        consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: false
         }));
         const person = await app.getPersonWithId(id); 
+
         expect(person).toBe(null);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 })

@@ -1,0 +1,1 @@
+export const DEFAULT_TOTAL_NUM_PEOPLE = 60;

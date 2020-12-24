@@ -1,19 +1,21 @@
+import * as CONSTANTS from "./constants.js";
+
 export async function getTotalNumPeople() {
-    let totalNumPeople = 0;
+    let numPeople = CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE;
     try {
         const response = await fetch("https://swapi.dev/api/people/");
         if (response.ok) {
-            totalNumPeople = await response.json().then(json => json.count);
+            numPeople = await response.json().then(json => json.count);
         }
         else {
-            throw new Error(`HTTP error. Status: ${response.status}`)
+            throw new Error(`HTTP error. Status: ${response.status}`);
         }
     }
     catch (e) {
-        console.error(`There was a problem accessing people data: ${e}`);
+        console.error("Unable to access total number of people: ", e)
     }
-    
-    return totalNumPeople;
+
+    return numPeople
 }
 
 export function getRandomPersonId(totalNumPeople) {
@@ -42,6 +44,8 @@ export async function getPersonWithId(id) {
 
     return person;
 }
+
+// (async () => console.log(await getTotalNumPeople().catch(e => console.log("Problem: ", e))))()
 
 // (async () => console.log(await getPersonWithId(0)))()
 
