@@ -15,6 +15,10 @@ export async function getTotalNumPeople() {
         console.error("Unable to access total number of people: ", e)
     }
 
+    if (!numPeople) {
+        throw new Error(`Invalid result of ${numPeople} retrieved`);
+    }
+
     return numPeople
 }
 

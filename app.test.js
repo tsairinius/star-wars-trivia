@@ -35,6 +35,36 @@ describe("getTotalNumPeople", () => {
         expect(await app.getTotalNumPeople()).toBe(CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
+
+    test("Throw error if count property from people endpoint is undefined", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({})
+        }));
+
+        expect.assertions(1);
+        try {
+            await app.getTotalNumPeople();
+        }
+        catch (e) {
+            expect(e.message).toBe("Invalid result of undefined retrieved")
+        }
+    });
+
+    test("Throw error if count property from people endpoint is zero", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({count: 0})
+        }));
+
+        expect.assertions(1);
+        try {
+            await app.getTotalNumPeople();
+        }
+        catch (e) {
+            expect(e.message).toBe("Invalid result of 0 retrieved")
+        }
+    });
 });
 
 describe("getRandomPersonId", () => {
