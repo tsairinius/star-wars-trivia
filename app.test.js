@@ -4,39 +4,67 @@ import * as CONSTANTS from "./constants";
 global.fetch = jest.fn();
 const consoleErrorMock = jest.spyOn(global.console, "error");
 
-describe("getTotalNumPeople", () => {
+describe("getItemCountIn", () => {
     const numPeople = 15;
+    const defaultNumPeople = 10;
+
     beforeEach(() => {
         jest.clearAllMocks();
+        fetch.mockReset();
     });
 
-    test("Get total number of people in Star Wars API", async () => {
+    test("Throws error if endpoint argument is not a string", async () => {
+        expect.assertions(1);
+        try {
+            await app.getItemCountIn([], defaultNumPeople);
+        }
+        catch(e) {
+            expect(e.message)
+            .toBe("One or more of the required args are invalid or missing");
+        }
+    });
+
+    test("Throws error if default count argument is not a number greater than 0", async () => {
+        expect.assertions(1);
+        try {
+            await app.getItemCountIn("https://swapi.dev/api/people/", 0);
+        }
+        catch(e) {
+            expect(e.message)
+            .toBe("One or more of the required args are invalid or missing");
+        }
+    }); 
+
+    test("Get item count from a particular endpoint", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({count: numPeople})
         }));
-        expect(await app.getTotalNumPeople()).toBe(numPeople);
+        expect(await app.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople))
+            .toBe(numPeople);
     });
     
-    test("Returns default number of people and prints error if unable to access Star Wars API", async () => {
+    test("Returns default item count and prints error if unable to access Star Wars API", async () => {
         consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
-        expect(await app.getTotalNumPeople()).toBe(CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
+        expect(await app.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople))
+            .toBe(defaultNumPeople);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    test("When fetch response is not OK, throw error", async () => {
+    test("When fetch response is not OK, return default count and print error", async () => {
         consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: false,
             status: 404
         }));
 
-        expect(await app.getTotalNumPeople()).toBe(CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
+        expect(await app.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople))
+            .toBe(defaultNumPeople);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    test("Throw error if count property from people endpoint is undefined", async () => {
+    test("Throw error if count property from endpoint is undefined", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({})
@@ -44,14 +72,14 @@ describe("getTotalNumPeople", () => {
 
         expect.assertions(1);
         try {
-            await app.getTotalNumPeople();
+            await app.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople);
         }
         catch (e) {
             expect(e.message).toBe("Invalid result of undefined retrieved")
         }
     });
 
-    test("Throw error if count property from people endpoint is zero", async () => {
+    test("Throw error if count property from endpoint is zero", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({count: 0})
@@ -59,7 +87,7 @@ describe("getTotalNumPeople", () => {
 
         expect.assertions(1);
         try {
-            await app.getTotalNumPeople();
+            await app.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople);
         }
         catch (e) {
             expect(e.message).toBe("Invalid result of 0 retrieved")
@@ -95,22 +123,27 @@ describe("getRandomPersonId", () => {
 });
 
 describe("getPersonWithId", () => {
-    fetch.mockImplementation(() => Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({name: "Luke"})
-    }));
-
     const id = 4;
     beforeEach(() => {
         jest.clearAllMocks();
+        fetch.mockReset();
     });
 
     test("Fetches from correct endpoint based on ID passed in", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({name: "Luke"})
+        }));
         await app.getPersonWithId(id);
         expect(fetch).toHaveBeenCalledWith("https://swapi.dev/api/people/4");
     });
 
     test("Person object is returned", async () => {
+        fetch.mockImplementationOnce(() => Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({name: "Luke"})
+        }));
+
         const person = await app.getPersonWithId(id);
         expect(person.name).toBe("Luke");
     });

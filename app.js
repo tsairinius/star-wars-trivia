@@ -1,29 +1,33 @@
 import * as CONSTANTS from "./constants.js";
 
-export async function getTotalNumPeople() {
-    let numPeople = CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE;
+export async function getItemCountIn(endpoint, defaultCount) {
+    if ((typeof endpoint !== "string") || !isValidCount(defaultCount)) {
+        throw new Error("One or more of the required args are invalid or missing");
+    }
+
+    let count = defaultCount;
     try {
-        const response = await fetch("https://swapi.dev/api/people/");
+        const response = await fetch(endpoint);
         if (response.ok) {
-            numPeople = await response.json().then(json => json.count);
+            count = await response.json().then(json => json.count);
         }
         else {
             throw new Error(`HTTP error. Status: ${response.status}`);
         }
     }
     catch (e) {
-        console.error("Unable to access total number of people: ", e)
+        console.error("Unable to access item count from endpoint: ", e)
     }
 
-    if (!numPeople) {
-        throw new Error(`Invalid result of ${numPeople} retrieved`);
+    if (!count) {
+        throw new Error(`Invalid result of ${count} retrieved`);
     }
 
-    return numPeople
+    return count
 }
 
 export function getRandomPersonId(totalNumPeople) {
-    if (!Number.isInteger(totalNumPeople) || totalNumPeople <= 0) {
+    if (!isValidCount(totalNumPeople)) {
         throw new TypeError(`totalNumPeople (${totalNumPeople}) is not valid`);
     }
 
@@ -69,7 +73,12 @@ export function getPersonBirthYearQuestion(person) {
     return result;
 };
 
-// fetch("https://swapi.dev/api/people/").then(response => response.json()).then(json => console.log(json))
+function isValidCount(number) {
+    return Number.isInteger(number) && number > 0;
+}
+
+
+// fetch("https://swapi.dev/api/planets/").then(response => response.json()).then(json => console.log(json))
 
 // (async () => console.log(await getTotalNumPeople().catch(e => console.log("Problem: ", e))))()
 
