@@ -14,24 +14,26 @@ describe("getItemCountIn", () => {
     });
 
     test("Throws error if endpoint argument is not a string", async () => {
+        const invalidArg = [];
         expect.assertions(1);
         try {
-            await app.getItemCountIn([], defaultNumPeople);
+            await app.getItemCountIn(invalidArg, defaultNumPeople);
         }
         catch(e) {
             expect(e.message)
-            .toBe("One or more of the required args are invalid or missing");
+            .toBe("The following args are required: endpoint (string), defaultCount (positive integer)");
         }
     });
 
     test("Throws error if default count argument is not a number greater than 0", async () => {
+        const invalidArg = 0;
         expect.assertions(1);
         try {
-            await app.getItemCountIn("https://swapi.dev/api/people/", 0);
+            await app.getItemCountIn("https://swapi.dev/api/people/", invalidArg);
         }
         catch(e) {
             expect(e.message)
-            .toBe("One or more of the required args are invalid or missing");
+            .toBe("The following args are required: endpoint (string), defaultCount (positive integer)");
         }
     }); 
 
@@ -95,8 +97,8 @@ describe("getItemCountIn", () => {
     });
 });
 
-describe("getRandomPersonId", () => {
-    const totalNumPeople = 10;
+describe("getRandomId", () => {
+    const max = 10;
     const MathRandomMock = jest.spyOn(global.Math, "random");
     beforeEach(() => {
         MathRandomMock.mockClear();
@@ -104,29 +106,53 @@ describe("getRandomPersonId", () => {
 
     test("Minimum value for an ID is 1", () => {
         MathRandomMock.mockReturnValueOnce(0);
-        const id = app.getRandomPersonId(totalNumPeople);
+        const id = app.getRandomId(max);
         expect(id).toBeGreaterThanOrEqual(1);
     });
 
-    test("Maximum value for an ID is totalNumPeople", () => {
+    test("Maximum value for an ID is the value of the arg max", () => {
         MathRandomMock.mockReturnValueOnce(0.99);
-        const id = app.getRandomPersonId(totalNumPeople);
-        expect(id).toBeLessThanOrEqual(totalNumPeople);
+        const id = app.getRandomId(max);
+        expect(id).toBeLessThanOrEqual(max);
     });
 
-    test("Error thrown if totalNumPeople passed in is not a number", () => {
+    test("Error thrown if max passed in is not a number", () => {
         const invalidArg = "invalidArg";
         expect(() => {
-            app.getRandomPersonId(invalidArg)
+            app.getRandomId(invalidArg)
         }).toThrow(TypeError)
     });
 });
 
-describe("getPersonWithId", () => {
+describe("getItemWithId", () => {
     const id = 4;
     beforeEach(() => {
         jest.clearAllMocks();
         fetch.mockReset();
+    });
+
+    test("Throws error if argument endpoint is not a string", async () => {
+        const invalidArg = 4;
+        expect.assertions(1);
+        try {
+            await app.getItemWithId(invalidArg, id);
+        }
+        catch (e) {
+            expect(e.message)
+                .toBe("The following args are required: endpoint (string), id (positive integer)");
+        }
+    });
+
+    test("Throws error if argument id is not a positive integer", async () => {
+        const invalidArg = 0;
+        expect.assertions(1);
+        try {
+            await app.getItemWithId("https://swapi.dev/api/people/", invalidArg);
+        }
+        catch (e) {
+            expect(e.message)
+                .toBe("The following args are required: endpoint (string), id (positive integer)");
+        }
     });
 
     test("Fetches from correct endpoint based on ID passed in", async () => {
@@ -134,24 +160,24 @@ describe("getPersonWithId", () => {
             ok: true,
             json: () => Promise.resolve({name: "Luke"})
         }));
-        await app.getPersonWithId(id);
+        await app.getItemWithId("https://swapi.dev/api/people/", id);
         expect(fetch).toHaveBeenCalledWith("https://swapi.dev/api/people/4");
     });
 
-    test("Person object is returned", async () => {
+    test("Object is returned", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({name: "Luke"})
         }));
 
-        const person = await app.getPersonWithId(id);
+        const person = await app.getItemWithId("https://swapi.dev/api/people/", id);
         expect(person.name).toBe("Luke");
     });
 
     test("If fetch for an ID is rejected, null is returned and error message printed", async () => {
         consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
-        const person = await app.getPersonWithId(id);
+        const person = await app.getItemWithId("https://swapi.dev/api/people/", id);
 
         expect(person).toBe(null);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
@@ -162,7 +188,7 @@ describe("getPersonWithId", () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: false
         }));
-        const person = await app.getPersonWithId(id); 
+        const person = await app.getItemWithId("https://swapi.dev/api/people/", id); 
 
         expect(person).toBe(null);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);

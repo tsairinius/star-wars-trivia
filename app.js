@@ -1,8 +1,8 @@
 import * as CONSTANTS from "./constants.js";
 
 export async function getItemCountIn(endpoint, defaultCount) {
-    if ((typeof endpoint !== "string") || !isValidCount(defaultCount)) {
-        throw new Error("One or more of the required args are invalid or missing");
+    if ((typeof endpoint !== "string") || !isPositiveInteger(defaultCount)) {
+        throw new Error("The following args are required: endpoint (string), defaultCount (positive integer)");
     }
 
     let count = defaultCount;
@@ -26,31 +26,35 @@ export async function getItemCountIn(endpoint, defaultCount) {
     return count
 }
 
-export function getRandomPersonId(totalNumPeople) {
-    if (!isValidCount(totalNumPeople)) {
-        throw new TypeError(`totalNumPeople (${totalNumPeople}) is not valid`);
+export function getRandomId(max) {
+    if (!isPositiveInteger(max)) {
+        throw new TypeError(`Argument max of (${max}) must be a positive integer greater than zero`);
     }
 
     const randomNum = Math.random();
-    return Math.floor(randomNum * totalNumPeople) + 1;
+    return Math.floor(randomNum * max) + 1;
 }
 
-export async function getPersonWithId(id) {
-    let person = null;
+export async function getItemWithId(endpoint, id) {
+    if (typeof endpoint !== "string" || !isPositiveInteger(id)) {
+        throw Error("The following args are required: endpoint (string), id (positive integer)");
+    }
+
+    let item = null;
     try {
-        const response = await fetch(`https://swapi.dev/api/people/${id}`);
+        const response = await fetch(`${endpoint}${id}`);
         if (response.ok) {
-            person = await response.json();
+            item = await response.json();
         }
         else {
             throw new Error(`HTTP error. Status: ${response.status}`)
         }
     }
     catch (e) {
-        console.error(`There was a problem accessing person with ID ${id}: `, e)
+        console.error(`There was a problem accessing item with ID ${id} from ${endpoint}: `, e)
     }
 
-    return person;
+    return item;
 }
 
 export function getPersonBirthYearQuestion(person) {
@@ -73,7 +77,7 @@ export function getPersonBirthYearQuestion(person) {
     return result;
 };
 
-function isValidCount(number) {
+function isPositiveInteger(number) {
     return Number.isInteger(number) && number > 0;
 }
 
