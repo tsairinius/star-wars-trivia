@@ -1,6 +1,12 @@
 import * as app from "./app.js";
+import * as utils from "./utilities";
 
 describe("getPersonBirthYearQuestion", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    const invalidPersonError = "Invalid person object passed in as argument. Must have valid name and birth_year properties";
     test("Returns object with personalized question and answer", () => {
         const expectedResult = {
             question: "What is the birth year of Plo Koon?",
@@ -15,47 +21,56 @@ describe("getPersonBirthYearQuestion", () => {
         expect(app.getPersonBirthYearQuestion(person)).toEqual(expectedResult);
     });
 
-    test("Returns null if person passed in is undefined", () => {
-        expect(app.getPersonBirthYearQuestion(undefined)).toBe(null);
+    test("Throws error if person passed in is undefined", () => {
+        expect(() => app.getPersonBirthYearQuestion(undefined))
+            .toThrow(invalidPersonError);
     });
 
-    test("Returns null if person passed in is missing name property", () => {
+    test("Throws error if person passed in is missing name property", () => {
         const person = {
             birth_year: "22BBY"
         };
 
-        expect(app.getPersonBirthYearQuestion(person)).toBe(null);
+        expect(() => app.getPersonBirthYearQuestion(person))
+            .toThrow(invalidPersonError);
     });
 
-    test("Returns null if person passed in is missing birth year property", () => {
+    test("Throws error if person passed in is missing birth year property", () => {
         const person = {
             name: "Plo Koon"
         };
 
-        expect(app.getPersonBirthYearQuestion(person)).toBe(null);
+        expect(() => app.getPersonBirthYearQuestion(person))
+            .toThrow(invalidPersonError);
     });
 
-    test("Returns null if person passed in has unknown name", () => {
+    test("Throws error if person passed in has unknown name", () => {
         const person = {
             name: "unknown",
             birth_year: "22BBY"
         };
 
-        expect(app.getPersonBirthYearQuestion(person)).toBe(null);
+        expect(() => app.getPersonBirthYearQuestion(person))
+            .toThrow(invalidPersonError);
     });
 
-    test("Returns null if person passed in has unknown birth year", () => {
+    test("Throws error if person passed in has unknown birth year", () => {
         const person = {
             name: "Plo Koon",
             birth_year: "unknown"
         };
 
-        expect(app.getPersonBirthYearQuestion(person)).toBe(null);
+        expect(() => app.getPersonBirthYearQuestion(person))
+            .toThrow(invalidPersonError);
     });
 });
 
 describe("createRandomBirthYear", () => {
-    const mathRandomMock = jest.spyOn(global.Math, "random");
+    let mathRandomMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        mathRandomMock = jest.spyOn(global.Math, "random");
+    })
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -95,5 +110,46 @@ describe("createRandomBirthYear", () => {
             .mockReturnValueOnce(0.1);
 
         expect(app.createRandomBirthYear("20ABY")).toBe("17BBY");
+    });
+});
+
+describe("createBirthYearQuestion", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        utils.getItemCountIn = jest.fn(() => Promise.resolve(10))
+        utils.getItemWithId = jest.fn(() => Promise.resolve({
+            name: "Luke Skywalker",
+            birth_year: "19BBY"
+        }));
+
+        consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Returns object with a question, its answer, and three other choices", async () => {
+        const result = await app.createBirthYearQuestion();
+        expect(result.question).toBe("What is the birth year of Luke Skywalker?");
+        expect(result.answer).toBe("19BBY");
+        expect(result.otherOptions.length).toBe(3);
+    });
+
+    test("Returns null and prints error if getting total number of people in API fails", async () => {
+        utils.getItemCountIn
+            .mockImplementationOnce(() => {throw new Error("Unable to get item count")});
+
+        expect(await app.createBirthYearQuestion()).toBeNull();
+        expect(consoleErrorMock).toHaveBeenCalledWith(new Error("Unable to get item count"));
+    });
+
+    test("Returns null and prints error if getting random person with specified ID fails", async () => {
+        utils.getItemWithId
+            .mockImplementationOnce(() => {throw new Error("Unable to get person")});
+
+        expect(await app.createBirthYearQuestion()).toBeNull();
+        expect(consoleErrorMock).toHaveBeenCalledWith(new Error("Unable to get person"));
     });
 });

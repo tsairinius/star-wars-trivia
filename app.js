@@ -1,5 +1,7 @@
+import * as utils from "./utilities.js";
+import * as CONSTANTS from "./constants.js";
+
 export function getPersonBirthYearQuestion(person) {
-    let result = null;
     const isArgumentValid = (
         person && 
         person.name && 
@@ -9,13 +11,14 @@ export function getPersonBirthYearQuestion(person) {
     );
 
     if (isArgumentValid) {
-        result = {
+        return {
             question: `What is the birth year of ${person.name}?`,
             answer: person.birth_year
         }
     }
-
-    return result;
+    else {
+        throw Error(`Invalid person object passed in as argument. Must have valid name and birth_year properties: ${person ? JSON.stringify(person) : person}`);
+    }
 };
 
 export function createRandomBirthYear(refYear = "0BBY") {
@@ -37,7 +40,7 @@ export function createRandomBirthYear(refYear = "0BBY") {
 
     const min = refYearValue - 50;
     const max = refYearValue + 50;
-    
+
     let year = Math.random()*(max - min) + min;
     const shouldFloor = Math.random() < 0.5;
     year = shouldFloor ? Math.floor(year) : year.toFixed(1);
@@ -47,14 +50,27 @@ export function createRandomBirthYear(refYear = "0BBY") {
     return result;
 };
 
-// createRandomBirthYearAround("1000BBY")
+export async function createBirthYearQuestion() {
+    try {
+        const totalNumPeople = await utils.getItemCountIn("https://swapi.dev/api/people/", CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
+        const randomId = utils.getRandomId(totalNumPeople);
+        const randomPerson = await utils.getItemWithId("https://swapi.dev/api/people/", randomId);
+        const result = getPersonBirthYearQuestion(randomPerson);
+        const otherOptions = [
+            createRandomBirthYear(result.answer), 
+            createRandomBirthYear(result.answer), 
+            createRandomBirthYear(result.answer)
+        ];
 
+        return {
+            ...result,
+            otherOptions
+        };
+    }
+    catch (e) {
+        console.error(e);
+        return null;
+    }
+};
 
-// fetch("https://swapi.dev/api/people/").then(response => response.json()).then(json => console.log(json))
-
-// (async () => console.log(await getTotalNumPeople().catch(e => console.log("Problem: ", e))))()
-
-// (async () => console.log(await getPersonWithId(0)))()
-
-
-// max birthyear: 35ABY. min birthyear: 1000BBY
+// (async () => console.log(await createBirthYearQuestion()))()
