@@ -4,7 +4,7 @@ export class QuestionQueue {
     }
 
     getQuestion() {
-        return this.queue.pop();
+        return (this.queue.length ? this.queue.pop() : null);
     };
 
     addQuestion(question) {

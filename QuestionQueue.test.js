@@ -33,6 +33,10 @@ describe("QuestionQueue", () => {
         expect(result.otherOptions).toEqual(question.otherOptions);
     });
 
+    test("If requesting question from empty queue, queue returns null", () => {
+        expect(queue.getQuestion()).toBeNull();
+    });
+
     test("Queue does not add undefined questions", () => {
         consoleErrorMock.mockReturnValueOnce();
         queue.addQuestion(undefined);
