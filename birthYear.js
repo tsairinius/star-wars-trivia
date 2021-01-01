@@ -9,22 +9,22 @@ export function getPersonBirthYearQuestion(person) {
         }
     }
     else {
-        throw Error(`Invalid person object passed in as argument. Must have valid name and birth_year properties: ${person ? JSON.stringify(person) : person}`);
+        throw new Error(`Invalid person object passed in as argument. Must have valid name and birth_year properties: ${person ? JSON.stringify(person) : person}`);
     }
 };
 
 export function createRandomBirthYear(refYear = "0BBY") {
     if (typeof refYear !== "string") {
-        throw Error(`Argument refYear ${refYear} must be a string ending in BBY or ABY. Ex: '30BBY'`);
+        throw new Error(`Argument refYear ${refYear} must be a string ending in BBY or ABY. Ex: '30BBY'`);
     }
 
     if (refYear === "unknown") {
-        throw Error("Argument refYear is 'unknown'");
+        throw new Error("Argument refYear is 'unknown'");
     }
 
     const era  = refYear.slice(-3);
     if (era !== "BBY" && era !== "ABY") {
-        throw Error(`Argument refYear ${refYear} must end in BBY or ABY. Ex: '30BBY'`);
+        throw new Error(`Argument refYear ${refYear} must end in BBY or ABY. Ex: '30BBY'`);
     }
 
     let refYearValue = Number(refYear.slice(0, -3));
