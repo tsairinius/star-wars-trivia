@@ -51,13 +51,14 @@ export function displayQuestionStructure() {
     document.body.appendChild(structure);
 };
 
-displayQuestionStructure();
-const question = {
-    question: "What day is it?",
-    answer: "Monday",
-    otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-};
-displayNewQuestion(question);
+// displayQuestionStructure();
+// const question = {
+//     question: "What day is it?",
+//     answer: "Monday",
+//     otherOptions: ["Tuesday", "Wednesday", "Thursday"]
+// };
+
+// displayNewQuestion(question);
 
 
 // const question = {

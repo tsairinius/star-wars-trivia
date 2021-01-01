@@ -73,6 +73,20 @@ describe("QuestionQueue", () => {
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
+    test("Queue does not add questions with question property that is not a string", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const badQuestion = {
+            question: 437,
+            answer: "Monday",
+            otherOptions: ["Tuesday", "Wednesday", "Thursday"]
+        }
+
+        queue.addQuestion(badQuestion);
+
+        expect(queue.queue.length).toBe(0);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+    });
+
     test("Queue does not add questions with empty strings for answer property", () => {
         consoleErrorMock.mockReturnValueOnce();
         const badQuestion = {
@@ -115,7 +129,35 @@ describe("QuestionQueue", () => {
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    test("Queue does not add questions missing three other choices as answers", () => {
+    test("Queue does not add questions with answer property that is not a string", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const badQuestion = {
+            question: "What day is it?",
+            answer: 123,
+            otherOptions: ["Tuesday", "Wednesday", "Thursday"]
+        }
+
+        queue.addQuestion(badQuestion);
+
+        expect(queue.queue.length).toBe(0);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("Queue does not add questions that have no other answer choices defined", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const badQuestion = {
+            question: "What day is it?",
+            answer: "Monday",
+            otherOptions: undefined
+        }
+
+        queue.addQuestion(badQuestion);
+
+        expect(queue.queue.length).toBe(0);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("Queue does not add questions that do not have exactly three other choices as answers", () => {
         consoleErrorMock.mockReturnValueOnce();
         const badQuestion = {
             question: "What day is it?",
@@ -156,4 +198,20 @@ describe("QuestionQueue", () => {
         expect(queue.queue.length).toBe(0);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
+
+    test("Queue does not add questions with 'unknown' in other answer choices", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const badQuestion = {
+            question: "What day is it?",
+            answer: "Monday",
+            otherOptions: ["unknown", "Wednesday", "Thursday"]
+        }
+
+        queue.addQuestion(badQuestion);
+
+        expect(queue.queue.length).toBe(0);
+        expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+    });
+
+
 });
