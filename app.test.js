@@ -48,74 +48,7 @@ describe("displayNewQuestion", () => {
 
     test("Throws error if argument is undefined", () => {
         expect(() => app.displayNewQuestion())
-        .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");    
+        .toThrow("Missing question as argument");    
     });
-
-    test("Throws error if question property of argument is undefined", () => {
-        const badQuestion = {
-            question: undefined,
-            answer: "Monday",
-            otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-            .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
-    test("Throws error if answer property of argument is 'unknown'", () => {
-        const badQuestion = {
-            question: "What day is it?",
-            answer: "unknown",
-            otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-            .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
-    test("Throws error if answer property of argument is undefined", () => {
-        const badQuestion = {
-            question: "What day is it?",
-            answer: undefined,
-            otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-            .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
-    test("Throws error if there are not three other answer choices in argument", () => {
-        const badQuestion = {
-            question: "What day is it?",
-            answer: "Monday",
-            otherOptions: ["Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-        .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
-    test("Throws error if one of the other answer choices in argument is unknown", () => {
-        const badQuestion = {
-            question: "What day is it?",
-            answer: "Monday",
-            otherOptions: ["unknown", "Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-        .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
-    test("Throws error if one of the other answer choices in argument is undefined", () => {
-        const badQuestion = {
-            question: "What day is it?",
-            answer: "Monday",
-            otherOptions: [undefined, "Wednesday", "Thursday"]
-        };
-
-        expect(() => app.displayNewQuestion(badQuestion))
-        .toThrow("Invalid question passed in. Must have valid question, answer, and three other choices");
-    });
-
 });
 

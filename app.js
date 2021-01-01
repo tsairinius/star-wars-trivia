@@ -4,18 +4,9 @@ import * as birthYear from "./birthYear.js";
 // const queue = new QuestionQueue();
 
 export function displayNewQuestion(question) {
-    const isInvalidQuestion = (
-        !question || 
-        !question.question || 
-        !question.answer || 
-        (question.answer === "unknown") ||
-        question.otherOptions.length !== 3 ||
-        question.otherOptions.some(option => (!option || option === "unknown" || typeof option !== "string"))
-    );
-
     const questionElement = document.querySelector(".question");
-    if (isInvalidQuestion) {
-        throw new Error(`Invalid question passed in. Must have valid question, answer, and three other choices: ${question ? JSON.stringify(question) : question}`);
+    if (!question) {
+        throw new Error("Missing question as argument");
     }
     
     try {
