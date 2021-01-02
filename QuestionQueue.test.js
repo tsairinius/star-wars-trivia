@@ -43,7 +43,7 @@ describe("addQuestion", () => {
     });
 
     test("Successfully add question to queue", () => {
-        queue.addQuestion(question);
+        expect(queue.addQuestion(question)).toBe(1);
         expect(queue.queue.length).toBe(1);
         expect(queue.queue[0]).toEqual(question);
     });
@@ -56,7 +56,7 @@ describe("addQuestion", () => {
             otherOptions: ["Tuesday", "Wednesday", "Thursday"]
         }
     
-        queue.addQuestion(badQuestion);
+        expect(queue.addQuestion(badQuestion)).toBe(0);
     
         expect(queue.queue.length).toBe(0);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
@@ -66,10 +66,24 @@ describe("addQuestion", () => {
         consoleErrorMock.mockReturnValueOnce();
         const duplicate = { ...question };
         queue.addQuestion(question);
-        queue.addQuestion(duplicate);
 
+        expect(queue.addQuestion(duplicate)).toBe(0);
         expect(queue.queue.length).toBe(1);
         expect(consoleErrorMock).toHaveBeenCalledWith("No duplicate questions allowed in queue");
+    });
+});
+
+describe("getNumQuestionsAdded", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Returns accurate total number of questions added to queue", () => {
+        const queue = new QuestionQueue();
+
+        expect(queue.getNumQuestionsAdded()).toBe(0);
+        queue.addQuestion(question);
+        expect(queue.getNumQuestionsAdded()).toBe(1);
     });
 });
 

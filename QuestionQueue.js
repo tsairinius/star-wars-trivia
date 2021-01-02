@@ -1,6 +1,11 @@
 export class QuestionQueue {
     constructor() {
         this.queue = [];
+        this.numQuestionsAdded = 0;
+    }
+
+    getNumQuestionsAdded() {
+        return this.numQuestionsAdded;
     }
 
     getQuestion() {
@@ -8,9 +13,17 @@ export class QuestionQueue {
     };
 
     addQuestion(question) {
-        if (!this.shouldRejectQuestion(question)) {
-            this.queue = [question, ...this.queue];  
+        if (this.numQuestionsAdded > 10) {
+            console.error("More than 10 questions have been added to queue");
         };
+
+        if (!this.shouldRejectQuestion(question)) {
+            this.queue = [question, ...this.queue]; 
+            this.numQuestionsAdded++;
+            return 1; 
+        };
+
+        return 0;
     };
 
     shouldRejectQuestion(question) {

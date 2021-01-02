@@ -8,31 +8,36 @@ export class QuestionManager {
 
         this.getAndDisplayQuestion = () => {
             const question = this.queue.getQuestion();
-            this.displayQuestion(question);
+            if (question) {
+                this.displayQuestion(question);
+            }
+            else {
+                console.error("Could not get a question from queue to display");
+            }
         };
     }
 
-    createQuestions() {
-        birthYear.createBirthYearQuestion().then(question => {
-            this.queue.addQuestion(question);
-            if (!document.querySelector(".question").textContent) {
-                this.getAndDisplayQuestion(question);
-            };
-        });
+    createQuestionSet() {
+        for (let i = 0; i < 5; i++) {
+            this.createQuestion();
+        }
+    };
 
-        birthYear.createBirthYearQuestion().then(question => {
-            this.queue.addQuestion(question);
-            if (!document.querySelector(".question").textContent) {
-                this.getAndDisplayQuestion(question);
-            };
-        });
+    async createQuestion() {
+        for (let i = 0; i < 10; i++) {
+            const question = await birthYear.createBirthYearQuestion();
+            if (this.queue.getNumQuestionsAdded() < 10) {
+                const result = this.queue.addQuestion(question);
 
-        birthYear.createBirthYearQuestion().then(question => {
-            this.queue.addQuestion(question);
-            if (!document.querySelector(".question").textContent) {
-                this.getAndDisplayQuestion(question);
-            };
-        });
+                if (result) {
+                    if (!document.querySelector(".question").textContent) {
+                        this.getAndDisplayQuestion(question);
+                    };
+                    break;
+                }
+            }
+            
+        };
     };
 
     displayQuestion(question) {
@@ -78,4 +83,4 @@ export class QuestionManager {
 
 // const manager = new QuestionManager();
 // manager.displayQuestionStructure();
-// manager.createQuestions();
+// manager.createQuestionSet();

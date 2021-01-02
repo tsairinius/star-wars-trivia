@@ -7,6 +7,10 @@ function cleanUpDOM() {
 }
 
 describe("displayQuestionStructure", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
     beforeEach(cleanUpDOM);
 
     test("Displays paragraph element, four inputs and labels, and next button", () => {
@@ -22,6 +26,10 @@ describe("displayQuestionStructure", () => {
 });
 
 describe("displayQuestion", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
     const question = {
         question: "What day is it?",
         answer: "Monday",
@@ -56,29 +64,45 @@ describe("displayQuestion", () => {
     });
 });
 
-// describe("getAndDisplayQuestion", () => {
-//     const question = {
-//         question: "What day is it?",
-//         answer: "Monday",
-//         otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-//     };
+describe("getAndDisplayQuestion", () => {
+    const question = {
+        question: "What day is it?",
+        answer: "Monday",
+        otherOptions: ["Tuesday", "Wednesday", "Thursday"]
+    };
 
-//     beforeEach(() => {
-//         cleanUpDOM();
-//     })
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
 
-//     test("Question from queue is displayed", () => {
-//         const manager = new QuestionManager();
-//         manager.displayQuestionStructure();
-//         manager.queue.addQuestion(question);
+    beforeEach(() => {
+        cleanUpDOM();
+        consoleErrorMock.mockClear();
+    })
 
-//         manager.getAndDisplayQuestion();
+    test("Question from queue is displayed", () => {
+        const manager = new QuestionManager();
+        manager.displayQuestionStructure();
+        manager.queue.addQuestion(question);
 
-//         expect(screen.getByText("What day is it?")).toBeInTheDocument();
-//         expect(screen.getByText("Monday")).toBeInTheDocument();
-//         expect(screen.getByText("Tuesday")).toBeInTheDocument();
-//         expect(screen.getByText("Wednesday")).toBeInTheDocument();
-//         expect(screen.getByText("Thursday")).toBeInTheDocument();
-//     });
-// });
+        manager.getAndDisplayQuestion();
+
+        expect(screen.getByText("What day is it?")).toBeInTheDocument();
+        expect(screen.getByText("Monday")).toBeInTheDocument();
+        expect(screen.getByText("Tuesday")).toBeInTheDocument();
+        expect(screen.getByText("Wednesday")).toBeInTheDocument();
+        expect(screen.getByText("Thursday")).toBeInTheDocument();
+    });
+
+    test("Does not display a question and prints message if unable to retrieve a question", () => {
+        consoleErrorMock.mockReturnValue();
+        const manager = new QuestionManager();
+        manager.displayQuestionStructure();
+
+        expect(() => manager.getAndDisplayQuestion()).not.toThrowError();
+        expect(consoleErrorMock).toHaveBeenCalledWith("Could not get a question from queue to display");
+    });
+});
 
