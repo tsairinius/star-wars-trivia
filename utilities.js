@@ -1,3 +1,5 @@
+import * as birthYear from "./birthYear.js";
+
 export async function getItemCountIn(endpoint, defaultCount) {
     if ((typeof endpoint !== "string") || !isPositiveInteger(defaultCount)) {
         throw new Error("The following args are required: endpoint (string), defaultCount (positive integer)");
@@ -55,6 +57,12 @@ export async function getItemWithId(endpoint, id) {
     return item;
 }
 
+export function createRandomQuestion() {
+    return birthYear.createBirthYearQuestion();
+};
+
 function isPositiveInteger(number) {
     return Number.isInteger(number) && number > 0;
 }
+
+

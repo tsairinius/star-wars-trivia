@@ -1,10 +1,11 @@
 import { QuestionQueue } from "./QuestionQueue.js";
-import * as birthYear from "./birthYear.js";
+import * as utils from "./utilities.js";
 
 export class QuestionManager {
 
-    constructor() {
-        this.queue = new QuestionQueue();
+    constructor(maxQuestions = 10) {
+        this.queue = new QuestionQueue(maxQuestions);
+        this.maxQuestions = maxQuestions;
 
         this.getAndDisplayQuestion = () => {
             const question = this.queue.getQuestion();
@@ -18,26 +19,29 @@ export class QuestionManager {
     }
 
     createQuestionSet() {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < this.maxQuestions; i++) {
             this.createQuestion();
         }
     };
 
     async createQuestion() {
         for (let i = 0; i < 10; i++) {
-            const question = await birthYear.createBirthYearQuestion();
-            if (this.queue.getNumQuestionsAdded() < 10) {
-                const result = this.queue.addQuestion(question);
+            if (this.queue.getNumQuestionsAdded() >= this.maxQuestions) {
+                return 0;
+            };
 
-                if (result) {
-                    if (!document.querySelector(".question").textContent) {
-                        this.getAndDisplayQuestion(question);
-                    };
-                    break;
-                }
+            const question = await utils.createRandomQuestion();
+            const result = this.queue.addQuestion(question);
+
+            if (result === 0) {
+                if (!document.querySelector(".question").textContent) {
+                    this.getAndDisplayQuestion(question);
+                };
+                return 0;
             }
-            
         };
+
+        return 1;
     };
 
     displayQuestion(question) {

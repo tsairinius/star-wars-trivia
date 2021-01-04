@@ -43,7 +43,7 @@ describe("addQuestion", () => {
     });
 
     test("Successfully add question to queue", () => {
-        expect(queue.addQuestion(question)).toBe(1);
+        expect(queue.addQuestion(question)).toBe(0);
         expect(queue.queue.length).toBe(1);
         expect(queue.queue[0]).toEqual(question);
     });
@@ -56,7 +56,7 @@ describe("addQuestion", () => {
             otherOptions: ["Tuesday", "Wednesday", "Thursday"]
         }
     
-        expect(queue.addQuestion(badQuestion)).toBe(0);
+        expect(queue.addQuestion(badQuestion)).toBe(1);
     
         expect(queue.queue.length).toBe(0);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
@@ -67,7 +67,7 @@ describe("addQuestion", () => {
         const duplicate = { ...question };
         queue.addQuestion(question);
 
-        expect(queue.addQuestion(duplicate)).toBe(0);
+        expect(queue.addQuestion(duplicate)).toBe(1);
         expect(queue.queue.length).toBe(1);
         expect(consoleErrorMock).toHaveBeenCalledWith("No duplicate questions allowed in queue");
     });
@@ -130,6 +130,16 @@ describe("shouldRejectQuestion", () => {
         consoleErrorMock.mockReturnValue();
         queue.addQuestion(question);
         const duplicate = { ...question };
+        expect(queue.shouldRejectQuestion(duplicate)).toBe(true);
+    });
+
+    test("Question is considered duplicate if it's a dupe of a question removed from queue", () => {
+        consoleErrorMock.mockReturnValue();
+        queue.addQuestion(question);
+        queue.getQuestion();
+        const duplicate = { ...question };
+
+        expect(queue.queue.length).toBe(0);
         expect(queue.shouldRejectQuestion(duplicate)).toBe(true);
     });
 
