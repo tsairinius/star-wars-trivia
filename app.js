@@ -44,15 +44,17 @@ export class QuestionManager {
         return 1;
     };
 
-    displayQuestion(question) {
-        const questionElement = document.querySelector(".question");
+    displayQuestion(question) {        
         if (!question) {
             throw new Error("Missing question as argument");
         }
         
         try {
+            const questionElement = document.querySelector(".question");
+
             const answerChoices = [question.answer, ...question.otherOptions];
             questionElement.textContent = question.question;
+
             const answerChoiceElements = document.querySelectorAll("input[type=radio]");
             answerChoiceElements.forEach((element, index) => {
                 element.setAttribute("value", answerChoices[index]);

@@ -2,12 +2,11 @@ export class QuestionQueue {
     constructor(maxQuestions) {
         this.queue = [];            
         this.questionsAdded = [];
-        this.numQuestionsAdded = 0;
         this.maxQuestions = maxQuestions;
     }
 
     getNumQuestionsAdded() {
-        return this.numQuestionsAdded;
+        return this.questionsAdded.length;
     }
 
     getQuestion() {
@@ -15,14 +14,13 @@ export class QuestionQueue {
     };
 
     addQuestion(question) {
-        if (this.numQuestionsAdded > this.maxQuestions) {
+        if (this.getNumQuestionsAdded() > this.maxQuestions) {
             console.error(`More than ${this.maxQuestions} questions have been added to queue`);
         };
 
         if (!this.shouldRejectQuestion(question)) {
             this.queue = [question, ...this.queue]; 
             this.questionsAdded = [question.question, ...this.questionsAdded];
-            this.numQuestionsAdded++;
             return 0; 
         };
 
