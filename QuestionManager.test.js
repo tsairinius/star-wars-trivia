@@ -45,16 +45,6 @@ describe("displayQuestion", () => {
         expect(() => manager.displayQuestion())
         .toThrow("Missing question as argument");    
     });
-
-    // test("Places answer choices into random order", () => {
-    //     const manager = new QuestionManager();
-    //     manager.displayQuestion(question);
-
-    //     expect(screen.getByTestId("answer-choice-1")).toHaveValue("Wednesday");
-    //     expect(screen.getByTestId("answer-choice-2")).toHaveValue("Monday");
-    //     expect(screen.getByTestId("answer-choice-3")).toHaveValue("Tuesday");
-    //     expect(screen.getByTestId("answer-choice-4")).toHaveValue("Thursday");
-    // });
 });
 
 describe("getAndDisplayQuestion", () => {
@@ -80,6 +70,23 @@ describe("getAndDisplayQuestion", () => {
         expect(screen.getByText("Tuesday")).toBeInTheDocument();
         expect(screen.getByText("Wednesday")).toBeInTheDocument();
         expect(screen.getByText("Thursday")).toBeInTheDocument();
+    });
+
+    test("Correct answer to question is saved", () => {
+        const manager = new QuestionManager();
+        manager.queue.addQuestion(question);
+
+        manager.getAndDisplayQuestion();
+        expect(manager.correctAnswer).toBe(question.answer);
+    });
+
+    test("Number of questions asked is incremented", () => {
+        const manager = new QuestionManager();
+        manager.queue.addQuestion(question);
+
+        expect(manager.numQuestionsAsked).toBe(0);
+        manager.getAndDisplayQuestion();
+        expect(manager.numQuestionsAsked).toBe(1);
     });
 
     test("Does not display a question and prints message if unable to retrieve a question", () => {
@@ -184,6 +191,7 @@ describe("Integration tests", () => {
         utils.createRandomQuestion
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
+        
         const manager = new QuestionManager();
 
         await manager.createQuestion();
@@ -195,4 +203,34 @@ describe("Integration tests", () => {
         document.querySelectorAll("input[type=radio]").forEach(input => expect(input.checked).toBeFalsy());
         expect(screen.getByRole("button", {name: "Next"})).toBeDisabled();
     });
+
+    test("Displays that 1/1 questions were answered correctly when user answers first question correctly", async () => {
+        utils.createRandomQuestion
+            .mockReturnValueOnce(Promise.resolve(question));
+
+        const manager = new QuestionManager();
+
+        await manager.createQuestion();
+
+        userEvent.click(screen.getByLabelText(question.answer));
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(screen.getByTestId("score").textContent).toBe("1/1");
+    });
+
+    test("Displays that 0/1 questions were answered correctly when user answers first question incorrectly", async () => {
+        utils.createRandomQuestion
+            .mockReturnValueOnce(Promise.resolve(question));
+
+        const manager = new QuestionManager();
+
+        await manager.createQuestion();
+
+        const wrongAnswer = question.otherOptions[0];
+        userEvent.click(screen.getByLabelText(wrongAnswer));
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(screen.getByTestId("score").textContent).toBe("0/1");
+    });
+    
 });

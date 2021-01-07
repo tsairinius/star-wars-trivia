@@ -1,3 +1,4 @@
+import { initializeQuizContainer } from "./app.js";
 import { QuestionQueue } from "./QuestionQueue.js";
 import * as utils from "./utilities/utilities.js";
 
@@ -6,27 +7,49 @@ export class QuestionManager {
     constructor(maxQuestions = 10) {
         this.queue = new QuestionQueue(maxQuestions);
         this.maxQuestions = maxQuestions;
+        this.numQuestionsCorrect = 0;
+        this.numQuestionsAsked = 0;
 
-        this.getAndDisplayQuestion = () => {
-            const question = this.queue.getQuestion();
-            if (question) {
-                this.displayQuestion(question);
-            }
-            else {
-                console.error("Could not get a question from queue to display");
-            }
+        initializeQuizContainer();
+
+        this.validateAnswerAndGetNextQuestion = () => {
+            this.validateAnswer();
+            this.getAndDisplayQuestion();
         };
 
         this.enableNextButton = () => {
             const next = document.querySelector(".next-button");
             next.disabled = false;
         };
+
     }
 
     createQuestionSet() {
         for (let i = 0; i < this.maxQuestions; i++) {
             this.createQuestion();
         }
+    };
+
+    getAndDisplayQuestion() {
+        const question = this.queue.getQuestion();
+        if (question) {
+            this.correctAnswer = question.answer;
+            this.displayQuestion(question);
+            this.numQuestionsAsked++;
+        }
+        else {
+            console.error("Could not get a question from queue to display");
+        }
+    };
+
+    validateAnswer() {
+        const chosenAnswer = document.querySelector("input[name=answer-choice]:checked").value;
+        if (chosenAnswer === this.correctAnswer) {
+            this.numQuestionsCorrect++;
+        }
+
+        const scoreElement = document.querySelector(".score");
+        scoreElement.textContent = `${this.numQuestionsCorrect}/${this.numQuestionsAsked}`;
     };
 
     async createQuestion() {
@@ -65,15 +88,15 @@ export class QuestionManager {
         questionContainer.innerHTML = `
             <p class="question">${question.question}</p>
             <div>
-                <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]}/>
+                <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]} />
                 <label for="answer-choice-1">${answerChoices[0]}</label>
             </div>
             <div>
-                <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]}/>
+                <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]} />
                 <label for="answer-choice-2">${answerChoices[1]}</label>
             </div>
             <div>
-                <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]}/>
+                <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]} />
                 <label for="answer-choice-3">${answerChoices[2]}</label>
             </div>
             <div>
@@ -83,10 +106,11 @@ export class QuestionManager {
             <button class="next-button" disabled>Next</button>
         `;
     
-        questionContainer.querySelector(".next-button").onclick = this.getAndDisplayQuestion;
+        questionContainer.querySelector(".next-button").onclick = this.validateAnswerAndGetNextQuestion;
         questionContainer.querySelectorAll("input[type=radio]")
             .forEach(input => input.onchange = this.enableNextButton);
 
-        document.body.appendChild(questionContainer);
+        const quizContainer = document.querySelector(".quiz-container");
+        quizContainer.appendChild(questionContainer);
     };
 }
