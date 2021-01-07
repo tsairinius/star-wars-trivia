@@ -1,6 +1,7 @@
 import * as utils from "./utilities/utilities.js";
 import * as CONSTANTS from "./constants.js";
 import { getRandomWholeNumber } from "./utilities/getRandomWholeNumber.js";
+import { createOtherAnswerChoices } from "./utilities/createOtherAnswerChoices.js";
 
 export function getPersonBirthYearQuestion(person) {
     if (isValidPerson(person)) {
@@ -63,11 +64,7 @@ export async function createBirthYearQuestion() {
         };
 
         const result = getPersonBirthYearQuestion(randomPerson);
-        const otherOptions = [
-            createRandomBirthYear(result.answer), 
-            createRandomBirthYear(result.answer), 
-            createRandomBirthYear(result.answer)
-        ];
+        const otherOptions = createOtherAnswerChoices(() => createRandomBirthYear(result.answer));
 
         return {
             ...result,
