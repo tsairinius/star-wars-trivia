@@ -1,5 +1,5 @@
 import { QuestionManager } from "./QuestionManager.js";
-import * as utils from "./utilities.js";
+import * as utils from "./utilities/utilities.js";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
@@ -20,51 +20,41 @@ function cleanUpDOM() {
     document.body.innerHTML = '';
 }
 
-describe("createQuestionContainer", () => {
+describe("displayQuestion", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
     });
 
     beforeEach(cleanUpDOM);
 
-    test("Displays paragraph element, four inputs and labels, and next button", () => {
+    test("Displays question with answer choices and Next button", () => {
         const manager = new QuestionManager();
-
-        const container = manager.createQuestionContainer();
-        document.body.appendChild(container);
-
-        expect(container.querySelector(".question")).toBeInTheDocument();
-        expect(container.querySelectorAll("input[type=radio]").length).toBe(4);
-        expect(screen.getByRole("button", {name: "Next"})).toBeInTheDocument();
-        expect(container.querySelectorAll("label").length).toBe(4);
-    });
-});
-
-describe("displayQuestion", () => {
-    beforeAll(() => {
-        jest.restoreAllMocks();
-    });
-
-    let manager;
-    beforeEach(() => {
-        cleanUpDOM();
-        manager = new QuestionManager();
-    });
-
-    test("Displays question with answer choices", () => {
         manager.displayQuestion(question);
 
         expect(screen.getByText("What day is it?")).toBeInTheDocument();
-        expect(screen.getByText("Monday")).toBeInTheDocument();
-        expect(screen.getByText("Tuesday")).toBeInTheDocument();
-        expect(screen.getByText("Wednesday")).toBeInTheDocument();
-        expect(screen.getByText("Thursday")).toBeInTheDocument();
+        expect(screen.getByLabelText("Monday")).toBeInTheDocument();
+        expect(screen.getByLabelText("Tuesday")).toBeInTheDocument();
+        expect(screen.getByLabelText("Wednesday")).toBeInTheDocument();
+        expect(screen.getByLabelText("Thursday")).toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "Next"})).toBeInTheDocument();
     });
 
     test("Throws error if argument is undefined", () => {
+        const manager = new QuestionManager();
+
         expect(() => manager.displayQuestion())
         .toThrow("Missing question as argument");    
     });
+
+    // test("Places answer choices into random order", () => {
+    //     const manager = new QuestionManager();
+    //     manager.displayQuestion(question);
+
+    //     expect(screen.getByTestId("answer-choice-1")).toHaveValue("Wednesday");
+    //     expect(screen.getByTestId("answer-choice-2")).toHaveValue("Monday");
+    //     expect(screen.getByTestId("answer-choice-3")).toHaveValue("Tuesday");
+    //     expect(screen.getByTestId("answer-choice-4")).toHaveValue("Thursday");
+    // });
 });
 
 describe("getAndDisplayQuestion", () => {
@@ -103,9 +93,9 @@ describe("getAndDisplayQuestion", () => {
 
 describe("createQuestion", () => {
     console.error = jest.fn();
-    utils.createRandomQuestion = jest.fn(() => Promise.resolve(question));
     beforeAll(() => {
         jest.restoreAllMocks();
+        utils.createRandomQuestion = jest.fn(() => Promise.resolve(question));
     });
 
     beforeEach(() => {

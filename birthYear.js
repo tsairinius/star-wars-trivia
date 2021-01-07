@@ -1,5 +1,6 @@
-import * as utils from "./utilities.js";
+import * as utils from "./utilities/utilities.js";
 import * as CONSTANTS from "./constants.js";
+import { getRandomWholeNumber } from "./utilities/getRandomWholeNumber.js";
 
 export function getPersonBirthYearQuestion(person) {
     if (isValidPerson(person)) {
@@ -49,7 +50,7 @@ export async function createBirthYearQuestion() {
         let randomId;
         let randomPerson;
         for (let i = 0; i < 10; i ++) {
-            randomId = utils.getRandomId(totalNumPeople);
+            randomId = getRandomWholeNumber(1, totalNumPeople);
             randomPerson = await utils.getItemWithId("https://swapi.dev/api/people/", randomId);
             
             if (isValidPerson(randomPerson)) {

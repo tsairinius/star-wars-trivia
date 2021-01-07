@@ -1,12 +1,17 @@
 import * as utils from "./utilities.js";
-
-global.fetch = jest.fn();
-const consoleErrorMock = jest.spyOn(global.console, "error");
+import * as num from "./getRandomWholeNumber.js";
 
 describe("getItemCountIn", () => {
     const numPeople = 15;
     const defaultNumPeople = 10;
 
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        global.fetch = jest.fn();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+    
     beforeEach(() => {
         jest.clearAllMocks();
         fetch.mockReset();
@@ -96,35 +101,16 @@ describe("getItemCountIn", () => {
     });
 });
 
-describe("getRandomId", () => {
-    const max = 10;
-    const MathRandomMock = jest.spyOn(global.Math, "random");
-    beforeEach(() => {
-        MathRandomMock.mockClear();
-    });
-
-    test("Minimum value for an ID is 1", () => {
-        MathRandomMock.mockReturnValueOnce(0);
-        const id = utils.getRandomId(max);
-        expect(id).toBeGreaterThanOrEqual(1);
-    });
-
-    test("Maximum value for an ID is the value of the arg max", () => {
-        MathRandomMock.mockReturnValueOnce(0.99);
-        const id = utils.getRandomId(max);
-        expect(id).toBeLessThanOrEqual(max);
-    });
-
-    test("Error thrown if max passed in is not a number", () => {
-        const invalidArg = "invalidArg";
-        expect(() => {
-            utils.getRandomId(invalidArg)
-        }).toThrow(TypeError)
-    });
-});
-
 describe("getItemWithId", () => {
     const id = 4;
+
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        global.fetch = jest.fn();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         fetch.mockReset();
@@ -191,5 +177,39 @@ describe("getItemWithId", () => {
 
         expect(person).toBe(null);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("randomizeArray", () => {
+    const array = ["red", "green", "blue", "orange"];
+
+    let getRandomWholeNumberMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        getRandomWholeNumberMock = jest.spyOn(num, "getRandomWholeNumber");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        [2, 0, 1].forEach(number => getRandomWholeNumberMock.mockReturnValueOnce(number));
+    });
+
+    test("Returns a new randomized array", () => {
+        expect(utils.randomizeArray(array)).toEqual(["orange", "green",  "red", "blue"]);
+    });
+
+    test("Array passed in as argument is not modified by function", () => {
+        utils.randomizeArray(array);
+        expect(array).toEqual(["red", "green", "blue", "orange"]);
+    });
+
+    test("Throws error if argument is not an array", () => {
+        expect(() => utils.randomizeArray("badArgument"))
+            .toThrow(new Error("Argument must be an array with at least one element"));
+    });
+
+    test("Throws error if argument is not an array with at least one element", () => {
+        expect(() => utils.randomizeArray([]))
+            .toThrow(new Error("Argument must be an array with at least one element"));
     });
 });

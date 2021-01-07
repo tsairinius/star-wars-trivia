@@ -1,4 +1,6 @@
-import * as birthYear from "./birthYear.js";
+import * as birthYear from "../birthYear.js";
+import { isPositiveInteger } from "./NumberValidation.js";
+import { getRandomWholeNumber } from "./getRandomWholeNumber.js";
 
 export async function getItemCountIn(endpoint, defaultCount) {
     if ((typeof endpoint !== "string") || !isPositiveInteger(defaultCount)) {
@@ -26,14 +28,7 @@ export async function getItemCountIn(endpoint, defaultCount) {
     return count
 }
 
-export function getRandomId(max) {
-    if (!isPositiveInteger(max)) {
-        throw new TypeError(`Argument max of (${max}) must be a positive integer greater than zero`);
-    }
 
-    const randomNum = Math.random();
-    return Math.floor(randomNum * max) + 1;
-}
 
 export async function getItemWithId(endpoint, id) {
     if (typeof endpoint !== "string" || !isPositiveInteger(id)) {
@@ -61,8 +56,23 @@ export function createRandomQuestion() {
     return birthYear.createBirthYearQuestion();
 };
 
-function isPositiveInteger(number) {
-    return Number.isInteger(number) && number > 0;
-}
+export function randomizeArray(array) {
+    if (!Array.isArray(array) || array.length < 1) {
+        throw new Error("Argument must be an array with at least one element");
+    };
+    
+    const arrayCopy = [...array];
+    let currentIdx = arrayCopy.length - 1;
+
+    while (currentIdx !== 0) {
+        const randomIdx = getRandomWholeNumber(0, currentIdx + 1);
+        const temp = arrayCopy[randomIdx];
+        arrayCopy[randomIdx] = arrayCopy[currentIdx];
+        arrayCopy[currentIdx] = temp;
+        currentIdx--; 
+    }
+
+    return arrayCopy;
+};
 
 

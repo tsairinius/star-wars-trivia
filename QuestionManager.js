@@ -1,5 +1,5 @@
 import { QuestionQueue } from "./QuestionQueue.js";
-import * as utils from "./utilities.js";
+import * as utils from "./utilities/utilities.js";
 
 export class QuestionManager {
 
@@ -48,63 +48,45 @@ export class QuestionManager {
 
         return 1;
     };
-
-    displayQuestion(question) {        
+    
+    displayQuestion(question) {
         if (!question) {
             throw new Error("Missing question as argument");
-        }
-        
-        try {
-            if (document.querySelector(".question-container")) {
-                document.querySelector(".question-container").remove();
-            };
+        };
 
-            const questionContainer = this.createQuestionContainer();
-            const questionElement = questionContainer.querySelector(".question");
-            questionElement.textContent = question.question;
+        if (document.querySelector(".question-container")) {
+            document.querySelector(".question-container").remove();
+        };
 
-            const answerChoices = [question.answer, ...question.otherOptions];
-            const answerChoiceElements = questionContainer.querySelectorAll("input[type=radio]");
-            answerChoiceElements.forEach((element, index) => {
-                element.setAttribute("value", answerChoices[index]);
-                element.nextElementSibling.textContent = answerChoices[index];
-            });
+        const answerChoices = utils.randomizeArray([question.answer, ...question.otherOptions]);
 
-            document.body.appendChild(questionContainer);
-        }
-        catch (e) {
-            throw new Error(`Unable to display question and answer choices: ${e}`);
-        }
-    }
-    
-    createQuestionContainer() {
-        const structure = document.createElement("div");
-        structure.setAttribute("class", "question-container");
-        structure.innerHTML = `
-            <p class="question"></p>
+        const questionContainer = document.createElement("div");
+        questionContainer.setAttribute("class", "question-container");
+        questionContainer.innerHTML = `
+            <p class="question">${question.question}</p>
             <div>
-                <input type="radio" name="answer-choice" id="answer-choice-1" />
-                <label for="answer-choice-1"></label>
+                <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]}/>
+                <label for="answer-choice-1">${answerChoices[0]}</label>
             </div>
             <div>
-                <input type="radio" name="answer-choice" id="answer-choice-2" />
-                <label for="answer-choice-2"></label>
+                <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]}/>
+                <label for="answer-choice-2">${answerChoices[1]}</label>
             </div>
             <div>
-                <input type="radio" name="answer-choice" id="answer-choice-3" />
-                <label for="answer-choice-3"></label>
+                <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]}/>
+                <label for="answer-choice-3">${answerChoices[2]}</label>
             </div>
             <div>
-                <input type="radio" name="answer-choice" id="answer-choice-4" />
-                <label for="answer-choice-4"></label>
+                <input data-testid="answer-choice-4" type="radio" name="answer-choice" id="answer-choice-4" value=${answerChoices[3]} />
+                <label for="answer-choice-4">${answerChoices[3]}</label>
             </div>
             <button class="next-button" disabled>Next</button>
         `;
     
-        structure.querySelector(".next-button").onclick = this.getAndDisplayQuestion;
-        structure.querySelectorAll("input[type=radio]")
+        questionContainer.querySelector(".next-button").onclick = this.getAndDisplayQuestion;
+        questionContainer.querySelectorAll("input[type=radio]")
             .forEach(input => input.onchange = this.enableNextButton);
 
-        return structure;
+        document.body.appendChild(questionContainer);
     };
 }

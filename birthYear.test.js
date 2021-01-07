@@ -1,5 +1,5 @@
 import * as birthYear from "./birthYear.js";
-import * as utils from "./utilities";
+import * as utils from "./utilities/utilities";
 
 describe("getPersonBirthYearQuestion", () => {
     beforeAll(() => {
@@ -122,6 +122,9 @@ describe("createBirthYearQuestion", () => {
             name: "Luke Skywalker",
             birth_year: "19BBY"
         }));
+
+        // utils.getRandomWholeNumber = jest.fn();
+        
 
         consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
     });
