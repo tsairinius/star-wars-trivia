@@ -46,13 +46,13 @@ export function createRandomBirthYear(refYear = "0BBY") {
 
 export async function createBirthYearQuestion() {
     try {
-        const totalNumPeople = await utils.getItemCountIn("https://swapi.dev/api/people/", CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
+        const totalNumPeople = await utils.getItemCountIn("https://swapi.py4e.com/api/people/", CONSTANTS.DEFAULT_TOTAL_NUM_PEOPLE);
 
         let randomId;
         let randomPerson;
         for (let i = 0; i < 10; i ++) {
             randomId = getRandomWholeNumber(1, totalNumPeople);
-            randomPerson = await utils.getItemWithId("https://swapi.dev/api/people/", randomId);
+            randomPerson = await utils.getItemWithId("https://swapi.py4e.com/api/people/", randomId);
             
             if (isValidPerson(randomPerson)) {
                 break;
