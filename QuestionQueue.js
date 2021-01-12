@@ -14,6 +14,7 @@ export class QuestionQueue {
     };
 
     addQuestion(question) {
+        let result = 1;
         if (this.getNumQuestionsAdded() > this.maxQuestions) {
             console.error(`More than ${this.maxQuestions} questions have been added to queue`);
         };
@@ -21,10 +22,10 @@ export class QuestionQueue {
         if (!this.shouldRejectQuestion(question)) {
             this.queue = [question, ...this.queue]; 
             this.questionsAdded = [question.question, ...this.questionsAdded];
-            return 0; 
+            result = 0; 
         };
 
-        return 1;
+        return result;
     };
 
     shouldRejectQuestion(question) {
