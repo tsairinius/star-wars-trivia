@@ -70,34 +70,32 @@ describe("getItemCountIn", () => {
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
     });
 
-    test("Throw error if count property from endpoint is undefined", async () => {
+    test("Return default count and print message if count property from endpoint is undefined", async () => {
+        consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({})
         }));
 
-        expect.assertions(1);
-        try {
-            await utils.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople);
-        }
-        catch (e) {
-            expect(e.message).toBe("Invalid result of undefined retrieved")
-        }
+        expect(await utils.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople))
+            .toBe(defaultNumPeople);
+
+        expect(consoleErrorMock)
+            .toHaveBeenCalledWith("Unable to access item count from endpoint: ", new Error("Invalid result of undefined retrieved"));
     });
 
-    test("Throw error if count property from endpoint is zero", async () => {
+    test("Return default count and print message if count property from endpoint is zero", async () => {
+        consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({count: 0})
         }));
 
-        expect.assertions(1);
-        try {
-            await utils.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople);
-        }
-        catch (e) {
-            expect(e.message).toBe("Invalid result of 0 retrieved")
-        }
+        expect(await utils.getItemCountIn("https://swapi.dev/api/people/", defaultNumPeople))
+            .toBe(defaultNumPeople);
+
+        expect(consoleErrorMock)
+            .toHaveBeenCalledWith("Unable to access item count from endpoint: ", new Error("Invalid result of 0 retrieved"));
     });
 });
 

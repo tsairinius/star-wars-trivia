@@ -11,7 +11,14 @@ export async function getItemCountIn(endpoint, defaultCount) {
     try {
         const response = await fetch(endpoint);
         if (response.ok) {
-            count = await response.json().then(json => json.count);
+            const fetchedCount = await response.json().then(json => json.count);
+
+            if (!fetchedCount) {
+                throw new Error(`Invalid result of ${fetchedCount} retrieved`);
+            }
+            else {
+                count = fetchedCount;
+            }
         }
         else {
             throw new Error(`HTTP error. Status: ${response.status}`);
@@ -21,14 +28,8 @@ export async function getItemCountIn(endpoint, defaultCount) {
         console.error("Unable to access item count from endpoint: ", e)
     }
 
-    if (!count) {
-        throw new Error(`Invalid result of ${count} retrieved`);
-    }
-
     return count
 }
-
-
 
 export async function getItemWithId(endpoint, id) {
     if (typeof endpoint !== "string" || !isPositiveInteger(id)) {
