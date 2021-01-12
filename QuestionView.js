@@ -54,7 +54,11 @@ export class QuestionView {
             <button class="next-button" disabled>Next</button>
         `;
     
-        questionContainer.querySelector(".next-button").onclick = this.questionModel.validateAnswerAndGetNextQuestion;
+        questionContainer.querySelector(".next-button").onclick = () => {
+            const chosenAnswer = document.querySelector("input[name=answer-choice]:checked").value;
+            this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
+        }
+            
         questionContainer.querySelectorAll("input[type=radio]")
             .forEach(input => input.onchange = this.enableNextButton);
     

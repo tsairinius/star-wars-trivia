@@ -5,13 +5,13 @@ import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
-const data = {
+const data = Object.freeze({
     currentQuestion: {
         question: "What day is it?",
         answer: "Monday",
         otherOptions: ["Tuesday", "Wednesday", "Thursday"]
     }
-};
+});
 
 function cleanUpDOM() {
     document.body.innerHTML = '';

@@ -1,40 +1,196 @@
 import { QuestionModel } from "./QuestionModel.js";
 import * as utils from "./utilities/utilities.js";
-// import { screen } from "@testing-library/dom";
-// import "@testing-library/jest-dom";
-// import userEvent from "@testing-library/user-event";
 
-const question = {
+const question = Object.freeze({
     question: "What day is it?",
     answer: "Monday",
     otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-};
+});
 
-const secondQuestion = {
+const secondQuestion = Object.freeze({
     question: "What color is the sky?",
     answer: "blue",
     otherOptions: ["yellow", "red", "green"]
-};
+});
 
-// function cleanUpDOM() {
-//     document.body.innerHTML = '';
-// }
+describe("addSubscriber", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
 
-// describe("validateAnswer", () => {
+    test("Succesfully adds function to array of subscribers", () => {
+        const mockSubscriber = jest.fn();
+        const model = new QuestionModel();
 
-// });
+        expect(model.subscribers).toEqual([]);
+        model.addSubscriber(mockSubscriber);
+        expect(model.subscribers).toEqual([mockSubscriber]);
+    });
 
-// describe("addSubscriber", () => {
+    test("Throws error if missing argument", () => {
+        const model = new QuestionModel();
 
-// });
+        expect(() => model.addSubscriber())
+            .toThrow(new TypeError("A function was not passed in as an argument"));
+    });
 
-// describe("callSubscribers", () => {
+    test("Throws error if argument passed in is not a function", () => {
+        const model = new QuestionModel();
 
-// });
+        expect(() => model.addSubscriber("bad argument"))
+            .toThrow(new TypeError("A function was not passed in as an argument"));
+    });
+});
 
-// describe("validateAnswerAndGetNextQuestion", () => {
+describe("callSubscribers", () => {
+    let createRandomQuestion;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        createRandomQuestion = jest.spyOn(utils, "createRandomQuestion")
+            .mockReturnValue(Promise.resolve({
+                ...question,
+                otherOptions: [...question.otherOptions]
+            }));
+    });
 
-// });
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Calls each subscriber in array of subscribers", async () => {
+        const firstSubscriber = jest.fn();
+        const secondSubscriber = jest.fn();
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        model.addSubscriber(firstSubscriber);
+        model.addSubscriber(secondSubscriber);
+
+        expect(firstSubscriber).toHaveBeenCalledTimes(0);
+        expect(secondSubscriber).toHaveBeenCalledTimes(0);
+
+        model.callSubscribers();
+        expect(firstSubscriber).toHaveBeenCalledTimes(1);
+        expect(secondSubscriber).toHaveBeenCalledTimes(1);
+    });
+
+    test("Each subscriber is provided data stored in model", async () => {
+        const firstSubscriber = jest.fn();
+
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        model.addSubscriber(firstSubscriber);
+        model.callSubscribers();
+
+        const expectedData = {
+            currentQuestion: model.currentQuestion,
+            numQuestionsCorrect: model.numQuestionsCorrect,
+            numQuestionsAsked: model.numQuestionsAsked
+        };
+        expect(firstSubscriber).toHaveBeenCalledWith(expectedData);
+    });
+
+    test("Manipulating properties of model data passed to subscriber does not change original model's data properties", async () => {
+        const firstSubscriber = jest.fn((data) => {
+            data.currentQuestion = {},
+            data.numQuestionsAsked = 23,
+            data.numQuestionsCorrect = 36
+        });
+
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        model.addSubscriber(firstSubscriber);
+        model.callSubscribers();
+
+        expect(model.currentQuestion).toEqual(question);
+        expect(model.numQuestionsAsked).toBe(1);
+        expect(model.numQuestionsCorrect).toBe(0);
+    });
+
+    test("Changing properties of current question of argument does not change original model's data", async () => {
+        const firstSubscriber = jest.fn((data) => {
+            data.currentQuestion.question = secondQuestion.question;
+            data.currentQuestion.answer = secondQuestion.answer;
+            data.currentQuestion.otherOptions = secondQuestion.otherOptions;
+        });
+
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        model.addSubscriber(firstSubscriber);
+        model.callSubscribers();
+
+        expect(model.currentQuestion).toEqual(question);
+    });
+
+    test("Changing items in array of other answer choices passed to subscriber doesn't change original model's data", async () => {
+        const firstSubscriber = jest.fn((data) => {
+            data.currentQuestion.otherOptions[0] = "new choice";
+        });
+
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        model.addSubscriber(firstSubscriber);
+        model.callSubscribers();
+
+        expect(model.currentQuestion).toEqual(question);
+    });
+});
+
+describe("validateAnswerAndGetNextQuestion", () => {
+    let consoleErrorMock, createRandomQuestionMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
+        createRandomQuestionMock = jest.spyOn(utils, "createRandomQuestion")
+            .mockReturnValue(Promise.resolve(question));
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("If chosen answer is correct, increment number of correct answers", async () => {
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        const chosenAnswer = question.answer;
+
+        expect(model.numQuestionsCorrect).toBe(0);
+        model.validateAnswerAndGetNextQuestion(chosenAnswer);
+
+        expect(model.numQuestionsCorrect).toBe(1);
+    });
+
+    test("If chosen answer is incorrect, number of correct answers is not incremented", async () => {
+        const model = new QuestionModel();
+
+        await model.createQuestion();
+        const chosenAnswer = question.otherOptions[0];
+
+        expect(model.numQuestionsCorrect).toBe(0);
+        model.validateAnswerAndGetNextQuestion(chosenAnswer);
+
+        expect(model.numQuestionsCorrect).toBe(0);
+    });
+
+    test("Next question should be retrieved and subscribers called", async () => {
+        const model = new QuestionModel();
+        await model.createQuestion();
+
+        const chosenAnswer = question.otherOptions[0];
+        model.getNextQuestion = jest.fn();
+        model.callSubscribers = jest.fn();
+        
+        model.validateAnswerAndGetNextQuestion(chosenAnswer);
+
+        expect(model.getNextQuestion).toHaveBeenCalledTimes(1);
+        expect(model.callSubscribers).toHaveBeenCalledTimes(1);
+    });
+});
 
 describe("getNextQuestion", () => {
     let consoleErrorMock;
@@ -88,10 +244,14 @@ describe("getNextQuestion", () => {
 });
 
 describe("createQuestion", () => {
-    console.error = jest.fn();
+    let consoleErrorMock;
+    let createRandomQuestionMock;
     beforeAll(() => {
         jest.restoreAllMocks();
-        utils.createRandomQuestion = jest.fn(() => Promise.resolve(question));
+        createRandomQuestionMock = jest.spyOn(utils, "createRandomQuestion")
+            .mockReturnValue(Promise.resolve(question));
+
+        consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
     });
 
     beforeEach(() => {
@@ -112,14 +272,14 @@ describe("createQuestion", () => {
         await model.createQuestion();        
 
         expect(await model.createQuestion()).toBe(1);
-        expect(utils.createRandomQuestion).toHaveBeenCalledTimes(11);
+        expect(createRandomQuestionMock).toHaveBeenCalledTimes(11);
         expect(model.queue.getNumQuestionsAdded()).toBe(1);
     });
 
     test("If a second valid question is added to queue, the first question is still the currently asked question", async () => {
         const model = new QuestionModel();
 
-        utils.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
@@ -134,7 +294,7 @@ describe("createQuestion", () => {
         const max = 1;
         const model = new QuestionModel(max);
 
-        utils.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 

@@ -12,22 +12,29 @@ export class QuestionModel {
         this.numQuestionsAsked = 0;
         this.numQuestionsCorrect = 0;
 
-        this.validateAnswerAndGetNextQuestion = () => {
-            this.validateAnswer();
-            this.getNextQuestion() === 0
+        this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
+            if (chosenAnswer === this.currentQuestion.answer) {
+                this.numQuestionsCorrect++;
+            }
+
+            this.getNextQuestion();
             this.callSubscribers();
         };
     }
 
     addSubscriber(subscriber) {
+        if (typeof subscriber !== "function") {
+            throw new TypeError("A function was not passed in as an argument");
+        }
+
         this.subscribers = [...this.subscribers, subscriber];
     }
 
     callSubscribers() {
         const data = {
             currentQuestion: {
-                    ...this.currentQuestion, 
-                    otherOptions: [...this.currentQuestion.otherOptions]
+                ...this.currentQuestion,
+                otherOptions: [...this.currentQuestion.otherOptions]
             },
             numQuestionsCorrect: this.numQuestionsCorrect,
             numQuestionsAsked: this.numQuestionsAsked
@@ -76,12 +83,4 @@ export class QuestionModel {
             return 1;
         }
     };
-
-    validateAnswer() {
-        const chosenAnswer = document.querySelector("input[name=answer-choice]:checked").value;
-        if (chosenAnswer === this.currentQuestion.answer) {
-            this.numQuestionsCorrect++;
-        }
-    };
-    
 }

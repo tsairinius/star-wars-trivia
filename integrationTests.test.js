@@ -7,17 +7,17 @@ import * as utils from "./utilities/utilities.js";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
-const question = {
+const question = Object.freeze({
     question: "What day is it?",
     answer: "Monday",
     otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-};
+});
 
-const secondQuestion = {
+const secondQuestion = Object.freeze({
     question: "What color is the sky?",
     answer: "blue",
     otherOptions: ["yellow", "red", "green"]
-};
+});
 
 describe("Integration tests", () => {
     let consoleErrorMock;
@@ -49,6 +49,27 @@ describe("Integration tests", () => {
 
         document.querySelectorAll("input[type=radio]").forEach(input => expect(input.checked).toBeFalsy());
         expect(screen.getByRole("button", {name: "Next"})).toBeDisabled();
+    });
+
+    test("When user selects an answer choice and clicks Next, a new question is displayed", async () => {
+        utils.createRandomQuestion
+            .mockReturnValueOnce(Promise.resolve(question))
+            .mockReturnValueOnce(Promise.resolve(secondQuestion));
+
+        const model = new QuestionModel();
+        const view = new QuestionView(model);
+
+        await model.createQuestion();
+        await model.createQuestion();
+
+        userEvent.click(screen.getByLabelText(question.answer));
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(screen.getByText("What color is the sky?")).toBeInTheDocument();
+        expect(screen.getByLabelText("blue")).toBeInTheDocument();
+        expect(screen.getByLabelText("yellow")).toBeInTheDocument();
+        expect(screen.getByLabelText("red")).toBeInTheDocument();
+        expect(screen.getByLabelText("green")).toBeInTheDocument();
     });
 
     test("Displays that 1/1 questions were answered correctly when user answers first question correctly", async () => {
