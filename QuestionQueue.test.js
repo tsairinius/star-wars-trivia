@@ -1,10 +1,5 @@
 import { QuestionQueue } from "./QuestionQueue.js";
-
-const question = Object.freeze({
-    question: "What day is it?",
-    answer: "Monday",
-    otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-});
+import { question } from "./fakeQuestions.js";
 
 describe("getQuestion", () => {
     beforeAll(() => {

@@ -4,13 +4,10 @@ import { initializeQuizContainer } from "./app.js";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import { question } from "./fakeQuestions.js";
 
 const data = Object.freeze({
-    currentQuestion: {
-        question: "What day is it?",
-        answer: "Monday",
-        otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-    }
+    currentQuestion: question
 });
 
 function cleanUpDOM() {

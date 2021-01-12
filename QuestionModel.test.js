@@ -1,17 +1,6 @@
 import { QuestionModel } from "./QuestionModel.js";
 import * as utils from "./utilities/utilities.js";
-
-const question = Object.freeze({
-    question: "What day is it?",
-    answer: "Monday",
-    otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-});
-
-const secondQuestion = Object.freeze({
-    question: "What color is the sky?",
-    answer: "blue",
-    otherOptions: ["yellow", "red", "green"]
-});
+import { question, secondQuestion } from "./fakeQuestions.js";
 
 describe("addSubscriber", () => {
     beforeAll(() => {
