@@ -15,6 +15,7 @@ export class QuestionModel {
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             if (chosenAnswer === this.currentQuestion.answer) {
                 this.numQuestionsCorrect++;
+                console.assert(this.numQuestionsCorrect <= this.numQuestionsAsked, "Number of questions answered correctly is greater than the total number asked");
             }
 
             this.getNextQuestion();

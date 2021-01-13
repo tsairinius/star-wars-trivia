@@ -5,14 +5,11 @@ import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question } from "./fakeQuestions.js";
+import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 
 const data = Object.freeze({
     currentQuestion: question
 });
-
-function cleanUpDOM() {
-    document.body.innerHTML = '';
-}
 
 describe("displayQuestion", () => {
     beforeAll(() => {

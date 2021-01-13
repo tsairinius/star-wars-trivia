@@ -1,7 +1,7 @@
 import { QuestionView } from "./QuestionView.js";
 import { QuestionModel } from "./QuestionModel.js";
 import { initializeQuizContainer } from "./app.js";
-import { cleanupDOM } from "./cleanupDOM.js";
+import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 import { screen } from "@testing-library/dom";
 import * as utils from "./utilities/utilities.js";
 import "@testing-library/jest-dom";
@@ -18,7 +18,7 @@ describe("Integration tests", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        cleanupDOM();
+        cleanUpDOM();
         initializeQuizContainer();
     });
 
