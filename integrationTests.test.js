@@ -7,6 +7,7 @@ import * as utils from "./utilities/utilities.js";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question, secondQuestion } from "./fakeQuestions.js";
+import { QuestionController } from "./QuestionController.js";
 
 describe("Integration tests", () => {
     let consoleErrorMock;
@@ -28,7 +29,8 @@ describe("Integration tests", () => {
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
         
         const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
+        const controller = new QuestionController(model, view);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -46,7 +48,8 @@ describe("Integration tests", () => {
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
         const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
+        const controller = new QuestionController(model, view);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -66,7 +69,8 @@ describe("Integration tests", () => {
             .mockReturnValueOnce(Promise.resolve(question));
 
         const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
+        const controller = new QuestionController(model, view);
 
         await model.createQuestion();
 
@@ -81,7 +85,8 @@ describe("Integration tests", () => {
             .mockReturnValueOnce(Promise.resolve(question));
 
         const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
+        const controller = new QuestionController(model, view);
 
         await model.createQuestion();
 

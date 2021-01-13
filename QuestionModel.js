@@ -2,7 +2,7 @@ import { QuestionQueue } from "./QuestionQueue.js";
 import * as utils from "./utilities/utilities.js";
 
 export class QuestionModel {
-    constructor(maxQuestions = 10) {
+    constructor(maxQuestions = 5) {
         this.queue = new QuestionQueue(maxQuestions);
         this.subscribers = [];
 
@@ -11,6 +11,7 @@ export class QuestionModel {
         this.maxQuestions = maxQuestions;
         this.numQuestionsAsked = 0;
         this.numQuestionsCorrect = 0;
+        this.quizComplete = false;
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             if (chosenAnswer === this.currentQuestion.answer) {
@@ -18,7 +19,10 @@ export class QuestionModel {
                 console.assert(this.numQuestionsCorrect <= this.numQuestionsAsked, "Number of questions answered correctly is greater than the total number asked");
             }
 
-            this.getNextQuestion();
+            if ((this.getNextQuestion() === 1) && this.numQuestionsAsked === this.maxQuestions) {
+                this.quizComplete = true;
+            };
+
             this.callSubscribers();
         };
     }
@@ -38,9 +42,10 @@ export class QuestionModel {
                 otherOptions: [...this.currentQuestion.otherOptions]
             },
             numQuestionsCorrect: this.numQuestionsCorrect,
-            numQuestionsAsked: this.numQuestionsAsked
+            numQuestionsAsked: this.numQuestionsAsked,
+            quizComplete: this.quizComplete
         };
-
+    
         this.subscribers.forEach(subscriber => subscriber(data));
     };
 

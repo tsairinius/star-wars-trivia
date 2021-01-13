@@ -1,15 +1,10 @@
 import { QuestionView } from "./QuestionView.js";
-import { QuestionModel } from "./QuestionModel.js";
 import { initializeQuizContainer } from "./app.js";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question } from "./fakeQuestions.js";
 import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
-
-const data = Object.freeze({
-    currentQuestion: question
-});
 
 describe("displayQuestion", () => {
     beforeAll(() => {
@@ -22,9 +17,8 @@ describe("displayQuestion", () => {
     });
 
     test("Displays question with answer choices and Next button", () => {
-        const model = new QuestionModel();
-        const view = new QuestionView(model);
-        view.displayQuestion(data);
+        const view = new QuestionView();
+        view.displayQuestion(question);
 
         expect(screen.getByText("What day is it?")).toBeInTheDocument();
         expect(screen.getByLabelText("Monday")).toBeInTheDocument();
@@ -35,11 +29,10 @@ describe("displayQuestion", () => {
     });
 
     test("Throws error if argument is undefined", () => {
-        const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
 
         expect(() => view.displayQuestion())
-        .toThrow("Missing model data as argument");    
+        .toThrow("Missing question as argument");    
     });
 });
 
@@ -55,13 +48,63 @@ describe("Next button behavior", () => {
     });
 
     test("Next button is enabled when an answer choice is selected", async () => {
-        const model = new QuestionModel();
-        const view = new QuestionView(model);
+        const view = new QuestionView();
 
-        view.displayQuestion(data);
+        view.displayQuestion(question);
 
         expect(screen.getByRole("button", {name: "Next"})).toBeDisabled();
-        userEvent.click(screen.getByLabelText(data.currentQuestion.answer));
+        userEvent.click(screen.getByLabelText(question.answer));
         expect(screen.getByRole("button", {name: "Next"})).not.toBeDisabled();
+    });
+});
+
+describe("updateScore", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeQuizContainer();
+    });
+
+    test("Displays 'Score unavailable' if missing an argument", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.updateScore(5);
+
+        expect(screen.getByText("Score unavailable")).toBeInTheDocument();
+    });
+
+    test("Displays 'Score unavailable' if argument passed in is not a number", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.updateScore(5, "dog");
+
+        expect(screen.getByText("Score unavailable")).toBeInTheDocument();
+    });
+
+    test("Displays 'Score unavailable' if argument passed in is not a whole number", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.updateScore(-5);
+
+        expect(screen.getByText("Score unavailable")).toBeInTheDocument();
+    });
+
+    test("Updates score", () => {
+        const view = new QuestionView();
+
+        expect(screen.queryByText("4/10")).not.toBeInTheDocument();
+
+        view.updateScore(4, 10);
+
+        expect(screen.getByText("4/10")).toBeInTheDocument();
     });
 });

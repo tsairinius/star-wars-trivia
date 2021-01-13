@@ -75,7 +75,8 @@ describe("callSubscribers", () => {
         const expectedData = {
             currentQuestion: model.currentQuestion,
             numQuestionsCorrect: model.numQuestionsCorrect,
-            numQuestionsAsked: model.numQuestionsAsked
+            numQuestionsAsked: model.numQuestionsAsked,
+            quizComplete: model.quizComplete
         };
         expect(firstSubscriber).toHaveBeenCalledWith(expectedData);
     });

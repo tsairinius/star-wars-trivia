@@ -1,5 +1,6 @@
 import { QuestionView } from "./QuestionView.js";
 import { QuestionModel } from "./QuestionModel.js";
+import { QuestionController } from "./QuestionController.js";
 
 export function initializeQuizContainer() {
     const quizContainer = document.createElement("div");
@@ -11,21 +12,9 @@ export function initializeQuizContainer() {
     document.body.append(quizContainer);
 }
 
-initializeQuizContainer();
-const questionModel = new QuestionModel();
-const questionView = new QuestionView(questionModel);
+// initializeQuizContainer();
+// const questionModel = new QuestionModel();
+// const questionView = new QuestionView();
+// const questionController = new QuestionController(questionModel, questionView);
 
-// questionModel.createQuestion();
 // questionModel.createQuestionSet();
-
-// const question = {
-//     question: "What day is it?",
-//     answer: "Monday",
-//     otherOptions: ["Tuesday", "Wednesday", "Thursday"]
-// };
-
-// const data = {
-//     currentQuestion: question
-// }
-// questionView.displayQuestion(data);
-

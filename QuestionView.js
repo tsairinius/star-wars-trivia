@@ -1,29 +1,31 @@
 import * as utils from "./utilities/utilities.js";
+import { isWholeNumber } from "./utilities/NumberValidation.js";
 
 export class QuestionView {
-    constructor(questionModel) {
-        this.questionModel = questionModel;
-
-        this.questionModel.addSubscriber(this.displayQuestion.bind(this));
-        this.questionModel.addSubscriber(this.updateScore.bind(this));
-
+    constructor() {
         this.enableNextButton = () => {
             const next = document.querySelector(".next-button");
             next.disabled = false;
         };
+
+        this.validateAnswerAndGetNextQuestion = null;
     };
 
-    updateScore(data) {
+    updateScore(numQuestionsCorrect, numQuestionsAsked) {
         const scoreElement = document.querySelector(".score");
-        scoreElement.textContent = `${data.numQuestionsCorrect}/${data.numQuestionsAsked}`;
+        if (!isWholeNumber(numQuestionsCorrect) || !isWholeNumber(numQuestionsAsked)) {
+            scoreElement.textContent = "Score unavailable";
+            console.error(`Requires two arguments of type Number. Args: ${numQuestionsCorrect} ${numQuestionsAsked}`);
+        }
+        else {
+            scoreElement.textContent = `${numQuestionsCorrect}/${numQuestionsAsked}`;
+        }
     }
 
-    displayQuestion(data) {
-        if (!data) {
-            throw new Error("Missing model data as argument");
+    displayQuestion(question) {
+        if (!question) {
+            throw new Error("Missing question as argument");
         };
-
-        const question = data.currentQuestion;
     
         if (document.querySelector(".question-container")) {
             document.querySelector(".question-container").remove();
@@ -56,7 +58,7 @@ export class QuestionView {
     
         questionContainer.querySelector(".next-button").onclick = () => {
             const chosenAnswer = document.querySelector("input[name=answer-choice]:checked").value;
-            this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
+            this.validateAnswerAndGetNextQuestion(chosenAnswer);
         }
             
         questionContainer.querySelectorAll("input[type=radio]")
