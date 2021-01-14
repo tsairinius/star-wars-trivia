@@ -11,9 +11,9 @@ export class QuestionController {
             if (!data) {
                 throw new TypeError("Data argument is undefined");
             }
-            
+
             if (data.quizComplete) {
-                console.log("Complete!");
+                this.questionView.renderQuizComplete(data.numQuestionsCorrect, data.numQuestionsAsked);
             }
             else {
                 this.questionView.displayQuestion(data.currentQuestion);

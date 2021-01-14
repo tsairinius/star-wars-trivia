@@ -3,8 +3,5 @@ html {
     font-size: 50px;
     background-color: black;
     color: yellow;
-    display: flex;
-    justify-content: center;
-    /* align-items: center; */
 }
 

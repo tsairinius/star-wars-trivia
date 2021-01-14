@@ -34,9 +34,11 @@ describe("handleModelChange", () => {
         const view = new QuestionView();
         const controller = new QuestionController(model, view);
 
+        view.renderQuizComplete = jest.fn();
+
         controller.handleModelChange(data);
 
-        expect(consoleLogMock).toHaveBeenCalledTimes(1);
+        expect(view.renderQuizComplete).toHaveBeenCalledTimes(1);
     });
 
     test("Requests to have next question displayed and score updated if quiz is not complete", () => {
@@ -50,9 +52,6 @@ describe("handleModelChange", () => {
 
         view.displayQuestion = jest.fn();
         view.updateScore = jest.fn();
-
-        expect(view.displayQuestion).not.toHaveBeenCalled();
-        expect(view.updateScore).not.toHaveBeenCalled();
 
         controller.handleModelChange(data);
 

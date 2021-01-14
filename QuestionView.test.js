@@ -58,6 +58,59 @@ describe("Next button behavior", () => {
     });
 });
 
+describe("isValidScore", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Returns true for valid score", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        expect(view.isValidScore(4, 6)).toBeTruthy();
+    });
+
+    test("Returns false if missing an argument is undefined", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        expect(view.isValidScore(5, undefined)).toBeFalsy();
+        expect(consoleErrorMock)
+            .toHaveBeenCalledWith(`Invalid score. The number of questions asked and the number correct must be of type Number. Args: 5, undefined`);
+    });
+
+    test("Returns false if argument passed in is not a number", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        expect(view.isValidScore(5, "dog")).toBeFalsy();
+    });
+
+    test("Returns false if argument passed in is not a whole number", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        expect(view.updateScore(-5, 6)).toBeFalsy();
+    });
+
+    test("Returns false if number of correctly answered questions is greater than the number asked", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        const numCorrect = 7;
+        const numAsked = 6
+        expect(view.updateScore(numCorrect, numAsked)).toBeFalsy();
+        expect(consoleErrorMock)
+            .toHaveBeenCalledWith(`Invalid score. Number of questions correct is greater than number of questions asked: Number correct: ${numCorrect}, Number asked: ${numAsked}`);
+    });
+});
+
 describe("updateScore", () => {
     let consoleErrorMock;
     beforeAll(() => {
@@ -71,29 +124,11 @@ describe("updateScore", () => {
         initializeQuizContainer();
     });
 
-    test("Displays 'Score unavailable' if missing an argument", () => {
+    test("Displays 'Score unavailable' if score is invalid", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
 
         view.updateScore(5);
-
-        expect(screen.getByText("Score unavailable")).toBeInTheDocument();
-    });
-
-    test("Displays 'Score unavailable' if argument passed in is not a number", () => {
-        consoleErrorMock.mockReturnValueOnce();
-        const view = new QuestionView();
-
-        view.updateScore(5, "dog");
-
-        expect(screen.getByText("Score unavailable")).toBeInTheDocument();
-    });
-
-    test("Displays 'Score unavailable' if argument passed in is not a whole number", () => {
-        consoleErrorMock.mockReturnValueOnce();
-        const view = new QuestionView();
-
-        view.updateScore(-5);
 
         expect(screen.getByText("Score unavailable")).toBeInTheDocument();
     });
@@ -106,5 +141,35 @@ describe("updateScore", () => {
         view.updateScore(4, 10);
 
         expect(screen.getByText("4/10")).toBeInTheDocument();
+    });
+});
+
+describe("renderQuizComplete", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeQuizContainer();
+    });
+
+    test("If score is invalid, just display `Quiz complete` message", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.renderQuizComplete(-1);
+
+        expect(screen.getByText("Quiz completed!")).toBeInTheDocument();
+    });
+
+    test("Shows user's score", () => {
+        const view = new QuestionView();
+
+        view.renderQuizComplete(2, 5);
+        expect(screen.getByText("You answered 2/5 questions correctly!")).toBeInTheDocument();
     });
 });

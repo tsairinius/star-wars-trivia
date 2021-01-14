@@ -13,9 +13,8 @@ export class QuestionView {
 
     updateScore(numQuestionsCorrect, numQuestionsAsked) {
         const scoreElement = document.querySelector(".score");
-        if (!isWholeNumber(numQuestionsCorrect) || !isWholeNumber(numQuestionsAsked)) {
+        if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
             scoreElement.textContent = "Score unavailable";
-            console.error(`Requires two arguments of type Number. Args: ${numQuestionsCorrect} ${numQuestionsAsked}`);
         }
         else {
             scoreElement.textContent = `${numQuestionsCorrect}/${numQuestionsAsked}`;
@@ -67,4 +66,29 @@ export class QuestionView {
         const quizContainer = document.querySelector(".quiz-container");
         quizContainer.appendChild(questionContainer);
     };
+
+    renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
+        const quizContainer = document.querySelector("div[class=quiz-container]");
+        if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
+            quizContainer.innerHTML = "Quiz completed!";
+        }
+        else {
+            quizContainer.innerHTML = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
+        }
+    }
+
+    isValidScore(numQuestionsCorrect, numQuestionsAsked) {
+        let isValid = false;
+        if (!isWholeNumber(numQuestionsCorrect) || !isWholeNumber(numQuestionsAsked)) {
+            console.error(`Invalid score. The number of questions asked and the number correct must be of type Number. Args: ${numQuestionsCorrect}, ${numQuestionsAsked}`);
+        }
+        else if (numQuestionsCorrect > numQuestionsAsked) {
+            console.error(`Invalid score. Number of questions correct is greater than number of questions asked: Number correct: ${numQuestionsCorrect}, Number asked: ${numQuestionsAsked}`);
+        }
+        else {
+            isValid = true;
+        }
+
+        return isValid;
+    }
 }
