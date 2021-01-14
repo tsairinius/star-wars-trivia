@@ -1,8 +1,8 @@
 import { createOtherAnswerChoices } from "./utilities/createOtherAnswerChoices.js";
-import { isValidPerson, getRandomPerson } from "./utilities/person.js";
+import { validateProperties, getRandomPersonWithProps } from "./utilities/person.js";
 
-export function getPersonBirthYearQuestion(person) {
-    if (isValidPerson(person)) {
+export function getBirthYearQuestionAndAnswer(person) {
+    if (validateProperties(person, ["birth_year", "name"])) {
         return {
             question: `What is the birth year of ${person.name}?`,
             answer: person.birth_year
@@ -44,9 +44,9 @@ export function createRandomBirthYear(refYear = "0BBY") {
 
 export async function createBirthYearQuestion() {
     try {
-        const randomPerson = await getRandomPerson();
+        const randomPerson = await getRandomPersonWithProps(["name", "birth_year"]);
 
-        const result = getPersonBirthYearQuestion(randomPerson);
+        const result = getBirthYearQuestionAndAnswer(randomPerson);
         const otherOptions = createOtherAnswerChoices(() => createRandomBirthYear(result.answer));
 
         return {

@@ -2,9 +2,11 @@ import * as birthYear from "./birthYear.js";
 import * as utils from "./utilities/utilities";
 import * as p from "./utilities/person.js";
 
-describe("getPersonBirthYearQuestion", () => {
+describe("getBirthYearQuestionAndAnswer", () => {
+    let validatePropertiesMock;
     beforeAll(() => {
         jest.restoreAllMocks();
+        validatePropertiesMock = jest.spyOn(p, "validateProperties");
     });
 
     const invalidPersonError = "Invalid person object passed in as argument. Must have valid name and birth_year properties";
@@ -19,49 +21,13 @@ describe("getPersonBirthYearQuestion", () => {
             birth_year: "22BBY"
         };
 
-        expect(birthYear.getPersonBirthYearQuestion(person)).toEqual(expectedResult);
+        expect(birthYear.getBirthYearQuestionAndAnswer(person)).toEqual(expectedResult);
     });
 
-    test("Throws error if person passed in is undefined", () => {
-        expect(() => birthYear.getPersonBirthYearQuestion(undefined))
-            .toThrow(invalidPersonError);
-    });
+    test("Throws error if person passed in is not valid", () => {
+        validatePropertiesMock.mockReturnValueOnce(false);
 
-    test("Throws error if person passed in is missing name property", () => {
-        const person = {
-            birth_year: "22BBY"
-        };
-
-        expect(() => birthYear.getPersonBirthYearQuestion(person))
-            .toThrow(invalidPersonError);
-    });
-
-    test("Throws error if person passed in is missing birth year property", () => {
-        const person = {
-            name: "Plo Koon"
-        };
-
-        expect(() => birthYear.getPersonBirthYearQuestion(person))
-            .toThrow(invalidPersonError);
-    });
-
-    test("Throws error if person passed in has unknown name", () => {
-        const person = {
-            name: "unknown",
-            birth_year: "22BBY"
-        };
-
-        expect(() => birthYear.getPersonBirthYearQuestion(person))
-            .toThrow(invalidPersonError);
-    });
-
-    test("Throws error if person passed in has unknown birth year", () => {
-        const person = {
-            name: "Plo Koon",
-            birth_year: "unknown"
-        };
-
-        expect(() => birthYear.getPersonBirthYearQuestion(person))
+        expect(() => birthYear.getBirthYearQuestionAndAnswer())
             .toThrow(invalidPersonError);
     });
 });
@@ -132,8 +98,8 @@ describe("createBirthYearQuestion", () => {
     });
 
     test("Returns null/prints error if unable to get valid person after 10 attempts", async () => {
-        const getRandomPersonMock = jest.spyOn(p, "getRandomPerson");
-        getRandomPersonMock.mockImplementationOnce(() => {throw new Error("Could not get a valid person")});
+        const getRandomPersonWithPropsMock = jest.spyOn(p, "getRandomPersonWithProps");
+        getRandomPersonWithPropsMock.mockImplementationOnce(() => {throw new Error("Could not get a valid person")});
 
         expect(await birthYear.createBirthYearQuestion()).toBeNull();
         expect(consoleErrorMock)
