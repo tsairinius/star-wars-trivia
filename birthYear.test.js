@@ -1,5 +1,6 @@
 import * as birthYear from "./birthYear.js";
 import * as utils from "./utilities/utilities";
+import * as p from "./utilities/person.js";
 
 describe("getPersonBirthYearQuestion", () => {
     beforeAll(() => {
@@ -122,10 +123,7 @@ describe("createBirthYearQuestion", () => {
             name: "Luke Skywalker",
             birth_year: "19BBY"
         }));
-
-        // utils.getRandomWholeNumber = jest.fn();
         
-
         consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
     });
 
@@ -134,16 +132,12 @@ describe("createBirthYearQuestion", () => {
     });
 
     test("Returns null/prints error if unable to get valid person after 10 attempts", async () => {
-        for (let i = 0; i < 10; i++) {
-            utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
-                name: "unknown",
-                birth_year: "19BBY"
-            }));
-        };
+        const getRandomPersonMock = jest.spyOn(p, "getRandomPerson");
+        getRandomPersonMock.mockImplementationOnce(() => {throw new Error("Could not get a valid person")});
 
         expect(await birthYear.createBirthYearQuestion()).toBeNull();
         expect(consoleErrorMock)
-            .toHaveBeenCalledWith(new Error("Unable to retrieve a valid person after multiple attempts"));
+            .toHaveBeenCalledWith(new Error("Could not get a valid person"));
     });
 
     test("Returns object with a question, its answer, and three other choices", async () => {
