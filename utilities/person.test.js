@@ -7,7 +7,7 @@ describe("getRandomPersonWithProps", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
         utils.getItemCountIn = jest.fn(() => Promise.resolve(10))
-        utils.getItemWithId = jest.fn(() => Promise.resolve({
+        utils.fetchItem = jest.fn(() => Promise.resolve({
             name: "Luke Skywalker",
             birth_year: "19BBY"
         }));
@@ -26,7 +26,7 @@ describe("getRandomPersonWithProps", () => {
     });
 
     test("Makes another attempt to fetch a valid person if previous person's birth year is invalid", async () => {
-        utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
+        utils.fetchItem.mockImplementationOnce(() => Promise.resolve({
             name: "Luke Skywalker",
             birth_year: "unknown"
         }));
@@ -37,7 +37,7 @@ describe("getRandomPersonWithProps", () => {
     });
 
     test("Makes another attempt to fetch a valid person if previous person's name is invalid", async () => {
-        utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
+        utils.fetchItem.mockImplementationOnce(() => Promise.resolve({
             name: "unknown",
             birth_year: "19BBY"
         }));
@@ -49,7 +49,7 @@ describe("getRandomPersonWithProps", () => {
 
     test("Throws error if unable to get valid person after 10 attempts", async () => {
         for (let i = 0; i < 10; i++) {
-            utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
+            utils.fetchItem.mockImplementationOnce(() => Promise.resolve({
                 name: "unknown",
                 birth_year: "19BBY"
             }));

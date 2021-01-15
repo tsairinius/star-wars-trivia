@@ -99,7 +99,7 @@ describe("getItemCountIn", () => {
     });
 });
 
-describe("getItemWithId", () => {
+describe("fetchItem", () => {
     const id = 4;
 
     let consoleErrorMock;
@@ -114,36 +114,24 @@ describe("getItemWithId", () => {
         fetch.mockReset();
     });
 
-    test("Throws error if argument endpoint is not a string", async () => {
+    test("Throws error if endpoint argument is not a string", async () => {
         const invalidArg = 4;
         expect.assertions(1);
         try {
-            await utils.getItemWithId(invalidArg, id);
+            await utils.fetchItem(invalidArg);
         }
         catch (e) {
             expect(e.message)
-                .toBe("The following args are required: endpoint (string), id (positive integer)");
+                .toBe("The arg endpoint (of type string) is required");
         }
     });
 
-    test("Throws error if argument id is not a positive integer", async () => {
-        const invalidArg = 0;
-        expect.assertions(1);
-        try {
-            await utils.getItemWithId("https://swapi.dev/api/people/", invalidArg);
-        }
-        catch (e) {
-            expect(e.message)
-                .toBe("The following args are required: endpoint (string), id (positive integer)");
-        }
-    });
-
-    test("Fetches from correct endpoint based on ID passed in", async () => {
+    test("Fetches from correct endpoint based on endpoint passed in", async () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: true,
             json: () => Promise.resolve({name: "Luke"})
         }));
-        await utils.getItemWithId("https://swapi.dev/api/people/", id);
+        await utils.fetchItem(`https://swapi.dev/api/people/${id}`);
         expect(fetch).toHaveBeenCalledWith("https://swapi.dev/api/people/4");
     });
 
@@ -153,14 +141,14 @@ describe("getItemWithId", () => {
             json: () => Promise.resolve({name: "Luke"})
         }));
 
-        const person = await utils.getItemWithId("https://swapi.dev/api/people/", id);
+        const person = await utils.fetchItem(`https://swapi.dev/api/people/${id}`);
         expect(person.name).toBe("Luke");
     });
 
     test("If fetch for an ID is rejected, null is returned and error message printed", async () => {
         consoleErrorMock.mockReturnValueOnce();
         fetch.mockImplementationOnce(() => Promise.reject("API error"));
-        const person = await utils.getItemWithId("https://swapi.dev/api/people/", id);
+        const person = await utils.fetchItem(`https://swapi.dev/api/people/${id}`);
 
         expect(person).toBe(null);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);
@@ -171,7 +159,7 @@ describe("getItemWithId", () => {
         fetch.mockImplementationOnce(() => Promise.resolve({
             ok: false
         }));
-        const person = await utils.getItemWithId("https://swapi.dev/api/people/", id); 
+        const person = await utils.fetchItem(`https://swapi.dev/api/people/${id}`); 
 
         expect(person).toBe(null);
         expect(consoleErrorMock).toHaveBeenCalledTimes(1);

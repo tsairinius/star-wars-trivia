@@ -9,7 +9,7 @@ export async function getRandomPersonWithProps(props) {
     let randomPerson;
     for (let i = 0; i < 10; i ++) {
         randomId = getRandomWholeNumber(1, totalNumPeople);
-        randomPerson = await utils.getItemWithId("https://swapi.py4e.com/api/people/", randomId);
+        randomPerson = await utils.fetchItem(`https://swapi.py4e.com/api/people/${randomId}`);
         
         if (validateProperties(randomPerson, props)) {
             break;

@@ -31,14 +31,14 @@ export async function getItemCountIn(endpoint, defaultCount) {
     return count
 }
 
-export async function getItemWithId(endpoint, id) {
-    if (typeof endpoint !== "string" || !isPositiveInteger(id)) {
-        throw Error("The following args are required: endpoint (string), id (positive integer)");
+export async function fetchItem(endpoint) {
+    if (typeof endpoint !== "string") {
+        throw Error("The arg endpoint (of type string) is required");
     }
 
     let item = null;
     try {
-        const response = await fetch(`${endpoint}${id}`);
+        const response = await fetch(endpoint);
         if (response.ok) {
             item = await response.json();
         }
@@ -47,7 +47,7 @@ export async function getItemWithId(endpoint, id) {
         }
     }
     catch (e) {
-        console.error(`There was a problem accessing item with ID ${id} from ${endpoint}: `, e)
+        console.error(`There was a problem accessing item from ${endpoint}: `, e)
     }
 
     return item;

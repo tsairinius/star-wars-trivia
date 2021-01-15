@@ -85,7 +85,7 @@ describe("createBirthYearQuestion", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
         utils.getItemCountIn = jest.fn(() => Promise.resolve(10))
-        utils.getItemWithId = jest.fn(() => Promise.resolve({
+        utils.fetchItem = jest.fn(() => Promise.resolve({
             name: "Luke Skywalker",
             birth_year: "19BBY"
         }));
@@ -114,7 +114,7 @@ describe("createBirthYearQuestion", () => {
     });
 
     test("Makes another attempt to fetch a valid person if previous person's birth year is invalid", async () => {
-        utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
+        utils.fetchItem.mockImplementationOnce(() => Promise.resolve({
             name: "Luke Skywalker",
             birth_year: "unknown"
         }));
@@ -125,7 +125,7 @@ describe("createBirthYearQuestion", () => {
     });
 
     test("Makes another attempt to fetch a valid person if previous person's name is invalid", async () => {
-        utils.getItemWithId.mockImplementationOnce(() => Promise.resolve({
+        utils.fetchItem.mockImplementationOnce(() => Promise.resolve({
             name: "unknown",
             birth_year: "19BBY"
         }));
@@ -143,8 +143,8 @@ describe("createBirthYearQuestion", () => {
         expect(consoleErrorMock).toHaveBeenCalledWith(new Error("Unable to get item count"));
     });
 
-    test("Returns null and prints error if getItemWithId throws an error", async () => {
-        utils.getItemWithId
+    test("Returns null and prints error if fetchItem throws an error", async () => {
+        utils.fetchItem
             .mockImplementationOnce(() => {throw new Error("Unable to get person")});
 
         expect(await birthYear.createBirthYearQuestion()).toBeNull();
