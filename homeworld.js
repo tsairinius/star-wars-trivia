@@ -1,7 +1,7 @@
 import { getRandomWholeNumber } from "./utilities/getRandomWholeNumber.js";
 import { createOtherAnswerChoices } from "./utilities/createOtherAnswerChoices.js";
 import { PLANETS } from "./planets.js";
-import { getPersonAndHomeworld } from "./utilities/getPersonAndHomeworld.js";
+import { getPersonAndProperty } from "./utilities/getPersonAndProperty.js";
 
 export function getHomeworldQuestionAndAnswer(name, homeworld) {
     if ((typeof name === "string") && (typeof homeworld === "string")) {
@@ -23,7 +23,7 @@ export function getRandomHomeworld() {
 
 export async function createHomeworldQuestion() {
     try {
-        const { person, homeworld } = await getPersonAndHomeworld();
+        const { person, homeworld } = await getPersonAndProperty("homeworld");
 
         const questionAndAnswer = getHomeworldQuestionAndAnswer(person, homeworld);
         const otherAnswerChoices = createOtherAnswerChoices(getRandomHomeworld);

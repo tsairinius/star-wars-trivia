@@ -1,18 +1,18 @@
 import * as hw from "./homeworld.js";
 import * as randNum from "./utilities/getRandomWholeNumber.js";
 import * as choices from "./utilities/createOtherAnswerChoices.js";
-import * as pAndHw from "./utilities/getPersonAndHomeworld.js";
+import * as p from "./utilities/getPersonAndProperty.js";
 
 describe("createHomeworldQuestion", () => {
-    let getPersonAndHomeworldMock, createOtherAnswerChoicesMock;
+    let getPersonAndPropertyMock, createOtherAnswerChoicesMock;
     beforeAll(() => {
         jest.restoreAllMocks();
-        getPersonAndHomeworldMock = jest.spyOn(pAndHw, "getPersonAndHomeworld");
+        getPersonAndPropertyMock = jest.spyOn(p, "getPersonAndProperty");
         createOtherAnswerChoicesMock = jest.spyOn(choices, "createOtherAnswerChoices");
     });
 
     test("Returns an object with a question, answer, and other answer choices", async () => {
-        getPersonAndHomeworldMock.mockReturnValueOnce(Promise.resolve({person: "Luke Skywalker", homeworld: "Tatooine"}));
+        getPersonAndPropertyMock.mockReturnValueOnce(Promise.resolve({person: "Luke Skywalker", homeworld: "Tatooine"}));
         createOtherAnswerChoicesMock.mockReturnValueOnce(["Naboo", "Dagobah", "Hoth"]);
 
         const expectedQuestion = {
@@ -27,7 +27,7 @@ describe("createHomeworldQuestion", () => {
     test("Prints error message and returns null if any error occurs", async () => {
         const consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
         const error = "Unable to get a valid person and homeworld";
-        getPersonAndHomeworldMock
+        getPersonAndPropertyMock
             .mockImplementationOnce(() => {throw new Error(error)});
         
         expect(await hw.createHomeworldQuestion()).toBeNull();
