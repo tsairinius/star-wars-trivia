@@ -1,12 +1,13 @@
 import * as birthYear from "./birthYear.js";
 import * as utils from "./utilities/utilities";
-import * as p from "./utilities/person.js";
+import * as p from "./utilities/getRandomPersonWithProps.js";
+import * as valid from "./utilities/validateProperties.js";
 
 describe("getBirthYearQuestionAndAnswer", () => {
     let validatePropertiesMock;
     beforeAll(() => {
         jest.restoreAllMocks();
-        validatePropertiesMock = jest.spyOn(p, "validateProperties");
+        validatePropertiesMock = jest.spyOn(valid, "validateProperties");
     });
 
     const invalidPersonError = "Invalid person object passed in as argument. Must have valid name and birth_year properties";

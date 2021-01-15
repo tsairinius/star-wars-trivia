@@ -1,5 +1,6 @@
 import { createOtherAnswerChoices } from "./utilities/createOtherAnswerChoices.js";
-import { validateProperties, getRandomPersonWithProps } from "./utilities/person.js";
+import { getRandomPersonWithProps } from "./utilities/getRandomPersonWithProps.js";
+import { validateProperties } from "./utilities/validateProperties.js";
 
 export function getBirthYearQuestionAndAnswer(person) {
     if (validateProperties(person, ["birth_year", "name"])) {
