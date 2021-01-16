@@ -15,7 +15,21 @@ export async function getPersonAndProperty(propName) {
         if (!randomPerson[propName]) {
             throw new Error(`The following person object does not possess property ${propName}: ${randomPerson ? JSON.stringify(randomPerson) : randomPerson}`);
         }
-        property = await utils.fetchItem(randomPerson[propName]);
+
+        let propertyEndpoint;
+        if (Array.isArray(randomPerson[propName])) {
+            if (randomPerson[propName].length !== 1) {
+                throw new Error(`Specified property '${propName}' of ${randomPerson.name} contains ${randomPerson[propName].length} elements. We only handle properties containing a single element`);
+            }
+            else {
+                propertyEndpoint = randomPerson[propName][0];
+            }
+        }
+        else {
+            propertyEndpoint = randomPerson[propName];
+        }
+
+        property = await utils.fetchItem(propertyEndpoint);
 
         if (validateProperties(property, ["name"])) {
             break;

@@ -62,6 +62,6 @@ describe("validateProperties", () => {
         }
 
         expect(() => validateProperties(person, "bad arg"))
-            .toThrow("First argument should be a person object and the second an array of properties (eg: 'name', 'birth_year') in string representation");
+            .toThrow("First argument should be an object and the second an array of properties (eg: 'name', 'birth_year') in string representation");
     });
 });

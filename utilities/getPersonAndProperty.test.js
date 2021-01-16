@@ -39,7 +39,49 @@ describe("getPersonAndProperty", () => {
         expect(await getPersonAndProperty("homeworld")).toEqual(happyResult);
     });
 
-    test("Throws error if unable to retrieve a valid homeworld after three attempts", async () => {
+    test("Handles specified property that is saved as array containing a single element", async () => {
+        getRandomPersonWithPropsMock.mockReturnValueOnce(Promise.resolve({
+            name: "Luke Skywalker",
+            species: ["https://swapi.py4e.com/api/species/1/"]
+        }));
+        fetchItemMock.mockReturnValueOnce(Promise.resolve({name: "Human"}));
+
+        await getPersonAndProperty("species");
+
+        expect(fetchItemMock).toHaveBeenCalledWith("https://swapi.py4e.com/api/species/1/");
+    });
+
+    test("Throws error if specified property of person is an array with more than one element", async () => {
+        getRandomPersonWithPropsMock.mockReturnValueOnce(Promise.resolve({
+            name: "Luke Skywalker",
+            species: ["https://swapi.py4e.com/api/species/1/", "https://swapi.py4e.com/api/species/2/"]
+        }));
+
+        expect.assertions(1);
+        try {
+            await getPersonAndProperty("species");
+        }
+        catch (e) {
+            expect(e.message).toContain("Specified property 'species' of Luke Skywalker contains 2 elements. We only handle properties containing a single element")
+        }
+    });
+
+    test("Throws error if specified property of person is an array with no elements", async () => {
+        getRandomPersonWithPropsMock.mockReturnValueOnce(Promise.resolve({
+            name: "Luke Skywalker",
+            species: []
+        }));
+
+        expect.assertions(1);
+        try {
+            await getPersonAndProperty("species");
+        }
+        catch (e) {
+            expect(e.message).toContain("Specified property 'species' of Luke Skywalker contains 0 elements. We only handle properties containing a single element")
+        }
+    });
+
+    test("Throws error if unable to retrieve a valid value for the specified property after three attempts", async () => {
         for (let i = 0; i < 3; i++) {
             getRandomPersonWithPropsMock.mockReturnValueOnce(Promise.resolve(person));
             fetchItemMock.mockReturnValueOnce(Promise.resolve(invalidHomeworld));
@@ -78,7 +120,7 @@ describe("getPersonAndProperty", () => {
         }  
     });
 
-    test("Makes another attempt to retrieve another person and homeworld if previous homeworld was invalid", async () => {
+    test("Makes another attempt to retrieve another person and specified property if the property of the first fetched person was invalid", async () => {
         getRandomPersonWithPropsMock
             .mockReturnValueOnce(Promise.resolve(person))
             .mockReturnValueOnce(Promise.resolve(person));

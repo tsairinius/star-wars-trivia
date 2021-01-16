@@ -1,5 +1,4 @@
 import * as hw from "./homeworld.js";
-import * as randNum from "./utilities/getRandomWholeNumber.js";
 import * as choices from "./utilities/createOtherAnswerChoices.js";
 import * as p from "./utilities/getPersonAndProperty.js";
 
@@ -32,19 +31,6 @@ describe("createHomeworldQuestion", () => {
         
         expect(await hw.createHomeworldQuestion()).toBeNull();
         expect(consoleErrorMock).toHaveBeenCalledWith(`Unable to create homeworld question: ${new Error(error)}`)
-    });
-});
-
-describe("getRandomHomeworld", () => {
-    let getRandomWholeNumberMock;
-    beforeAll(() => {
-        jest.restoreAllMocks();
-        getRandomWholeNumberMock = jest.spyOn(randNum, "getRandomWholeNumber");
-    });
-
-    test("Returns a planet name", () => {
-        getRandomWholeNumberMock.mockReturnValueOnce(5);
-        expect(hw.getRandomHomeworld()).toBe("Ord Mantell");
     });
 });
 

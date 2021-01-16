@@ -1,7 +1,7 @@
-import { getRandomWholeNumber } from "./utilities/getRandomWholeNumber.js";
 import { createOtherAnswerChoices } from "./utilities/createOtherAnswerChoices.js";
 import { PLANETS } from "./planets.js";
 import { getPersonAndProperty } from "./utilities/getPersonAndProperty.js";
+import { getRandomItem } from "./utilities/getRandomItem.js";
 
 export function getHomeworldQuestionAndAnswer(name, homeworld) {
     if ((typeof name === "string") && (typeof homeworld === "string")) {
@@ -15,18 +15,12 @@ export function getHomeworldQuestionAndAnswer(name, homeworld) {
     }
 }
 
-export function getRandomHomeworld() {
-    const numPlanets = PLANETS.length;
-    const index = getRandomWholeNumber(0, numPlanets);
-    return PLANETS[index];
-};
-
 export async function createHomeworldQuestion() {
     try {
         const { person, homeworld } = await getPersonAndProperty("homeworld");
 
         const questionAndAnswer = getHomeworldQuestionAndAnswer(person, homeworld);
-        const otherAnswerChoices = createOtherAnswerChoices(getRandomHomeworld);
+        const otherAnswerChoices = createOtherAnswerChoices(() => getRandomItem(PLANETS));
 
         return {
             ...questionAndAnswer,
