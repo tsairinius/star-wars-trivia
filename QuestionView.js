@@ -56,8 +56,7 @@ export class QuestionView {
         `;
     
         questionContainer.querySelector(".next-button").onclick = () => {
-            const chosenAnswer = document.querySelector("input[name=answer-choice]:checked").value;
-            this.validateAnswerAndGetNextQuestion(chosenAnswer);
+            this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
         }
             
         questionContainer.querySelectorAll("input[type=radio]")
@@ -66,6 +65,11 @@ export class QuestionView {
         const quizContainer = document.querySelector(".quiz-container");
         quizContainer.appendChild(questionContainer);
     };
+
+    getChosenAnswer() {
+        const checkedElement = document.querySelector("input[name=answer-choice]:checked");
+        return checkedElement ? checkedElement.value : null;
+    }
 
     renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
         const quizContainer = document.querySelector("div[class=quiz-container]");
@@ -76,6 +80,11 @@ export class QuestionView {
             quizContainer.innerHTML = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
         }
     }
+
+    renderTimeBar(timeLeftPct) {
+        const timeBar = document.querySelector("div[class=time-bar]");
+        timeBar.style.width = `${timeLeftPct}%`;
+    };
 
     isValidScore(numQuestionsCorrect, numQuestionsAsked) {
         let isValid = false;

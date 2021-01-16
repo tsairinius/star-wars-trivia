@@ -59,3 +59,17 @@ describe("handleModelChange", () => {
         expect(view.updateScore).toHaveBeenCalledTimes(1);
     });
 });
+
+describe("handleTimeChange", () => {
+    test("If percentage passed in is not a number, do nothing", () => {
+
+    });
+    
+    test("If percentage passed in is less than or equal to 0, validate currently chosen answer and get next question", () => {
+
+    });
+
+    test("If percentage passed in is greater than 0, update view to show updated time left", () => {
+
+    });
+});

@@ -180,6 +180,34 @@ describe("validateAnswerAndGetNextQuestion", () => {
         expect(model.getNextQuestion).toHaveBeenCalledTimes(1);
         expect(model.callSubscribers).toHaveBeenCalledTimes(1);
     });
+
+    test("If chosen answer is null, number of correct answers is not incremented", async () => {
+
+    });
+});
+
+describe("setTimer", () => {
+    test("Sets time left back to max time allowed per question and queues call to getTimeLeft", () => {
+
+    });
+});
+
+describe("getTimeLeft", () => {
+    test("Computes time left for question", () => {
+
+    });
+
+    test("Passes time left as percentage to controller", () => {
+
+    });
+
+    test("Does not queue itself to be called again if time left is 0 or less", () => {
+
+    });
+
+    test("When called for the first time, time left should be the max time specified per question", () => {
+
+    });
 });
 
 describe("getNextQuestion", () => {

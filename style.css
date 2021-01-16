@@ -5,3 +5,8 @@ html {
     color: yellow;
 }
 
+.time-bar {
+    background-color: green;
+    height: 10px;
+}
+

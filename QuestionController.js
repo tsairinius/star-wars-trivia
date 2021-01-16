@@ -18,10 +18,22 @@ export class QuestionController {
             else {
                 this.questionView.displayQuestion(data.currentQuestion);
                 this.questionView.updateScore(data.numQuestionsCorrect, data.numQuestionsAsked);
+                this.questionModel.setTimer();
+            }
+        }
+
+        this.handleTimeChange = (timeLeft) => {
+            if (timeLeft <= 0) {
+                const chosenAnswer = this.questionView.getChosenAnswer();
+                this.validateAnswerAndGetNextQuestion(chosenAnswer);
+            }
+            else {
+                this.questionView.renderTimeBar(timeLeft);
             }
         }
 
         this.questionModel.addSubscriber(this.handleModelChange);
         this.questionView.validateAnswerAndGetNextQuestion = this.validateAnswerAndGetNextQuestion;
+        this.questionModel.onTimeChange = this.handleTimeChange;
     }
 }

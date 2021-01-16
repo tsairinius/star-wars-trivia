@@ -1,6 +1,6 @@
 import { QuestionQueue } from "./QuestionQueue.js";
-import * as utils from "./utilities/utilities.js";
 import { createRandomQuestion } from "./utilities/createRandomQuestion.js";
+import { TIME_PER_QUESTION_MS } from "./constants.js";
 
 export class QuestionModel {
     constructor(maxQuestions = 5) {
@@ -13,6 +13,10 @@ export class QuestionModel {
         this.numQuestionsAsked = 0;
         this.numQuestionsCorrect = 0;
         this.quizComplete = false;
+        this.timeLeft = TIME_PER_QUESTION_MS; 
+        this.prevTime = null;
+
+        this.onTimeChange = null;
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             if (chosenAnswer === this.currentQuestion.answer) {
@@ -26,6 +30,25 @@ export class QuestionModel {
 
             this.callSubscribers();
         };
+
+        this.getTimeLeft = (timestamp) => {
+            let timeElapsed;
+            if (this.prevTime) {
+                timeElapsed = timestamp - this.prevTime;
+            }
+            else {
+                timeElapsed = 0;
+            }
+    
+            this.timeLeft = this.timeLeft - timeElapsed;
+            this.prevTime = timestamp;
+    
+            this.onTimeChange(100*this.timeLeft/TIME_PER_QUESTION_MS);
+    
+            if (this.timeLeft >= 0) {
+                requestAnimationFrame(this.getTimeLeft);
+            }
+        }
     }
 
     addSubscriber(subscriber) {
@@ -48,6 +71,11 @@ export class QuestionModel {
         };
     
         this.subscribers.forEach(subscriber => subscriber(data));
+    };
+
+    setTimer() {
+        this.timeLeft = TIME_PER_QUESTION_MS;
+        requestAnimationFrame(this.getTimeLeft);
     };
 
     createQuestionSet() {

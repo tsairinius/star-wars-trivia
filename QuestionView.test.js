@@ -173,3 +173,27 @@ describe("renderQuizComplete", () => {
         expect(screen.getByText("You answered 2/5 questions correctly!")).toBeInTheDocument();
     });
 });
+
+describe("getChosenAnswer", () => {
+    test("Returns the selected answer choice as a string", () => {
+
+    });
+
+    test("If no answer is selected, returns null", () => {
+
+    });
+});
+
+describe("renderTimeBar", () => {
+    test("Sets width of time bar element based on percentage passed in", () => {
+
+    });
+
+    test("Prints warning and skips changing time bar's width if no argument is passed in", () => {
+
+    });
+
+    test("Prints warning and skips changing time bar's width if element cannot be found", () => {
+
+    });
+});
