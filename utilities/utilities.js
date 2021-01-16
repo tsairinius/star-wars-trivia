@@ -53,10 +53,6 @@ export async function fetchItem(endpoint) {
     return item;
 }
 
-export function createRandomQuestion() {
-    return birthYear.createBirthYearQuestion();
-};
-
 export function randomizeArray(array) {
     if (!Array.isArray(array) || array.length < 1) {
         throw new Error("Argument must be an array with at least one element");

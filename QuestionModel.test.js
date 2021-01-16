@@ -1,6 +1,6 @@
 import { QuestionModel } from "./QuestionModel.js";
-import * as utils from "./utilities/utilities.js";
 import { question, secondQuestion } from "./fakeQuestions.js";
+import * as creator from "./utilities/createRandomQuestion.js";
 
 describe("addSubscriber", () => {
     beforeAll(() => {
@@ -35,7 +35,7 @@ describe("callSubscribers", () => {
     let createRandomQuestion;
     beforeAll(() => {
         jest.restoreAllMocks();
-        createRandomQuestion = jest.spyOn(utils, "createRandomQuestion")
+        createRandomQuestion = jest.spyOn(creator, "createRandomQuestion")
             .mockReturnValue(Promise.resolve({
                 ...question,
                 otherOptions: [...question.otherOptions]
@@ -135,7 +135,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
         consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
-        createRandomQuestionMock = jest.spyOn(utils, "createRandomQuestion")
+        createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion")
             .mockReturnValue(Promise.resolve(question));
     });
 
@@ -238,7 +238,7 @@ describe("createQuestion", () => {
     let createRandomQuestionMock;
     beforeAll(() => {
         jest.restoreAllMocks();
-        createRandomQuestionMock = jest.spyOn(utils, "createRandomQuestion")
+        createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion")
             .mockReturnValue(Promise.resolve(question));
 
         consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();

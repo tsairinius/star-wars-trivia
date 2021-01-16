@@ -8,13 +8,14 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question, secondQuestion } from "./fakeQuestions.js";
 import { QuestionController } from "./QuestionController.js";
+import * as creator from "./utilities/createRandomQuestion.js";
 
 describe("Integration tests", () => {
     let consoleErrorMock;
     beforeAll(() => {
         jest.restoreAllMocks();
         consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
-        utils.createRandomQuestion = jest.fn();
+        creator.createRandomQuestion = jest.fn();
     });
 
     beforeEach(() => {
@@ -24,7 +25,7 @@ describe("Integration tests", () => {
     });
 
     test("When a new question is displayed after another, the Next button is disabled again and no answer choices are selected", async () => {
-        utils.createRandomQuestion
+        creator.createRandomQuestion
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
         
@@ -43,7 +44,7 @@ describe("Integration tests", () => {
     });
 
     test("When user selects an answer choice and clicks Next, a new question is displayed", async () => {
-        utils.createRandomQuestion
+        creator.createRandomQuestion
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
@@ -65,7 +66,7 @@ describe("Integration tests", () => {
     });
 
     test("Displays that 1/1 questions were answered correctly when user answers first question correctly", async () => {
-        utils.createRandomQuestion
+        creator.createRandomQuestion
             .mockReturnValueOnce(Promise.resolve(question));
 
         const model = new QuestionModel();
@@ -81,7 +82,7 @@ describe("Integration tests", () => {
     });
 
     test("Displays that 0/1 questions were answered correctly when user answers first question incorrectly", async () => {
-        utils.createRandomQuestion
+        creator.createRandomQuestion
             .mockReturnValueOnce(Promise.resolve(question));
 
         const model = new QuestionModel();

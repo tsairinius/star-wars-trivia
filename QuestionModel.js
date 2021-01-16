@@ -1,5 +1,6 @@
 import { QuestionQueue } from "./QuestionQueue.js";
 import * as utils from "./utilities/utilities.js";
+import { createRandomQuestion } from "./utilities/createRandomQuestion.js";
 
 export class QuestionModel {
     constructor(maxQuestions = 5) {
@@ -61,7 +62,7 @@ export class QuestionModel {
                 return 0;
             };
 
-            const question = await utils.createRandomQuestion();
+            const question = await createRandomQuestion();
             const result = this.queue.addQuestion(question);
 
             if (result === 0) {
