@@ -1,3 +1,5 @@
+import { isPercentage } from "./utilities/isPercentage.js";
+
 export class QuestionController {
     constructor(questionModel, questionView) {
         this.questionModel = questionModel;
@@ -23,12 +25,17 @@ export class QuestionController {
         }
 
         this.handleTimeChange = (timeLeft) => {
-            if (timeLeft <= 0) {
-                const chosenAnswer = this.questionView.getChosenAnswer();
-                this.validateAnswerAndGetNextQuestion(chosenAnswer);
+            if (isPercentage(timeLeft)) {
+                if (timeLeft === 0) {
+                    const chosenAnswer = this.questionView.getChosenAnswer();
+                    this.validateAnswerAndGetNextQuestion(chosenAnswer);
+                }
+                else {
+                    this.questionView.renderTimeBar(timeLeft);
+                }
             }
             else {
-                this.questionView.renderTimeBar(timeLeft);
+                console.error(`Invalid argument passed as time left: ${timeLeft}. Must be a percentage of type Number`);
             }
         }
 

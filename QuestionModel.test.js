@@ -1,6 +1,8 @@
 import { QuestionModel } from "./QuestionModel.js";
 import { question, secondQuestion } from "./fakeQuestions.js";
 import * as creator from "./utilities/createRandomQuestion.js";
+import { TIME_PER_QUESTION_MS } from "./constants.js"
+import { computePercentage } from "./utilities/computePercentage.js";
 
 describe("addSubscriber", () => {
     beforeAll(() => {
@@ -182,31 +184,124 @@ describe("validateAnswerAndGetNextQuestion", () => {
     });
 
     test("If chosen answer is null, number of correct answers is not incremented", async () => {
+        const model = new QuestionModel();
 
+        await model.createQuestion();
+
+        expect(model.numQuestionsCorrect).toBe(0);
+        model.validateAnswerAndGetNextQuestion(null);
+        expect(model.numQuestionsCorrect).toBe(0);
+    });
+
+    test("If queue is empty and number of questions asked is equal to the max number of questions, signal that the quiz is complete", async () => {
+        const maxQuestions = 3;        
+        const model = new QuestionModel(maxQuestions);
+
+        await model.createQuestion();
+
+        expect(model.quizComplete).toBeFalsy();
+        model.numQuestionsAsked = maxQuestions;
+        model.validateAnswerAndGetNextQuestion();
+        expect(model.quizComplete).toBeTruthy();
     });
 });
 
 describe("setTimer", () => {
-    test("Sets time left back to max time allowed per question and queues call to getTimeLeft", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Sets time left back to max time allowed per question and queues call to getTimeLeft", () => {
+        const model = new QuestionModel();
+        const requestAnimationFrameMock = jest.spyOn(window, "requestAnimationFrame");
+        model.getTimeLeft = jest.fn();
+
+        model.timeLeft = TIME_PER_QUESTION_MS - (TIME_PER_QUESTION_MS/2);
+        model.setTimer();
+
+        expect(model.timeLeft).toBe(TIME_PER_QUESTION_MS);
+        expect(requestAnimationFrameMock).toHaveBeenCalledWith(model.getTimeLeft);
     });
 });
 
 describe("getTimeLeft", () => {
-    test("Computes time left for question", () => {
+    const currentTimestamp = 15000;
+    const previousTimestamp = 10000;
+    const initialTimeLeft = 25000;
 
+    let requestAnimationFrameMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        requestAnimationFrameMock = jest.spyOn(window, "requestAnimationFrame");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Computes time left for question and sets previous time recorded to be current timestamp", () => {
+        requestAnimationFrameMock.mockReturnValue();
+        const model = new QuestionModel();;
+
+        model.onTimeChange = jest.fn();
+        model.prevTime = previousTimestamp;
+        model.timeLeft = initialTimeLeft;
+        model.getTimeLeft(currentTimestamp);
+
+        expect(model.timeLeft).toBe(20000);
+        expect(model.prevTime).toBe(currentTimestamp);
     });
 
     test("Passes time left as percentage to controller", () => {
+        requestAnimationFrameMock.mockReturnValue();
+        const model = new QuestionModel();;
 
+        model.onTimeChange = jest.fn();
+        model.prevTime = previousTimestamp;
+        model.timeLeft = initialTimeLeft;
+        model.getTimeLeft(currentTimestamp);
+
+        expect(model.onTimeChange).toHaveBeenCalledWith(computePercentage(model.timeLeft, TIME_PER_QUESTION_MS));
     });
 
-    test("Does not queue itself to be called again if time left is 0 or less", () => {
+    test("Queues itself to be called again if time left is greater than 0", () => {
+        requestAnimationFrameMock.mockReturnValue();
+        const model = new QuestionModel();;
 
+        model.onTimeChange = jest.fn();
+        model.prevTime = previousTimestamp;
+        model.timeLeft = initialTimeLeft;
+        model.getTimeLeft(currentTimestamp);
+
+        expect(requestAnimationFrameMock).toHaveBeenCalled();
     });
 
-    test("When called for the first time, time left should be the max time specified per question", () => {
+    test("Does not queue itself to be called again if time left is 0", () => {
+        requestAnimationFrameMock.mockReturnValue();
+        const model = new QuestionModel();;
 
+        model.onTimeChange = jest.fn();
+        model.prevTime = previousTimestamp;
+        model.timeLeft = 2000;
+
+        model.getTimeLeft(currentTimestamp);
+
+        expect(requestAnimationFrameMock).not.toHaveBeenCalled();
+    });
+
+    test("When called for the first time, time left should not change v alue", () => {
+        requestAnimationFrameMock.mockReturnValue();
+        const model = new QuestionModel();;
+
+        model.onTimeChange = jest.fn();
+        model.timeLeft = initialTimeLeft;
+        model.getTimeLeft(currentTimestamp);
+
+        expect(model.timeLeft).toBe(initialTimeLeft);
     });
 });
 

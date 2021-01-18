@@ -14,12 +14,12 @@ export function initializeQuizContainer() {
     document.body.append(quizContainer);
 }
 
-// initializeQuizContainer();
-// const questionModel = new QuestionModel();
-// const questionView = new QuestionView();
-// const questionController = new QuestionController(questionModel, questionView);
+initializeQuizContainer();
+const questionModel = new QuestionModel();
+const questionView = new QuestionView();
+const questionController = new QuestionController(questionModel, questionView);
 
-// questionModel.createQuestionSet();
+questionModel.createQuestionSet();
 
 // fetch("https://swapi.py4e.com/api/species").then(response => response.json()).then(json => json.results.forEach(item => console.log(item.name)))
 // fetch("https://swapi.py4e.com/api/species/?page=2").then(response => response.json()).then(json => json.results.forEach(item => console.log(item.name)))
