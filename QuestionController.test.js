@@ -29,7 +29,7 @@ describe("handleModelChange", () => {
         expect(() => controller.handleModelChange()).toThrow(new TypeError("Data argument is undefined"));
     });
 
-    test("Requests to have 'quiz complete' page rendered if quiz is complete", () => {
+    test("Cancels any animation frame callbacks that's running and requests to have 'quiz complete' page rendered if quiz is complete", () => {
         const consoleLogMock = jest.spyOn(console, "log").mockReturnValue();
         const data = {
             quizComplete: true
@@ -38,13 +38,15 @@ describe("handleModelChange", () => {
         const {model, view, controller} = initializeMVC();
 
         view.renderQuizComplete = jest.fn();
+        model.cancelTimer = jest.fn();
 
         controller.handleModelChange(data);
 
         expect(view.renderQuizComplete).toHaveBeenCalledTimes(1);
+        expect(model.cancelTimer).toHaveBeenCalledTimes(1);
     });
 
-    test("Requests to have next question displayed and score updated if quiz is not complete", () => {
+    test("Cancels any animation frame callbacks and requests to have next question displayed and score updated if quiz is not complete", () => {
         const data = {
             quizComplete: false
         };
@@ -53,11 +55,13 @@ describe("handleModelChange", () => {
 
         view.displayQuestion = jest.fn();
         view.updateScore = jest.fn();
+        model.cancelTimer = jest.fn();
 
         controller.handleModelChange(data);
 
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
+        expect(model.cancelTimer).toHaveBeenCalledTimes(1);
     });
 });
 

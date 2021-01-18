@@ -14,6 +14,7 @@ export class QuestionController {
                 throw new TypeError("Data argument is undefined");
             }
 
+            this.questionModel.cancelTimer();
             if (data.quizComplete) {
                 this.questionView.renderQuizComplete(data.numQuestionsCorrect, data.numQuestionsAsked);
             }

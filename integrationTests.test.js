@@ -93,6 +93,7 @@ describe("Integration tests", () => {
 
         const wrongAnswer = question.otherOptions[0];
         userEvent.click(screen.getByLabelText(wrongAnswer));
+
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
         expect(screen.getByTestId("score").textContent).toBe("0/1");

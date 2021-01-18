@@ -268,8 +268,9 @@ describe("getTimeLeft", () => {
         expect(model.onTimeChange).toHaveBeenCalledWith(computePercentage(model.timeLeft, TIME_PER_QUESTION_MS));
     });
 
-    test("Queues itself to be called again if time left is greater than 0", () => {
-        requestAnimationFrameMock.mockReturnValue();
+    test("Queues itself to be called again and saves the new request ID if time left is greater than 0", () => {
+        const requestId = 123;
+        requestAnimationFrameMock.mockReturnValue(requestId);
         const model = new QuestionModel();;
 
         model.onTimeChange = jest.fn();
@@ -278,6 +279,7 @@ describe("getTimeLeft", () => {
         model.getTimeLeft(currentTimestamp);
 
         expect(requestAnimationFrameMock).toHaveBeenCalled();
+        expect(model.animationId).toBe(requestId);
     });
 
     test("Does not queue itself to be called again if time left is 0", () => {
@@ -303,6 +305,27 @@ describe("getTimeLeft", () => {
 
         expect(model.timeLeft).toBe(initialTimeLeft);
     });
+});
+
+describe("cancelTimer", () => {
+    let cancelAnimationFrameMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        cancelAnimationFrameMock = jest.spyOn(window, "cancelAnimationFrame");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+   test("Calls cancelAnimationFrame using current saved request ID", () => {
+        cancelAnimationFrameMock.mockImplementationOnce();
+        const model = new QuestionModel();
+        model.animationId = 50;
+        model.cancelTimer();
+
+        expect(cancelAnimationFrameMock).toHaveBeenCalledWith(50);
+   }); 
 });
 
 describe("getNextQuestion", () => {

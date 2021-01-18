@@ -17,6 +17,8 @@ export class QuestionModel {
         this.timeLeft = TIME_PER_QUESTION_MS; 
         this.prevTime = null;
 
+        this.animationId = null;
+
         this.onTimeChange = null;
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
@@ -49,9 +51,13 @@ export class QuestionModel {
             this.onTimeChange(timeLeftPercentage);
     
             if (timeLeftPercentage > 0) {
-                requestAnimationFrame(this.getTimeLeft);
+                this.animationId = requestAnimationFrame(this.getTimeLeft);
             }
         }
+    }
+
+    cancelTimer() {
+        cancelAnimationFrame(this.animationId);
     }
 
     addSubscriber(subscriber) {
@@ -78,7 +84,7 @@ export class QuestionModel {
 
     setTimer() {
         this.timeLeft = TIME_PER_QUESTION_MS;
-        requestAnimationFrame(this.getTimeLeft);
+        this.animationId = requestAnimationFrame(this.getTimeLeft);
     };
 
     createQuestionSet() {
