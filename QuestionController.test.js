@@ -79,14 +79,14 @@ describe("handleTimeChange", () => {
 
         view.getChosenAnswer = jest.fn();
         controller.validateAnswerAndGetNextQuestion = jest.fn();
-        view.renderTimeBar = jest.fn();
+        view.updateTimeBar = jest.fn();
 
         const badArg = undefined;
         controller.handleTimeChange(badArg);
 
         expect(view.getChosenAnswer).not.toHaveBeenCalled();
         expect(controller.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
-        expect(view.renderTimeBar).not.toHaveBeenCalled();
+        expect(view.updateTimeBar).not.toHaveBeenCalled();
         expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid argument passed as time left: undefined. Must be a percentage of type Number`);
     });
 
@@ -95,13 +95,13 @@ describe("handleTimeChange", () => {
 
         view.getChosenAnswer = jest.fn();
         controller.validateAnswerAndGetNextQuestion = jest.fn();
-        view.renderTimeBar = jest.fn();
+        view.updateTimeBar = jest.fn();
 
         controller.handleTimeChange(0);
 
         expect(view.getChosenAnswer).toHaveBeenCalledTimes(1);
         expect(controller.validateAnswerAndGetNextQuestion).toHaveBeenCalledTimes(1);
-        expect(view.renderTimeBar).not.toHaveBeenCalled();
+        expect(view.updateTimeBar).not.toHaveBeenCalled();
     });
 
     test("If percentage passed in is greater than 0, update view to show updated time left", () => {
@@ -109,12 +109,12 @@ describe("handleTimeChange", () => {
 
         view.getChosenAnswer = jest.fn();
         controller.validateAnswerAndGetNextQuestion = jest.fn();
-        view.renderTimeBar = jest.fn();
+        view.updateTimeBar = jest.fn();
 
         controller.handleTimeChange(1);
 
         expect(view.getChosenAnswer).not.toHaveBeenCalled();
         expect(controller.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
-        expect(view.renderTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.updateTimeBar).toHaveBeenCalledTimes(1);
     });
 });

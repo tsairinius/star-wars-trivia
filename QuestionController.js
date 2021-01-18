@@ -31,7 +31,7 @@ export class QuestionController {
                     this.validateAnswerAndGetNextQuestion(chosenAnswer);
                 }
                 else {
-                    this.questionView.renderTimeBar(timeLeft);
+                    this.questionView.updateTimeBar(timeLeft);
                 }
             }
             else {

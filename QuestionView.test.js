@@ -175,25 +175,65 @@ describe("renderQuizComplete", () => {
 });
 
 describe("getChosenAnswer", () => {
-    test("Returns the selected answer choice as a string", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
 
+    beforeEach(() => {
+        cleanUpDOM();
+        initializeQuizContainer();
+    });
+
+    test("Returns the selected answer choice as a string", () => {
+        const view = new QuestionView();
+        view.displayQuestion(question);
+
+        userEvent.click(screen.getByLabelText(question.answer));
+        expect(view.getChosenAnswer()).toBe(question.answer);
     });
 
     test("If no answer is selected, returns null", () => {
+        const view = new QuestionView();
+        view.displayQuestion(question);
 
+        expect(view.getChosenAnswer()).toBe(null);
     });
 });
 
-describe("renderTimeBar", () => {
+describe("updateTimeBar", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeQuizContainer();
+    });
+
     test("Sets width of time bar element based on percentage passed in", () => {
+        const view = new QuestionView();
+        view.updateTimeBar(45);
 
+        expect(screen.getByTestId("time-bar")).toHaveStyle("width: 45%");
     });
 
-    test("Prints warning and skips changing time bar's width if no argument is passed in", () => {
+    test("Prints error if no argument is passed in", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+        view.updateTimeBar();
 
+        expect(consoleErrorMock).toHaveBeenCalledWith("Invalid arg. Skipped updating time left on screen. Percentage passed in: undefined");
     });
 
-    test("Prints warning and skips changing time bar's width if element cannot be found", () => {
+    test("Prints error if time bar element cannot be found", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        cleanUpDOM();
+        const view = new QuestionView();
+        view.updateTimeBar(45);
 
+        expect(consoleErrorMock).toHaveBeenCalledWith("Could not find time bar in DOM to update");
     });
 });

@@ -1,5 +1,6 @@
 import * as utils from "./utilities/utilities.js";
 import { isWholeNumber } from "./utilities/NumberValidation.js";
+import { isPercentage } from "./utilities/isPercentage.js";
 
 export class QuestionView {
     constructor() {
@@ -81,9 +82,19 @@ export class QuestionView {
         }
     }
 
-    renderTimeBar(timeLeftPct) {
-        const timeBar = document.querySelector("div[class=time-bar]");
-        timeBar.style.width = `${timeLeftPct}%`;
+    updateTimeBar(timeLeftPct) {
+        if (!isPercentage(timeLeftPct)) {
+            console.error(`Invalid arg. Skipped updating time left on screen. Percentage passed in: ${timeLeftPct}`);
+        }
+        else {
+            const timeBar = document.querySelector("div[class=time-bar]");
+            if (!timeBar) {
+                console.error(`Could not find time bar in DOM to update`);
+            }
+            else {
+                timeBar.style.width = `${timeLeftPct}%`; 
+            }  
+        }
     };
 
     isValidScore(numQuestionsCorrect, numQuestionsAsked) {
