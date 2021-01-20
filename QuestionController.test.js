@@ -1,14 +1,31 @@
-import { QuestionController } from "./QuestionController.js";
-import { QuestionModel } from "./QuestionModel.js";
-import { QuestionView } from "./QuestionView.js";
+import { initializeMVC } from "./utilities/initializeMVC.js";
 
-const initializeMVC = () => {
-    const model = new QuestionModel();
-    const view = new QuestionView();
-    const controller = new QuestionController(model, view);
+describe("startQuiz", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
 
-    return {model, view, controller};
-}
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("Invokes view and model to render score and time bar, display first question, and set timer", () => {
+        const { model, view, controller } = initializeMVC();
+
+        view.renderScoreAndTimeBar = jest.fn();
+        view.displayQuestion = jest.fn();
+        model.setTimer = jest.fn();
+
+        expect(controller.isQuizStarted).toBeFalsy();
+
+        controller.startQuiz();
+
+        expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.displayQuestion).toHaveBeenCalledTimes(1);
+        expect(model.setTimer).toHaveBeenCalledTimes(1);
+        expect(controller.isQuizStarted).toBeTruthy();
+    });
+});
 
 describe("validateAndGetNextQuestion", () => {
     test("Calls model's validateAndGetNextQuestion", () => {
@@ -36,6 +53,7 @@ describe("handleModelChange", () => {
         };
 
         const {model, view, controller} = initializeMVC();
+        controller.isQuizStarted = true;
 
         view.renderQuizComplete = jest.fn();
         model.cancelTimer = jest.fn();
@@ -44,6 +62,7 @@ describe("handleModelChange", () => {
 
         expect(view.renderQuizComplete).toHaveBeenCalledTimes(1);
         expect(model.cancelTimer).toHaveBeenCalledTimes(1);
+        expect(controller.isQuizStarted).toBeFalsy();
     });
 
     test("Cancels any animation frame callbacks and requests to have next question displayed and score updated if quiz is not complete", () => {
@@ -52,16 +71,19 @@ describe("handleModelChange", () => {
         };
 
         const {model, view, controller} = initializeMVC();
+        controller.isQuizStarted = true;
 
         view.displayQuestion = jest.fn();
         view.updateScore = jest.fn();
         model.cancelTimer = jest.fn();
+        model.setTimer = jest.fn();
 
         controller.handleModelChange(data);
 
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(model.cancelTimer).toHaveBeenCalledTimes(1);
+        expect(model.setTimer).toHaveBeenCalledTimes(1);
     });
 });
 

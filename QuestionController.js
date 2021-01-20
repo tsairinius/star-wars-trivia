@@ -4,6 +4,14 @@ export class QuestionController {
     constructor(questionModel, questionView) {
         this.questionModel = questionModel;
         this.questionView = questionView;
+        this.isQuizStarted = false;
+
+        this.startQuiz = () => {
+            this.questionView.renderScoreAndTimeBar();
+            this.questionView.displayQuestion(this.questionModel.currentQuestion);
+            this.questionModel.setTimer();
+            this.isQuizStarted = true;
+        };
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
@@ -17,11 +25,14 @@ export class QuestionController {
             this.questionModel.cancelTimer();
             if (data.quizComplete) {
                 this.questionView.renderQuizComplete(data.numQuestionsCorrect, data.numQuestionsAsked);
+                this.isQuizStarted = false;
             }
             else {
-                this.questionView.displayQuestion(data.currentQuestion);
-                this.questionView.updateScore(data.numQuestionsCorrect, data.numQuestionsAsked);
-                this.questionModel.setTimer();
+                if (this.isQuizStarted) {
+                    this.questionView.displayQuestion(data.currentQuestion);
+                    this.questionView.updateScore(data.numQuestionsCorrect, data.numQuestionsAsked);
+                    this.questionModel.setTimer();
+                }
             }
         }
 
@@ -41,7 +52,10 @@ export class QuestionController {
         }
 
         this.questionModel.addSubscriber(this.handleModelChange);
-        this.questionView.validateAnswerAndGetNextQuestion = this.validateAnswerAndGetNextQuestion;
         this.questionModel.onTimeChange = this.handleTimeChange;
+
+        this.questionView.validateAnswerAndGetNextQuestion = this.validateAnswerAndGetNextQuestion;
+        this.questionView.onBeginClick = this.startQuiz;
+        this.questionView.onStartScreenRender = this.questionModel.createQuestionSet;
     }
 }

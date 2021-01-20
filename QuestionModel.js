@@ -21,6 +21,12 @@ export class QuestionModel {
 
         this.onTimeChange = null;
 
+        this.createQuestionSet = () => {
+            for (let i = 0; i < this.maxQuestions; i++) {
+                this.createQuestion();
+            }
+        };
+
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             if (chosenAnswer === this.currentQuestion.answer) {
                 this.numQuestionsCorrect++;
@@ -85,12 +91,6 @@ export class QuestionModel {
     setTimer() {
         this.timeLeft = TIME_PER_QUESTION_MS;
         this.animationId = requestAnimationFrame(this.getTimeLeft);
-    };
-
-    createQuestionSet() {
-        for (let i = 0; i < this.maxQuestions; i++) {
-            this.createQuestion();
-        }
     };
 
     async createQuestion() {

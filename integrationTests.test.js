@@ -1,37 +1,72 @@
 import { QuestionView } from "./QuestionView.js";
 import { QuestionModel } from "./QuestionModel.js";
-import { initializeQuizContainer } from "./app.js";
 import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 import { screen } from "@testing-library/dom";
 import * as utils from "./utilities/utilities.js";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import { question, secondQuestion } from "./fakeQuestions.js";
+import { question, secondQuestion, fakeQuestions } from "./fakeQuestions.js";
 import { QuestionController } from "./QuestionController.js";
 import * as creator from "./utilities/createRandomQuestion.js";
+import { initializeMVC } from "./utilities/initializeMVC.js";
 
-describe("Integration tests", () => {
-    let consoleErrorMock;
+describe("Start screen", () => {
+    let createRandomQuestionMock;
     beforeAll(() => {
         jest.restoreAllMocks();
-        consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
-        creator.createRandomQuestion = jest.fn();
+        createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion");
     });
 
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    test("When user clicks begin button, first question of quiz is displayed", async () => {
         cleanUpDOM();
-        initializeQuizContainer();
+        const numQuestions = 1;
+
+        const { model, view, controller } = initializeMVC(numQuestions);
+        
+        createRandomQuestionMock.mockReturnValueOnce(fakeQuestions[0]);
+
+        view.initializeTriviaContainer();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+
+        expect(screen.getByText(fakeQuestions[0].question)).toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "Next"})).toBeInTheDocument();
+        expect(screen.queryByText("button", {name: "Begin"})).not.toBeInTheDocument();
+    });
+});
+
+describe("Quiz screen", () => {
+    const setUpQuizArea = (view, controller) => {
+        view.initializeTriviaContainer();
+        view.renderScoreAndTimeBar();
+        controller.isQuizStarted = true;
+    }
+
+    let consoleErrorMock;
+    let createRandomQuestionMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error").mockReturnValue();
+        createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion");
+    });
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+        cleanUpDOM();
     });
 
     test("When a new question is displayed after another, the Next button is disabled again and no answer choices are selected", async () => {
-        creator.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
-        
-        const model = new QuestionModel();
-        const view = new QuestionView();
-        const controller = new QuestionController(model, view);
+
+        const { model, view, controller } = initializeMVC();
+
+        setUpQuizArea(view, controller);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -44,13 +79,13 @@ describe("Integration tests", () => {
     });
 
     test("When user selects an answer choice and clicks Next, a new question is displayed", async () => {
-        creator.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
-        const model = new QuestionModel();
-        const view = new QuestionView();
-        const controller = new QuestionController(model, view);
+        const { model, view, controller } = initializeMVC();
+
+        setUpQuizArea(view, controller);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -66,12 +101,12 @@ describe("Integration tests", () => {
     });
 
     test("Displays that 1/1 questions were answered correctly when user answers first question correctly", async () => {
-        creator.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
-        const model = new QuestionModel();
-        const view = new QuestionView();
-        const controller = new QuestionController(model, view);
+        const { model, view, controller } = initializeMVC();
+
+        setUpQuizArea(view, controller);
 
         await model.createQuestion();
 
@@ -82,12 +117,12 @@ describe("Integration tests", () => {
     });
 
     test("Displays that 0/1 questions were answered correctly when user answers first question incorrectly", async () => {
-        creator.createRandomQuestion
+        createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
-        const model = new QuestionModel();
-        const view = new QuestionView();
-        const controller = new QuestionController(model, view);
+        const { model, view, controller } = initializeMVC();
+        
+        setUpQuizArea(view, controller);
 
         await model.createQuestion();
 
