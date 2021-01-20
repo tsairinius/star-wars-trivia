@@ -16,14 +16,14 @@ describe("startQuiz", () => {
         view.displayQuestion = jest.fn();
         model.setTimer = jest.fn();
 
-        expect(controller.isQuizStarted).toBeFalsy();
+        expect(model.isQuizRunning).toBeFalsy();
 
         controller.startQuiz();
 
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
-        expect(controller.isQuizStarted).toBeTruthy();
+        expect(model.isQuizRunning).toBeTruthy();
     });
 });
 
@@ -49,11 +49,12 @@ describe("handleModelChange", () => {
     test("Cancels any animation frame callbacks that's running and requests to have 'quiz complete' page rendered if quiz is complete", () => {
         const consoleLogMock = jest.spyOn(console, "log").mockReturnValue();
         const data = {
-            quizComplete: true
+            quizComplete: true,
+            isQuizRunning: false
         };
 
         const {model, view, controller} = initializeMVC();
-        controller.isQuizStarted = true;
+        model.isQuizRunning= true;
 
         view.renderQuizComplete = jest.fn();
         model.cancelTimer = jest.fn();
@@ -62,16 +63,17 @@ describe("handleModelChange", () => {
 
         expect(view.renderQuizComplete).toHaveBeenCalledTimes(1);
         expect(model.cancelTimer).toHaveBeenCalledTimes(1);
-        expect(controller.isQuizStarted).toBeFalsy();
+        expect(model.isQuizRunning).toBeFalsy();
     });
 
     test("Cancels any animation frame callbacks and requests to have next question displayed and score updated if quiz is not complete", () => {
         const data = {
-            quizComplete: false
+            quizComplete: false,
+            isQuizRunning: true
         };
 
         const {model, view, controller} = initializeMVC();
-        controller.isQuizStarted = true;
+        model.isQuizRunning = true;
 
         view.displayQuestion = jest.fn();
         view.updateScore = jest.fn();

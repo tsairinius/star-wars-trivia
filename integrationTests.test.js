@@ -40,10 +40,10 @@ describe("Start screen", () => {
 });
 
 describe("Quiz screen", () => {
-    const setUpQuizArea = (view, controller) => {
+    const setUpQuizArea = (view, model) => {
         view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
-        controller.isQuizStarted = true;
+        model.isQuizRunning = true;
     }
 
     let consoleErrorMock;
@@ -66,7 +66,7 @@ describe("Quiz screen", () => {
 
         const { model, view, controller } = initializeMVC();
 
-        setUpQuizArea(view, controller);
+        setUpQuizArea(view, model);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -85,7 +85,7 @@ describe("Quiz screen", () => {
 
         const { model, view, controller } = initializeMVC();
 
-        setUpQuizArea(view, controller);
+        setUpQuizArea(view, model);
 
         await model.createQuestion();
         await model.createQuestion();
@@ -106,7 +106,7 @@ describe("Quiz screen", () => {
 
         const { model, view, controller } = initializeMVC();
 
-        setUpQuizArea(view, controller);
+        setUpQuizArea(view, model);
 
         await model.createQuestion();
 
@@ -122,7 +122,7 @@ describe("Quiz screen", () => {
 
         const { model, view, controller } = initializeMVC();
         
-        setUpQuizArea(view, controller);
+        setUpQuizArea(view, model);
 
         await model.createQuestion();
 

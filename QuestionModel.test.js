@@ -78,7 +78,8 @@ describe("callSubscribers", () => {
             currentQuestion: model.currentQuestion,
             numQuestionsCorrect: model.numQuestionsCorrect,
             numQuestionsAsked: model.numQuestionsAsked,
-            quizComplete: model.quizComplete
+            quizComplete: model.quizComplete,
+            isQuizRunning: model.isQuizRunning
         };
         expect(firstSubscriber).toHaveBeenCalledWith(expectedData);
     });
@@ -129,6 +130,26 @@ describe("callSubscribers", () => {
         model.callSubscribers();
 
         expect(model.currentQuestion).toEqual(question);
+    });
+});
+
+describe("setIsQuizRunning", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Sets value of isQuizRunning", () => {
+        const model = new QuestionModel();
+
+        expect(model.isQuizRunning).toBe(false);
+        model.setIsQuizRunning(true);
+        expect(model.isQuizRunning).toBe(true);
+    });
+
+    test("Throws error if argument is not boolean", () => {
+        const model = new QuestionModel();
+
+        expect(() => model.setIsQuizRunning("badArg")).toThrow(new TypeError(`Argument is not of type bool. Arg: badArg`))
     });
 });
 

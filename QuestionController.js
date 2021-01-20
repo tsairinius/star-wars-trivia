@@ -4,13 +4,12 @@ export class QuestionController {
     constructor(questionModel, questionView) {
         this.questionModel = questionModel;
         this.questionView = questionView;
-        this.isQuizStarted = false;
 
         this.startQuiz = () => {
             this.questionView.renderScoreAndTimeBar();
             this.questionView.displayQuestion(this.questionModel.currentQuestion);
             this.questionModel.setTimer();
-            this.isQuizStarted = true;
+            this.questionModel.setIsQuizRunning(true);
         };
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
@@ -25,10 +24,10 @@ export class QuestionController {
             this.questionModel.cancelTimer();
             if (data.quizComplete) {
                 this.questionView.renderQuizComplete(data.numQuestionsCorrect, data.numQuestionsAsked);
-                this.isQuizStarted = false;
+                this.questionModel.setIsQuizRunning(false);
             }
             else {
-                if (this.isQuizStarted) {
+                if (data.isQuizRunning) {
                     this.questionView.displayQuestion(data.currentQuestion);
                     this.questionView.updateScore(data.numQuestionsCorrect, data.numQuestionsAsked);
                     this.questionModel.setTimer();

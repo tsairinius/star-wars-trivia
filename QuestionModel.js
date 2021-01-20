@@ -14,6 +14,7 @@ export class QuestionModel {
         this.numQuestionsAsked = 0;
         this.numQuestionsCorrect = 0;
         this.quizComplete = false;
+        this.isQuizRunning= false;
         this.timeLeft = TIME_PER_QUESTION_MS; 
         this.prevTime = null;
 
@@ -35,6 +36,7 @@ export class QuestionModel {
 
             if ((this.getNextQuestion() === 1) && this.numQuestionsAsked === this.maxQuestions) {
                 this.quizComplete = true;
+                this.isQuizRunning = false;
             };
 
             this.callSubscribers();
@@ -62,6 +64,15 @@ export class QuestionModel {
         }
     }
 
+    setIsQuizRunning(value) {
+        if (typeof value !== "boolean") {
+            throw new TypeError(`Argument is not of type bool. Arg: ${value}`);
+        }
+        else {
+            this.isQuizRunning = value;
+        }
+    }
+
     cancelTimer() {
         cancelAnimationFrame(this.animationId);
     }
@@ -82,7 +93,8 @@ export class QuestionModel {
             },
             numQuestionsCorrect: this.numQuestionsCorrect,
             numQuestionsAsked: this.numQuestionsAsked,
-            quizComplete: this.quizComplete
+            quizComplete: this.quizComplete,
+            isQuizRunning: this.isQuizRunning
         };
     
         this.subscribers.forEach(subscriber => subscriber(data));
