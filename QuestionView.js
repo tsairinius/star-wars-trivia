@@ -12,6 +12,7 @@ export class QuestionView {
 
         this.validateAnswerAndGetNextQuestion = null;
         this.onBeginClick = null;
+        this.onMainButtonClick = null;
         this.onStartScreenRender = null;
     };
 
@@ -49,6 +50,25 @@ export class QuestionView {
         else {
             throw new Error("Missing trivia container to render in");
         }
+    }
+
+    renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
+        const triviaContainer = document.querySelector("div[class=trivia-container]");
+        const quizCompleteFragment = document.createDocumentFragment();
+        if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
+            quizCompleteFragment.textContent = "Quiz completed!";
+        }
+        else {
+            quizCompleteFragment.textContent = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
+        }
+
+        const mainMenuButton = document.createElement("button");
+        mainMenuButton.onclick = this.onMainButtonClick;
+        mainMenuButton.textContent = "Main";
+        quizCompleteFragment.append(mainMenuButton);
+
+        triviaContainer.innerHTML = "";
+        triviaContainer.append(quizCompleteFragment);
     }
 
     updateScore(numQuestionsCorrect, numQuestionsAsked) {
@@ -109,16 +129,6 @@ export class QuestionView {
     getChosenAnswer() {
         const checkedElement = document.querySelector("input[name=answer-choice]:checked");
         return checkedElement ? checkedElement.value : null;
-    }
-
-    renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
-        const triviaContainer = document.querySelector("div[class=trivia-container]");
-        if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
-            triviaContainer.innerHTML = "Quiz completed!";
-        }
-        else {
-            triviaContainer.innerHTML = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
-        }
     }
 
     updateTimeBar(timeLeftPct) {

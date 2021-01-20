@@ -64,6 +64,18 @@ export class QuestionModel {
         }
     }
 
+    resetData() {
+        this.queue = new QuestionQueue(this.maxQuestions);
+        this.currentQuestion = null;
+        this.numQuestionsAsked = 0;
+        this.numQuestionsCorrect = 0;
+        this.quizComplete = false;
+        this.isQuizRunning= false;
+        this.timeLeft = TIME_PER_QUESTION_MS; 
+        this.prevTime = null;
+        this.animationId = null;
+    }
+
     setIsQuizRunning(value) {
         if (typeof value !== "boolean") {
             throw new TypeError(`Argument is not of type bool. Arg: ${value}`);

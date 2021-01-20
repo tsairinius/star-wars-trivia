@@ -255,7 +255,7 @@ describe("renderQuizComplete", () => {
         cleanUpDOM();
     });
 
-    test("If score is invalid, just display `Quiz complete` message", () => {
+    test("If score is invalid, display `Quiz complete` message along with main menu button", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
         view.initializeTriviaContainer();
@@ -263,14 +263,28 @@ describe("renderQuizComplete", () => {
         view.renderQuizComplete(-1);
 
         expect(screen.getByText("Quiz completed!")).toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
     });
 
-    test("Shows user's score", () => {
+    test("Shows user's score and main menu button", () => {
         const view = new QuestionView();
         view.initializeTriviaContainer();
 
         view.renderQuizComplete(2, 5);
         expect(screen.getByText("You answered 2/5 questions correctly!")).toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
+    });
+
+    test("Clicking main menu button invokes callback to return to main menu", () => {
+        const view = new QuestionView();
+        view.onMainButtonClick = jest.fn();
+
+        view.initializeTriviaContainer();
+
+        view.renderQuizComplete(2,5);
+        userEvent.click(screen.getByRole("button", {name: "Main"}));
+
+        expect(view.onMainButtonClick).toHaveBeenCalledTimes(1);
     });
 });
 

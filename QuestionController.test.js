@@ -1,3 +1,4 @@
+import { QuestionController } from "./QuestionController.js";
 import { initializeMVC } from "./utilities/initializeMVC.js";
 
 describe("startQuiz", () => {
@@ -86,6 +87,24 @@ describe("handleModelChange", () => {
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(model.cancelTimer).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("resetQuiz", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Requests model and view to reset data and display main menu", () => {
+        const { model, view, controller } = initializeMVC();
+
+        model.resetData = jest.fn();
+        view.renderStartScreen = jest.fn();
+
+        controller.resetQuiz();
+
+        expect(model.resetData).toHaveBeenCalledTimes(1);
+        expect(view.renderStartScreen).toHaveBeenCalledTimes(1);
     });
 });
 

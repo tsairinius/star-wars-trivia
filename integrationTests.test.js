@@ -135,6 +135,49 @@ describe("Quiz screen", () => {
     });
 });
 
+describe("Returning to start screen after quiz is complete", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Displays start screen when using clicks on main menu button", () => {
+        const { model, view, controller } = initializeMVC();
+
+        view.onStartScreenRender = jest.fn();
+
+        view.initializeTriviaContainer();
+        view.renderQuizComplete(3,5);
+
+        userEvent.click(screen.getByRole("button", {name: "Main"}));
+
+        expect(screen.getByRole("button", {name: "Begin"})).toBeInTheDocument();
+        expect(screen.getByText("Do you know your Star Wars characters?")).toBeInTheDocument();
+        expect(screen.queryByRole("button", {name: "Main"})).not.toBeInTheDocument();
+    });
+});
+
+describe("Showing 'quiz complete' screen when quiz is finished", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+    
+    test("Quiz complete screen is shown when user clicks next button for last question of quiz", async () => {
+        const numQuestions = 1;
+        const createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion");
+        createRandomQuestionMock.mockReturnValueOnce(Promise.resolve(question));
+        const consoleErrorMock = jest.spyOn(console, "error").mockReturnValueOnce();
+        const { model, view, controller } = initializeMVC(numQuestions);
+
+        view.initializeTriviaContainer();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+        userEvent.click(screen.getByLabelText(question.answer));
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
+    });
+});
+
 
 
 

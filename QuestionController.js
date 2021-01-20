@@ -12,6 +12,11 @@ export class QuestionController {
             this.questionModel.setIsQuizRunning(true);
         };
 
+        this.resetQuiz = () => {
+            this.questionModel.resetData();
+            this.questionView.renderStartScreen();
+        };
+
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
             this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
         };
@@ -56,5 +61,11 @@ export class QuestionController {
         this.questionView.validateAnswerAndGetNextQuestion = this.validateAnswerAndGetNextQuestion;
         this.questionView.onBeginClick = this.startQuiz;
         this.questionView.onStartScreenRender = this.questionModel.createQuestionSet;
+        this.questionView.onMainButtonClick = this.resetQuiz;
     }
+
+    // resetQuiz() {
+    //     this.questionModel.resetData();
+    //     this.questionView.renderStartScreen();
+    // }
 }

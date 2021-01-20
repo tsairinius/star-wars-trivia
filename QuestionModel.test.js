@@ -4,6 +4,39 @@ import * as creator from "./utilities/createRandomQuestion.js";
 import { TIME_PER_QUESTION_MS } from "./constants.js"
 import { computePercentage } from "./utilities/computePercentage.js";
 
+describe("resetData", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Resets data except for callbacks tied to controller", () => {
+        const maxQuestions = 4;
+        const handleTimeChange = jest.fn();
+        const subscriber = jest.fn();
+
+        const model = new QuestionModel(maxQuestions);
+        model.onTimeChange = handleTimeChange;
+        model.addSubscriber(subscriber);
+
+        model.resetData();
+
+        expect(model.queue.getNumQuestionsAdded()).toBe(0);
+        expect(model.queue.queue.length).toBe(0);
+        expect(model.currentQuestion).toBeNull();
+        expect(model.maxQuestions).toBe(maxQuestions);
+        expect(model.numQuestionsAsked).toBe(0);
+        expect(model.numQuestionsCorrect).toBe(0);
+        expect(model.quizComplete).toBe(false);
+        expect(model.isQuizRunning).toBe(false);
+        expect(model.timeLeft).toBe(TIME_PER_QUESTION_MS);
+        expect(model.prevTime).toBeNull();
+        expect(model.animationId).toBeNull();
+
+        expect(model.onTimeChange).toBe(handleTimeChange);
+        expect(model.subscribers).toEqual([subscriber]);
+    });
+});
+
 describe("addSubscriber", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
