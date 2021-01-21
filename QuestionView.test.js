@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { question } from "./fakeQuestions.js";
 import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 import { TIME_PER_QUESTION_MS } from "./constants.js";
-import { initializeTriviaContainer } from "./utilities/initializeTriviaContainer.js";
+import { initializeTriviaScreen } from "./utilities/initializeTriviaScreen.js";
 
 describe("renderStartScreen", () => {
     beforeAll(() => {
@@ -14,7 +14,7 @@ describe("renderStartScreen", () => {
 
     beforeEach(() => {
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Shows intro text and begin button", () => {
@@ -68,7 +68,7 @@ describe("renderScoreAndTimeBar", () => {
 
     test("Displays score and time bar", () => {
         const view = new QuestionView();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
         view.renderScoreAndTimeBar();
     
         expect(screen.getByTestId("score").textContent).toBe("0/0");
@@ -88,7 +88,7 @@ describe("displayQuestion", () => {
 
     beforeEach(() => {
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Displays question with answer choices and Next button", () => {
@@ -136,7 +136,7 @@ describe("Next button behavior", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Next button is enabled when an answer choice is selected", async () => {
@@ -214,7 +214,7 @@ describe("updateScore", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Displays 'Score unavailable' if score is invalid", () => {
@@ -249,7 +249,7 @@ describe("renderQuizComplete", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("If score is invalid, display `Quiz complete` message along with main menu button", () => {
@@ -293,7 +293,7 @@ describe("renderLoadingScreen", () => {
     test("Shows loading screen, without score or time bar", () => {
         const view = new QuestionView();
 
-        initializeTriviaContainer();
+        initializeTriviaScreen();
         view.renderLoadingScreen();
 
         expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -313,7 +313,7 @@ describe("getChosenAnswer", () => {
 
     beforeEach(() => {
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Returns the selected answer choice as a string", () => {
@@ -344,7 +344,7 @@ describe("updateTimeBar", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
-        initializeTriviaContainer();
+        initializeTriviaScreen();
     });
 
     test("Sets width of time bar element based on percentage passed in", () => {

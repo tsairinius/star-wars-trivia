@@ -17,15 +17,15 @@ export class QuestionView {
     };
 
     renderStartScreen() {
-        const triviaContainer = document.querySelector(".trivia-container");
-        if (triviaContainer) {
-            triviaContainer.innerHTML = `
+        const triviaScreen = document.querySelector(".trivia-screen");
+        if (triviaScreen) {
+            triviaScreen.innerHTML = `
                 <h3>Do you know your Star Wars characters?</h3>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
                 <button>Begin</button>
             `;
         
-            triviaContainer.querySelector("button").onclick = this.onBeginClick;
+            triviaScreen.querySelector("button").onclick = this.onBeginClick;
             this.onStartScreenRender();
         }
         else {
@@ -34,9 +34,9 @@ export class QuestionView {
     }
 
     renderScoreAndTimeBar() {
-        const triviaContainer = document.querySelector(".trivia-container");
-        if (triviaContainer) {
-            triviaContainer.innerHTML = `
+        const triviaScreen = document.querySelector(".trivia-screen");
+        if (triviaScreen) {
+            triviaScreen.innerHTML = `
                 <div class="score" data-testid="score">0/0</div>
                 <div class="time-bar" data-testid="time-bar"></div>
             `;
@@ -47,7 +47,7 @@ export class QuestionView {
     }
 
     renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
-        const triviaContainer = document.querySelector("div[class=trivia-container]");
+        const triviaScreen = document.querySelector("div[class=trivia-screen]");
         const quizCompleteFragment = document.createDocumentFragment();
         if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
             quizCompleteFragment.textContent = "Quiz completed!";
@@ -61,8 +61,8 @@ export class QuestionView {
         mainMenuButton.textContent = "Main";
         quizCompleteFragment.append(mainMenuButton);
 
-        triviaContainer.innerHTML = "";
-        triviaContainer.append(quizCompleteFragment);
+        triviaScreen.innerHTML = "";
+        triviaScreen.append(quizCompleteFragment);
     }
 
     renderLoadingScreen() {
@@ -73,10 +73,10 @@ export class QuestionView {
         const questionContainer = document.createElement("div");
         questionContainer.setAttribute("class", "question-container");
 
-        const triviaContainer = document.querySelector(".trivia-container");
+        const triviaScreen = document.querySelector(".trivia-screen");
         questionContainer.textContent = "Loading...";
-        if (triviaContainer) {
-            triviaContainer.append(questionContainer);
+        if (triviaScreen) {
+            triviaScreen.append(questionContainer);
         }
         else {
             throw new Error("Could not find trivia container to render in");
@@ -138,8 +138,8 @@ export class QuestionView {
                 questionContainer.querySelectorAll("input[type=radio]")
                     .forEach(input => input.onchange = this.enableNextButton);
             
-                const triviaContainer = document.querySelector(".trivia-container");
-                triviaContainer.appendChild(questionContainer);
+                const triviaScreen = document.querySelector(".trivia-screen");
+                triviaScreen.appendChild(questionContainer);
             }
         }       
     };
