@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { question } from "./fakeQuestions.js";
 import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 import { TIME_PER_QUESTION_MS } from "./constants.js";
+import { initializeTriviaContainer } from "./utilities/initializeTriviaContainer.js";
 
 describe("renderStartScreen", () => {
     beforeAll(() => {
@@ -13,13 +14,13 @@ describe("renderStartScreen", () => {
 
     beforeEach(() => {
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Shows intro text and begin button", () => {
         const view = new QuestionView();
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
         view.renderStartScreen();
 
         expect(screen.getByText("Do you know your Star Wars characters?")).toBeInTheDocument();
@@ -31,7 +32,6 @@ describe("renderStartScreen", () => {
         const view = new QuestionView();
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
         view.renderStartScreen();
 
         expect(view.onStartScreenRender).toHaveBeenCalledTimes(1);
@@ -42,7 +42,6 @@ describe("renderStartScreen", () => {
         view.onBeginClick = jest.fn();
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
         view.renderStartScreen();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
@@ -51,26 +50,10 @@ describe("renderStartScreen", () => {
     });
 
     test("Throws error if there's no trivia container to render start screen in", () => {
+        cleanUpDOM();
         const view = new QuestionView();
 
         expect(() => view.renderStartScreen()).toThrow(new Error("Missing trivia container to render in"));
-    });
-});
-
-describe("initializeTriviaContainer", () => {
-    beforeAll(() => {
-        jest.restoreAllMocks();
-    });
-
-    beforeEach(() => {
-        cleanUpDOM();
-    });
-
-    test("Only element in DOM should be trivia container", () => {
-        const view = new QuestionView();
-        view.initializeTriviaContainer();
-    
-        expect(document.body.innerHTML).toBe(`<div class="trivia-container"></div>`);
     });
 });
 
@@ -85,7 +68,7 @@ describe("renderScoreAndTimeBar", () => {
 
     test("Displays score and time bar", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderScoreAndTimeBar();
     
         expect(screen.getByTestId("score").textContent).toBe("0/0");
@@ -105,11 +88,11 @@ describe("displayQuestion", () => {
 
     beforeEach(() => {
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Displays question with answer choices and Next button", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.displayQuestion(question);
 
         expect(screen.getByText("What day is it?")).toBeInTheDocument();
@@ -122,7 +105,6 @@ describe("displayQuestion", () => {
 
     test("Throws error if argument is undefined", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         expect(() => view.displayQuestion())
         .toThrow("Missing question as argument");    
@@ -131,7 +113,6 @@ describe("displayQuestion", () => {
     test("Calls function to render loading screen if argument is null", () => {
         const view = new QuestionView();
         view.renderLoadingScreen = jest.fn();
-        view.initializeTriviaContainer();
 
         view.displayQuestion(null);
         expect(view.renderLoadingScreen).toHaveBeenCalledTimes(1);
@@ -139,7 +120,6 @@ describe("displayQuestion", () => {
 
     test("If loading screen is visible when about to display a question, remove the screen", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderLoadingScreen();
 
         view.displayQuestion(question);
@@ -156,11 +136,11 @@ describe("Next button behavior", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Next button is enabled when an answer choice is selected", async () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
 
         view.displayQuestion(question);
@@ -234,12 +214,12 @@ describe("updateScore", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Displays 'Score unavailable' if score is invalid", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
 
         view.updateScore(5);
@@ -249,7 +229,6 @@ describe("updateScore", () => {
 
     test("Updates score", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
 
         expect(screen.queryByText("4/10")).not.toBeInTheDocument();
@@ -270,12 +249,12 @@ describe("renderQuizComplete", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("If score is invalid, display `Quiz complete` message along with main menu button", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         view.renderQuizComplete(-1);
 
@@ -285,7 +264,6 @@ describe("renderQuizComplete", () => {
 
     test("Shows user's score and main menu button", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         view.renderQuizComplete(2, 5);
         expect(screen.getByText("You answered 2/5 questions correctly!")).toBeInTheDocument();
@@ -295,8 +273,6 @@ describe("renderQuizComplete", () => {
     test("Clicking main menu button invokes callback to return to main menu", () => {
         const view = new QuestionView();
         view.onMainButtonClick = jest.fn();
-
-        view.initializeTriviaContainer();
 
         view.renderQuizComplete(2,5);
         userEvent.click(screen.getByRole("button", {name: "Main"}));
@@ -317,7 +293,7 @@ describe("renderLoadingScreen", () => {
     test("Shows loading screen, without score or time bar", () => {
         const view = new QuestionView();
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderLoadingScreen();
 
         expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -337,11 +313,11 @@ describe("getChosenAnswer", () => {
 
     beforeEach(() => {
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Returns the selected answer choice as a string", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         view.displayQuestion(question);
 
@@ -351,7 +327,6 @@ describe("getChosenAnswer", () => {
 
     test("If no answer is selected, returns null", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         view.displayQuestion(question);
 
@@ -369,11 +344,11 @@ describe("updateTimeBar", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         cleanUpDOM();
+        initializeTriviaContainer();
     });
 
     test("Sets width of time bar element based on percentage passed in", () => {
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
 
         view.updateTimeBar(45);
@@ -384,7 +359,6 @@ describe("updateTimeBar", () => {
     test("Prints error if no argument is passed in", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.initializeTriviaContainer();
         view.renderScoreAndTimeBar();
 
         view.updateTimeBar();
@@ -395,7 +369,6 @@ describe("updateTimeBar", () => {
     test("Prints error if time bar element cannot be found", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.initializeTriviaContainer();
 
         view.updateTimeBar(45);
 

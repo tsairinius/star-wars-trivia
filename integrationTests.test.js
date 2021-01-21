@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { question, secondQuestion, fakeQuestions } from "./fakeQuestions.js";
 import * as creator from "./utilities/createRandomQuestion.js";
 import { initializeMVC } from "./utilities/initializeMVC.js";
+import { initializeTriviaContainer } from "./utilities/initializeTriviaContainer.js";
 
 describe("Start screen", () => {
     let createRandomQuestionMock;
@@ -26,7 +27,7 @@ describe("Start screen", () => {
         
         createRandomQuestionMock.mockReturnValueOnce(Promise.resolve(fakeQuestions[0]));
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         await view.renderStartScreen();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
@@ -38,7 +39,7 @@ describe("Start screen", () => {
 
 describe("Quiz screen", () => {
     const setUpQuizArea = (view, model) => {
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderScoreAndTimeBar();
         model.isQuizRunning = true;
     }
@@ -142,7 +143,7 @@ describe("Returning to start screen after quiz is complete", () => {
 
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderQuizComplete(3,5);
 
         userEvent.click(screen.getByRole("button", {name: "Main"}));
@@ -169,7 +170,7 @@ describe("Showing 'quiz complete' screen when quiz is finished", () => {
         const consoleErrorMock = jest.spyOn(console, "error").mockReturnValueOnce();
         const { model, view, controller } = initializeMVC(numQuestions);
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         await view.renderStartScreen();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
         userEvent.click(screen.getByLabelText(question.answer));
@@ -193,7 +194,7 @@ describe("Loading screen behavior", () => {
         const { model, view, controller } = initializeMVC(numQuestions);
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderStartScreen();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
@@ -210,7 +211,7 @@ describe("Loading screen behavior", () => {
         const onStartScreenRenderOriginal = view.onStartScreenRender;
         view.onStartScreenRender = jest.fn();
 
-        view.initializeTriviaContainer();
+        initializeTriviaContainer();
         view.renderStartScreen();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));

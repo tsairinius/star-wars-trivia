@@ -16,12 +16,6 @@ export class QuestionView {
         this.onStartScreenRender = null;
     };
 
-    initializeTriviaContainer() {
-        const triviaContainer = document.createElement("div");
-        triviaContainer.className = "trivia-container";
-        document.body.append(triviaContainer);
-    }
-
     renderStartScreen() {
         const triviaContainer = document.querySelector(".trivia-container");
         if (triviaContainer) {

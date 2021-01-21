@@ -6,5 +6,4 @@ const questionModel = new QuestionModel();
 const questionView = new QuestionView();
 const questionController = new QuestionController(questionModel, questionView);
 
-questionView.initializeTriviaContainer();
 questionView.renderStartScreen();
