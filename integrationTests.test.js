@@ -1,12 +1,8 @@
-import { QuestionView } from "./QuestionView.js";
-import { QuestionModel } from "./QuestionModel.js";
 import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
 import { screen } from "@testing-library/dom";
-import * as utils from "./utilities/utilities.js";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question, secondQuestion, fakeQuestions } from "./fakeQuestions.js";
-import { QuestionController } from "./QuestionController.js";
 import * as creator from "./utilities/createRandomQuestion.js";
 import { initializeMVC } from "./utilities/initializeMVC.js";
 
@@ -19,6 +15,7 @@ describe("Start screen", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        cleanUpDOM();
     });
 
     test("When user clicks begin button, first question of quiz is displayed", async () => {
@@ -27,7 +24,7 @@ describe("Start screen", () => {
 
         const { model, view, controller } = initializeMVC(numQuestions);
         
-        createRandomQuestionMock.mockReturnValueOnce(fakeQuestions[0]);
+        createRandomQuestionMock.mockReturnValueOnce(Promise.resolve(fakeQuestions[0]));
 
         view.initializeTriviaContainer();
         await view.renderStartScreen();
@@ -160,7 +157,11 @@ describe("Showing 'quiz complete' screen when quiz is finished", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
     });
-    
+
+    beforeEach(() => {
+        cleanUpDOM();
+    });
+
     test("Quiz complete screen is shown when user clicks next button for last question of quiz", async () => {
         const numQuestions = 1;
         const createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion");
@@ -175,6 +176,53 @@ describe("Showing 'quiz complete' screen when quiz is finished", () => {
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
         expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
+    });
+});
+
+describe("Loading screen behavior", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    beforeEach(() => {
+        cleanUpDOM();
+    });
+
+    test("Loading screen appears after starting quiz if no question is available yet", () => {
+        const numQuestions = 1;
+        const { model, view, controller } = initializeMVC(numQuestions);
+        view.onStartScreenRender = jest.fn();
+
+        view.initializeTriviaContainer();
+        view.renderStartScreen();
+
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+
+        expect(screen.getByText("Loading...")).toBeInTheDocument();
+    });
+
+    test("Loading screen is replaced with first question once received", async () => {
+        const createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion")
+            .mockReturnValueOnce(question);
+        const numQuestions = 1;
+        const { model, view, controller } = initializeMVC(numQuestions);
+
+        const onStartScreenRenderOriginal = view.onStartScreenRender;
+        view.onStartScreenRender = jest.fn();
+
+        view.initializeTriviaContainer();
+        view.renderStartScreen();
+
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+
+        expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+        view.onStartScreenRender = onStartScreenRenderOriginal;
+
+        await model.createQuestion();
+
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+        expect(screen.getByText(question.question)).toBeInTheDocument();
     });
 });
 

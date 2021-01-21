@@ -71,6 +71,24 @@ export class QuestionView {
         triviaContainer.append(quizCompleteFragment);
     }
 
+    renderLoadingScreen() {
+        if (document.querySelector(".question-container")) {
+            document.querySelector(".question-container").remove();
+        };
+
+        const questionContainer = document.createElement("div");
+        questionContainer.setAttribute("class", "question-container");
+
+        const triviaContainer = document.querySelector(".trivia-container");
+        questionContainer.textContent = "Loading...";
+        if (triviaContainer) {
+            triviaContainer.append(questionContainer);
+        }
+        else {
+            throw new Error("Could not find trivia container to render in");
+        }
+    }
+
     updateScore(numQuestionsCorrect, numQuestionsAsked) {
         const scoreElement = document.querySelector(".score");
         if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
@@ -82,48 +100,54 @@ export class QuestionView {
     }
 
     displayQuestion(question) {
-        if (!question) {
+        if (question === undefined) {
             throw new Error("Missing question as argument");
-        };
-    
-        if (document.querySelector(".question-container")) {
-            document.querySelector(".question-container").remove();
-        };
-    
-        const answerChoices = utils.randomizeArray([question.answer, ...question.otherOptions]);
-    
-        const questionContainer = document.createElement("div");
-        questionContainer.setAttribute("class", "question-container");
-        questionContainer.innerHTML = `
-            <p class="question">${question.question}</p>
-            <div>
-                <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]} />
-                <label for="answer-choice-1">${answerChoices[0]}</label>
-            </div>
-            <div>
-                <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]} />
-                <label for="answer-choice-2">${answerChoices[1]}</label>
-            </div>
-            <div>
-                <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]} />
-                <label for="answer-choice-3">${answerChoices[2]}</label>
-            </div>
-            <div>
-                <input data-testid="answer-choice-4" type="radio" name="answer-choice" id="answer-choice-4" value=${answerChoices[3]} />
-                <label for="answer-choice-4">${answerChoices[3]}</label>
-            </div>
-            <button class="next-button" disabled>Next</button>
-        `;
-    
-        questionContainer.querySelector(".next-button").onclick = () => {
-            this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
         }
+        else {
+            if (question === null) {
+                this.renderLoadingScreen();
+            }
+            else {
+                if (document.querySelector(".question-container")) {
+                    document.querySelector(".question-container").remove();
+                };
+
+                const answerChoices = utils.randomizeArray([question.answer, ...question.otherOptions]);
+        
+                const questionContainer = document.createElement("div");
+                questionContainer.setAttribute("class", "question-container");
+                questionContainer.innerHTML = `
+                    <p class="question">${question.question}</p>
+                    <div>
+                        <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]} />
+                        <label for="answer-choice-1">${answerChoices[0]}</label>
+                    </div>
+                    <div>
+                        <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]} />
+                        <label for="answer-choice-2">${answerChoices[1]}</label>
+                    </div>
+                    <div>
+                        <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]} />
+                        <label for="answer-choice-3">${answerChoices[2]}</label>
+                    </div>
+                    <div>
+                        <input data-testid="answer-choice-4" type="radio" name="answer-choice" id="answer-choice-4" value=${answerChoices[3]} />
+                        <label for="answer-choice-4">${answerChoices[3]}</label>
+                    </div>
+                    <button class="next-button" disabled>Next</button>
+                `;
             
-        questionContainer.querySelectorAll("input[type=radio]")
-            .forEach(input => input.onchange = this.enableNextButton);
-    
-        const triviaContainer = document.querySelector(".trivia-container");
-        triviaContainer.appendChild(questionContainer);
+                questionContainer.querySelector(".next-button").onclick = () => {
+                    this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
+                }
+                    
+                questionContainer.querySelectorAll("input[type=radio]")
+                    .forEach(input => input.onchange = this.enableNextButton);
+            
+                const triviaContainer = document.querySelector(".trivia-container");
+                triviaContainer.appendChild(questionContainer);
+            }
+        }       
     };
 
     getChosenAnswer() {

@@ -1,5 +1,6 @@
 import { QuestionController } from "./QuestionController.js";
 import { initializeMVC } from "./utilities/initializeMVC.js";
+import { question } from "./fakeQuestions.js";
 
 describe("startQuiz", () => {
     beforeAll(() => {
@@ -18,12 +19,28 @@ describe("startQuiz", () => {
         model.setTimer = jest.fn();
 
         expect(model.isQuizRunning).toBeFalsy();
+        model.currentQuestion = question;
 
         controller.startQuiz();
 
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
+        expect(model.isQuizRunning).toBeTruthy();
+    });
+
+    test("Does not set timer if no question can be retrieved from model", () => {
+        const { model, view, controller } = initializeMVC();
+
+        view.renderScoreAndTimeBar = jest.fn();
+        view.displayQuestion = jest.fn();
+        model.setTimer = jest.fn();
+
+        controller.startQuiz();
+
+        expect(model.setTimer).not.toHaveBeenCalled();
+        expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.isQuizRunning).toBeTruthy();
     });
 });
@@ -70,7 +87,8 @@ describe("handleModelChange", () => {
     test("Cancels any animation frame callbacks and requests to have next question displayed and score updated if quiz is not complete", () => {
         const data = {
             quizComplete: false,
-            isQuizRunning: true
+            isQuizRunning: true,
+            currentQuestion: question
         };
 
         const {model, view, controller} = initializeMVC();
@@ -87,6 +105,28 @@ describe("handleModelChange", () => {
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(model.cancelTimer).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
+    });
+
+    test("If no question is available from model, skip setting timer", () => {
+        const data = {
+            quizComplete: false,
+            isQuizRunning: true
+        };
+
+        const {model, view, controller} = initializeMVC();
+        model.isQuizRunning = true;
+
+        view.displayQuestion = jest.fn();
+        view.updateScore = jest.fn();
+        model.cancelTimer = jest.fn();
+        model.setTimer = jest.fn();
+
+        controller.handleModelChange(data);
+
+        expect(view.displayQuestion).toHaveBeenCalledTimes(1);
+        expect(view.updateScore).toHaveBeenCalledTimes(1);
+        expect(model.cancelTimer).toHaveBeenCalledTimes(1);
+        expect(model.setTimer).not.toHaveBeenCalled();
     });
 });
 

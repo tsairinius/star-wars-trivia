@@ -34,9 +34,15 @@ export class QuestionModel {
                 console.assert(this.numQuestionsCorrect <= this.numQuestionsAsked, "Number of questions answered correctly is greater than the total number asked");
             }
 
-            if ((this.getNextQuestion() === 1) && this.numQuestionsAsked === this.maxQuestions) {
-                this.quizComplete = true;
-                this.isQuizRunning = false;
+            this.timeLeft = TIME_PER_QUESTION_MS;
+            if ((this.getNextQuestion() === 1)) {
+                if (this.numQuestionsAsked === this.maxQuestions) {
+                    this.quizComplete = true;
+                    this.isQuizRunning = false;
+                }
+                else {
+                    this.currentQuestion = null;
+                }
             };
 
             this.callSubscribers();
@@ -99,10 +105,12 @@ export class QuestionModel {
 
     callSubscribers() {
         const data = {
-            currentQuestion: {
-                ...this.currentQuestion,
-                otherOptions: [...this.currentQuestion.otherOptions]
-            },
+            currentQuestion: this.currentQuestion ? 
+                {
+                    ...this.currentQuestion,
+                    otherOptions: [...this.currentQuestion.otherOptions]
+                } 
+                : null,
             numQuestionsCorrect: this.numQuestionsCorrect,
             numQuestionsAsked: this.numQuestionsAsked,
             quizComplete: this.quizComplete,

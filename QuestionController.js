@@ -8,7 +8,9 @@ export class QuestionController {
         this.startQuiz = () => {
             this.questionView.renderScoreAndTimeBar();
             this.questionView.displayQuestion(this.questionModel.currentQuestion);
-            this.questionModel.setTimer();
+            if (this.questionModel.currentQuestion) {
+                this.questionModel.setTimer();
+            }
             this.questionModel.setIsQuizRunning(true);
         };
 
@@ -33,9 +35,11 @@ export class QuestionController {
             }
             else {
                 if (data.isQuizRunning) {
-                    this.questionView.displayQuestion(data.currentQuestion);
                     this.questionView.updateScore(data.numQuestionsCorrect, data.numQuestionsAsked);
-                    this.questionModel.setTimer();
+                    this.questionView.displayQuestion(data.currentQuestion);
+                    if (data.currentQuestion) {
+                        this.questionModel.setTimer();
+                    }
                 }
             }
         }
@@ -63,9 +67,4 @@ export class QuestionController {
         this.questionView.onStartScreenRender = this.questionModel.createQuestionSet;
         this.questionView.onMainButtonClick = this.resetQuiz;
     }
-
-    // resetQuiz() {
-    //     this.questionModel.resetData();
-    //     this.questionView.renderStartScreen();
-    // }
 }

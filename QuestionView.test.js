@@ -1,5 +1,5 @@
 import { QuestionView } from "./QuestionView.js";
-import { screen } from "@testing-library/dom";
+import { queryByTestId, screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { question } from "./fakeQuestions.js";
@@ -110,7 +110,6 @@ describe("displayQuestion", () => {
     test("Displays question with answer choices and Next button", () => {
         const view = new QuestionView();
         view.initializeTriviaContainer();
-        view.renderScoreAndTimeBar();
         view.displayQuestion(question);
 
         expect(screen.getByText("What day is it?")).toBeInTheDocument();
@@ -124,10 +123,28 @@ describe("displayQuestion", () => {
     test("Throws error if argument is undefined", () => {
         const view = new QuestionView();
         view.initializeTriviaContainer();
-        view.renderScoreAndTimeBar();
 
         expect(() => view.displayQuestion())
         .toThrow("Missing question as argument");    
+    });
+
+    test("Calls function to render loading screen if argument is null", () => {
+        const view = new QuestionView();
+        view.renderLoadingScreen = jest.fn();
+        view.initializeTriviaContainer();
+
+        view.displayQuestion(null);
+        expect(view.renderLoadingScreen).toHaveBeenCalledTimes(1);
+    });
+
+    test("If loading screen is visible when about to display a question, remove the screen", () => {
+        const view = new QuestionView();
+        view.initializeTriviaContainer();
+        view.renderLoadingScreen();
+
+        view.displayQuestion(question);
+
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
     });
 });
 
@@ -285,6 +302,31 @@ describe("renderQuizComplete", () => {
         userEvent.click(screen.getByRole("button", {name: "Main"}));
 
         expect(view.onMainButtonClick).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("renderLoadingScreen", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    beforeEach(() => {
+        cleanUpDOM();
+    });
+
+    test("Shows loading screen, without score or time bar", () => {
+        const view = new QuestionView();
+
+        view.initializeTriviaContainer();
+        view.renderLoadingScreen();
+
+        expect(screen.getByText("Loading...")).toBeInTheDocument();
+    });
+
+    test("Throws error if unable to find trivia container to render in", () => {
+        const view = new QuestionView();
+
+        expect(() => view.renderLoadingScreen()).toThrow(new Error("Could not find trivia container to render in"));
     });
 });
 

@@ -164,6 +164,14 @@ describe("callSubscribers", () => {
 
         expect(model.currentQuestion).toEqual(question);
     });
+
+    test("Sends current question property as null if there is no current question", () => {
+        const model = new QuestionModel();
+
+        model.callSubscribers();
+
+        expect(model.currentQuestion).toBeNull();
+    });
 });
 
 describe("setIsQuizRunning", () => {
@@ -201,6 +209,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
 
     test("If chosen answer is correct, increment number of correct answers", async () => {
         const model = new QuestionModel();
+        model.isQuizRunning = true;
 
         await model.createQuestion();
         const chosenAnswer = question.answer;
@@ -213,6 +222,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
 
     test("If chosen answer is incorrect, number of correct answers is not incremented", async () => {
         const model = new QuestionModel();
+        model.isQuizRunning = true;
 
         await model.createQuestion();
         const chosenAnswer = question.otherOptions[0];
@@ -225,6 +235,8 @@ describe("validateAnswerAndGetNextQuestion", () => {
 
     test("Next question should be retrieved and subscribers called", async () => {
         const model = new QuestionModel();
+        model.isQuizRunning = true;
+
         await model.createQuestion();
 
         const chosenAnswer = question.otherOptions[0];
@@ -239,6 +251,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
 
     test("If chosen answer is null, number of correct answers is not incremented", async () => {
         const model = new QuestionModel();
+        model.isQuizRunning = true;
 
         await model.createQuestion();
 
@@ -250,6 +263,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
     test("If queue is empty and number of questions asked is equal to the max number of questions, signal that the quiz is complete", async () => {
         const maxQuestions = 3;        
         const model = new QuestionModel(maxQuestions);
+        model.isQuizRunning = true;
 
         await model.createQuestion();
 
@@ -257,6 +271,18 @@ describe("validateAnswerAndGetNextQuestion", () => {
         model.numQuestionsAsked = maxQuestions;
         model.validateAnswerAndGetNextQuestion();
         expect(model.quizComplete).toBeTruthy();
+    });
+
+    test("If queue is empty and number of question asked is not equal to the max number of questions, set current question to null", async () => {
+        const maxQuestions = 3;        
+        const model = new QuestionModel(maxQuestions);
+        model.isQuizRunning = true;
+
+        model.currentQuestion = question;
+        model.validateAnswerAndGetNextQuestion();
+        expect(model.currentQuestion).toBeNull();
+        expect(model.quizComplete).toBeFalsy();
+        expect(model.isQuizRunning).toBeTruthy();
     });
 });
 
