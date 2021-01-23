@@ -37,8 +37,10 @@ export class QuestionView {
         const triviaScreen = document.querySelector(".trivia-screen");
         if (triviaScreen) {
             triviaScreen.innerHTML = `
-                <div class="score" data-testid="score">0/0</div>
-                <div class="time-bar" data-testid="time-bar"></div>
+                <div class="stats-container">
+                    <div class="score" data-testid="score">0/0</div>
+                    <div class="time-bar" data-testid="time-bar"></div>
+                </div>
             `;
         }
         else {
@@ -153,6 +155,7 @@ export class QuestionView {
             
                 questionContainer.querySelector(".next-button").onclick = () => {
                     this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
+                    this.triggerDataPortAnimation();
                 }
                     
                 questionContainer.querySelectorAll("input[type=radio]")
@@ -162,6 +165,44 @@ export class QuestionView {
                 triviaScreen.appendChild(questionContainer);
             }
         }       
+    };
+
+    triggerDataPortAnimation() {
+        const dataPort = document.querySelector(".data-port");
+        if (dataPort.classList.contains("data-port__rotate")) {
+            dataPort.classList.remove("data-port__rotate");
+        }
+
+        setTimeout(() => {
+            dataPort.classList.add("data-port__rotate");
+        }, 0);
+    }
+
+    triggerLightbulbAnimation(isValid) {
+        const correctLight = document.querySelector(".lightbulb__correct");
+        const incorrectLight = document.querySelector(".lightbulb__incorrect");
+
+        this.deactivateActiveLightbulbs([correctLight, incorrectLight]);
+
+        let lightbulbToActivate;
+        if (isValid) {
+            lightbulbToActivate = correctLight;
+        }
+        else {
+            lightbulbToActivate = incorrectLight;
+        }
+
+        setTimeout(() => {
+            lightbulbToActivate.classList.add("lightbulb__active");
+        }, 0);
+    }
+
+    deactivateActiveLightbulbs(lightbulbs) {
+        lightbulbs.forEach(lightbulb => {
+            if (lightbulb.classList.contains("lightbulb__active")) {
+                lightbulb.classList.remove("lightbulb__active");
+            }
+        });
     };
 
     getChosenAnswer() {

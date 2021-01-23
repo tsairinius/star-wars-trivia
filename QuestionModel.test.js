@@ -207,7 +207,7 @@ describe("validateAnswerAndGetNextQuestion", () => {
         jest.clearAllMocks();
     });
 
-    test("If chosen answer is correct, increment number of correct answers", async () => {
+    test("If chosen answer is correct, increment number of correct answers and return true", async () => {
         const model = new QuestionModel();
         model.isQuizRunning = true;
 
@@ -215,12 +215,13 @@ describe("validateAnswerAndGetNextQuestion", () => {
         const chosenAnswer = question.answer;
 
         expect(model.numQuestionsCorrect).toBe(0);
-        model.validateAnswerAndGetNextQuestion(chosenAnswer);
+        const isValid = model.validateAnswerAndGetNextQuestion(chosenAnswer);
 
         expect(model.numQuestionsCorrect).toBe(1);
+        expect(isValid).toBeTruthy();
     });
 
-    test("If chosen answer is incorrect, number of correct answers is not incremented", async () => {
+    test("If chosen answer is incorrect, number of correct answers is not incremented and false is returned", async () => {
         const model = new QuestionModel();
         model.isQuizRunning = true;
 
@@ -228,9 +229,10 @@ describe("validateAnswerAndGetNextQuestion", () => {
         const chosenAnswer = question.otherOptions[0];
 
         expect(model.numQuestionsCorrect).toBe(0);
-        model.validateAnswerAndGetNextQuestion(chosenAnswer);
+        const isValid = model.validateAnswerAndGetNextQuestion(chosenAnswer);
 
         expect(model.numQuestionsCorrect).toBe(0);
+        expect(isValid).toBeFalsy();
     });
 
     test("Next question should be retrieved and subscribers called", async () => {

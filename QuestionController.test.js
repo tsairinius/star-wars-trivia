@@ -11,11 +11,12 @@ describe("startQuiz", () => {
         jest.clearAllMocks();
     });
 
-    test("Invokes view and model to render score and time bar, display first question, and set timer", () => {
+    test("Invokes view and model to render score and time bar, display first question, set timer, and trigger data port animation", () => {
         const { model, view, controller } = initializeMVC();
 
         view.renderScoreAndTimeBar = jest.fn();
         view.displayQuestion = jest.fn();
+        view.triggerDataPortAnimation = jest.fn();
         model.setTimer = jest.fn();
 
         expect(model.isQuizRunning).toBeFalsy();
@@ -27,6 +28,7 @@ describe("startQuiz", () => {
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
         expect(model.isQuizRunning).toBeTruthy();
+        expect(view.triggerDataPortAnimation).toHaveBeenCalledTimes(1);
     });
 
     test("Does not set timer if no question can be retrieved from model", () => {
@@ -34,6 +36,7 @@ describe("startQuiz", () => {
 
         view.renderScoreAndTimeBar = jest.fn();
         view.displayQuestion = jest.fn();
+        view.triggerDataPortAnimation = jest.fn();
         model.setTimer = jest.fn();
 
         controller.startQuiz();
@@ -46,14 +49,18 @@ describe("startQuiz", () => {
 });
 
 describe("validateAndGetNextQuestion", () => {
-    test("Calls model's validateAndGetNextQuestion", () => {
+    test("Calls view to trigger lightbulb animation based on model's response to user's answer", () => {
         const {model, view, controller} = initializeMVC();
 
-        model.validateAnswerAndGetNextQuestion = jest.fn();
+        const isValidAnswer = false;
+        model.validateAnswerAndGetNextQuestion = jest.fn().mockReturnValueOnce(isValidAnswer);
+        view.triggerLightbulbAnimation = jest.fn();
 
         expect(model.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
+        expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
         controller.validateAnswerAndGetNextQuestion();
         expect(model.validateAnswerAndGetNextQuestion).toHaveBeenCalledTimes(1);
+        expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(isValidAnswer);
     });
 });
 

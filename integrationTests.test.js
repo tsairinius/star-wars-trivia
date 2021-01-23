@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { question, secondQuestion, fakeQuestions } from "./fakeQuestions.js";
 import * as creator from "./utilities/createRandomQuestion.js";
 import { initializeMVC } from "./utilities/initializeMVC.js";
-import { initializeTriviaScreen } from "./utilities/initializeTriviaScreen.js";
+import { initializeDOM } from "./utilities/initializeDOM.js";
 
 describe("Start screen", () => {
     let createRandomQuestionMock;
@@ -19,27 +19,29 @@ describe("Start screen", () => {
         cleanUpDOM();
     });
 
-    test("When user clicks begin button, first question of quiz is displayed", async () => {
+    test("When user clicks begin button, first question of quiz is displayed and data port animation is triggered", async () => {
         cleanUpDOM();
         const numQuestions = 1;
 
         const { model, view, controller } = initializeMVC(numQuestions);
+        view.triggerDataPortAnimation = jest.fn();
         
         createRandomQuestionMock.mockReturnValueOnce(Promise.resolve(fakeQuestions[0]));
 
-        initializeTriviaScreen();
+        initializeDOM();
         await view.renderStartScreen();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         expect(screen.getByText(fakeQuestions[0].question)).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "Next"})).toBeInTheDocument();
         expect(screen.queryByText("button", {name: "Begin"})).not.toBeInTheDocument();
+        expect(view.triggerDataPortAnimation).toHaveBeenCalledTimes(1);
     });
 });
 
 describe("Quiz screen", () => {
     const setUpQuizArea = (view, model) => {
-        initializeTriviaScreen();
+        initializeDOM();
         view.renderScoreAndTimeBar();
         model.isQuizRunning = true;
     }
@@ -98,7 +100,7 @@ describe("Quiz screen", () => {
         expect(screen.getByLabelText("green")).toBeInTheDocument();
     });
 
-    test("Displays that 1/1 questions were answered correctly when user answers first question correctly", async () => {
+    test("When user answers first question correctly, displays that 1/1 questions were answered correctly", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
@@ -114,7 +116,30 @@ describe("Quiz screen", () => {
         expect(screen.getByTestId("score").textContent).toBe("1/1");
     });
 
-    test("Displays that 0/1 questions were answered correctly when user answers first question incorrectly", async () => {
+    test("When user answers first question correctly and clicks next, triggers animations accordingly", async () => {
+        createRandomQuestionMock
+            .mockReturnValueOnce(Promise.resolve(question));
+
+        const { model, view, controller } = initializeMVC();
+        
+        view.triggerLightbulbAnimation = jest.fn();
+        view.triggerDataPortAnimation = jest.fn();
+        setUpQuizArea(view, model);
+
+        await model.createQuestion();
+
+        userEvent.click(screen.getByLabelText(question.answer));
+
+        expect(view.triggerDataPortAnimation).not.toHaveBeenCalled();
+        expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
+
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(view.triggerDataPortAnimation).toHaveBeenCalledTimes(1);
+        expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(true);
+    });
+
+    test("When user answers first question incorrectly, displays that 0/1 questions were answered correctly", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
@@ -131,6 +156,30 @@ describe("Quiz screen", () => {
 
         expect(screen.getByTestId("score").textContent).toBe("0/1");
     });
+
+    test("When user answers first question incorrectly and clicks next, triggers animations accordingly", async () => {
+        createRandomQuestionMock
+            .mockReturnValueOnce(Promise.resolve(question));
+
+        const { model, view, controller } = initializeMVC();
+        
+        view.triggerLightbulbAnimation = jest.fn();
+        view.triggerDataPortAnimation = jest.fn();
+        setUpQuizArea(view, model);
+
+        await model.createQuestion();
+
+        const wrongAnswer = question.otherOptions[0];
+        userEvent.click(screen.getByLabelText(wrongAnswer));
+
+        expect(view.triggerDataPortAnimation).not.toHaveBeenCalled();
+        expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
+
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+
+        expect(view.triggerDataPortAnimation).toHaveBeenCalledTimes(1);
+        expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(false);
+    });
 });
 
 describe("Returning to start screen after quiz is complete", () => {
@@ -143,7 +192,7 @@ describe("Returning to start screen after quiz is complete", () => {
 
         view.onStartScreenRender = jest.fn();
 
-        initializeTriviaScreen();
+        initializeDOM();
         view.renderQuizComplete(3,5);
 
         userEvent.click(screen.getByRole("button", {name: "Main"}));
@@ -170,7 +219,7 @@ describe("Showing 'quiz complete' screen when quiz is finished", () => {
         const consoleErrorMock = jest.spyOn(console, "error").mockReturnValueOnce();
         const { model, view, controller } = initializeMVC(numQuestions);
 
-        initializeTriviaScreen();
+        initializeDOM();
         await view.renderStartScreen();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
         userEvent.click(screen.getByLabelText(question.answer));
@@ -194,7 +243,7 @@ describe("Loading screen behavior", () => {
         const { model, view, controller } = initializeMVC(numQuestions);
         view.onStartScreenRender = jest.fn();
 
-        initializeTriviaScreen();
+        initializeDOM();
         view.renderStartScreen();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
@@ -211,7 +260,7 @@ describe("Loading screen behavior", () => {
         const onStartScreenRenderOriginal = view.onStartScreenRender;
         view.onStartScreenRender = jest.fn();
 
-        initializeTriviaScreen();
+        initializeDOM();
         view.renderStartScreen();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));

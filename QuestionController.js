@@ -12,6 +12,7 @@ export class QuestionController {
                 this.questionModel.setTimer();
             }
             this.questionModel.setIsQuizRunning(true);
+            this.questionView.triggerDataPortAnimation();
         };
 
         this.resetQuiz = () => {
@@ -20,7 +21,8 @@ export class QuestionController {
         };
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
-            this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
+            const isValid = this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
+            this.questionView.triggerLightbulbAnimation(isValid);
         };
 
         this.handleModelChange = (data) => {
