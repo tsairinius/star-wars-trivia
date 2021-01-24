@@ -22,7 +22,9 @@ export class QuestionView {
             triviaScreen.innerHTML = `
                 <h3>Do you know your Star Wars characters?</h3>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
-                <button>Begin</button>
+                <div class="trivia-button">
+                    <button>Begin</button>
+                </div>
             `;
         
             triviaScreen.querySelector("button").onclick = this.onBeginClick;
@@ -58,10 +60,15 @@ export class QuestionView {
             quizCompleteFragment.textContent = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
         }
 
+        const mainMenuButtonContainer = document.createElement("div");
+        mainMenuButtonContainer.className = "trivia-button";
+
         const mainMenuButton = document.createElement("button");
         mainMenuButton.onclick = this.onMainButtonClick;
         mainMenuButton.textContent = "Main";
-        quizCompleteFragment.append(mainMenuButton);
+
+        mainMenuButtonContainer.append(mainMenuButton);
+        quizCompleteFragment.append(mainMenuButtonContainer);
 
         triviaScreen.innerHTML = "";
         triviaScreen.append(quizCompleteFragment);
@@ -150,7 +157,9 @@ export class QuestionView {
                             <span class="answer-choice-label">${answerChoices[3]}</span>
                         </label>
                     </div>
-                    <button class="next-button" disabled>Next</button>
+                    <div class="trivia-button">
+                        <button class="next-button" disabled>Next</button>
+                    </div>
                 `;
             
                 questionContainer.querySelector(".next-button").onclick = () => {
@@ -220,7 +229,8 @@ export class QuestionView {
                 console.error(`Could not find time bar in DOM to update`);
             }
             else {
-                timeBar.style.width = `${timeLeftPct}%`; 
+                // timeBar.style.transform = `scale(${timeLeftPct/100}, 1)`;
+                timeBar.style.width = `${timeLeftPct}%`;
             }  
         }
     };
