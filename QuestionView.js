@@ -175,7 +175,7 @@ export class QuestionView {
 
         setTimeout(() => {
             dataPort.classList.add("data-port__rotate");
-        }, 0);
+        }, 100);
     }
 
     triggerLightbulbAnimation(isValid) {
@@ -194,7 +194,7 @@ export class QuestionView {
 
         setTimeout(() => {
             lightbulbToActivate.classList.add("lightbulb__active");
-        }, 0);
+        }, 100);
     }
 
     deactivateActiveLightbulbs(lightbulbs) {

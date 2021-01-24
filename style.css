@@ -154,7 +154,8 @@ button:disabled {
 }
 
 .data-port {
-    width: 100%;
+    width: 15rem;
+    height: 15rem;
 }
 
 .data-port__rotate {
