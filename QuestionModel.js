@@ -29,8 +29,10 @@ export class QuestionModel {
         };
 
         this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
+            let isValid = false;
             if (chosenAnswer === this.currentQuestion.answer) {
                 this.numQuestionsCorrect++;
+                isValid = true;
                 console.assert(this.numQuestionsCorrect <= this.numQuestionsAsked, "Number of questions answered correctly is greater than the total number asked");
             }
 
@@ -46,6 +48,8 @@ export class QuestionModel {
             };
 
             this.callSubscribers();
+
+            return isValid;
         };
 
         this.getTimeLeft = (timestamp) => {

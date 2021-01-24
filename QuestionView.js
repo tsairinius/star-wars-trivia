@@ -22,7 +22,9 @@ export class QuestionView {
             triviaScreen.innerHTML = `
                 <h3>Do you know your Star Wars characters?</h3>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
-                <button>Begin</button>
+                <div class="trivia-button">
+                    <button>Begin</button>
+                </div>
             `;
         
             triviaScreen.querySelector("button").onclick = this.onBeginClick;
@@ -37,8 +39,10 @@ export class QuestionView {
         const triviaScreen = document.querySelector(".trivia-screen");
         if (triviaScreen) {
             triviaScreen.innerHTML = `
-                <div class="score" data-testid="score">0/0</div>
-                <div class="time-bar" data-testid="time-bar"></div>
+                <div class="stats-container">
+                    <div class="score" data-testid="score">0/0</div>
+                    <div class="time-bar" data-testid="time-bar"></div>
+                </div>
             `;
         }
         else {
@@ -56,10 +60,15 @@ export class QuestionView {
             quizCompleteFragment.textContent = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
         }
 
+        const mainMenuButtonContainer = document.createElement("div");
+        mainMenuButtonContainer.className = "trivia-button";
+
         const mainMenuButton = document.createElement("button");
         mainMenuButton.onclick = this.onMainButtonClick;
         mainMenuButton.textContent = "Main";
-        quizCompleteFragment.append(mainMenuButton);
+
+        mainMenuButtonContainer.append(mainMenuButton);
+        quizCompleteFragment.append(mainMenuButtonContainer);
 
         triviaScreen.innerHTML = "";
         triviaScreen.append(quizCompleteFragment);
@@ -148,11 +157,13 @@ export class QuestionView {
                             <span class="answer-choice-label">${answerChoices[3]}</span>
                         </label>
                     </div>
-                    <button class="next-button" disabled>Next</button>
+                    <div class="trivia-button">
+                        <button class="next-button" disabled>Next</button>
+                    </div>
                 `;
             
                 questionContainer.querySelector(".next-button").onclick = () => {
-                    this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
+                    this.onNextClick(this.getChosenAnswer());
                 }
                     
                 questionContainer.querySelectorAll("input[type=radio]")
@@ -162,6 +173,44 @@ export class QuestionView {
                 triviaScreen.appendChild(questionContainer);
             }
         }       
+    };
+
+    triggerDataPortAnimation() {
+        const dataPort = document.querySelector(".data-port");
+        if (dataPort.classList.contains("data-port__rotate")) {
+            dataPort.classList.remove("data-port__rotate");
+        }
+
+        setTimeout(() => {
+            dataPort.classList.add("data-port__rotate");
+        }, 100);
+    }
+
+    triggerLightbulbAnimation(isValid) {
+        const correctLight = document.querySelector(".lightbulb__correct");
+        const incorrectLight = document.querySelector(".lightbulb__incorrect");
+
+        this.deactivateActiveLightbulbs([correctLight, incorrectLight]);
+
+        let lightbulbToActivate;
+        if (isValid) {
+            lightbulbToActivate = correctLight;
+        }
+        else {
+            lightbulbToActivate = incorrectLight;
+        }
+
+        setTimeout(() => {
+            lightbulbToActivate.classList.add("lightbulb__active");
+        }, 100);
+    }
+
+    deactivateActiveLightbulbs(lightbulbs) {
+        lightbulbs.forEach(lightbulb => {
+            if (lightbulb.classList.contains("lightbulb__active")) {
+                lightbulb.classList.remove("lightbulb__active");
+            }
+        });
     };
 
     getChosenAnswer() {
@@ -179,7 +228,7 @@ export class QuestionView {
                 console.error(`Could not find time bar in DOM to update`);
             }
             else {
-                timeBar.style.width = `${timeLeftPct}%`; 
+                timeBar.style.width = `${timeLeftPct}%`;
             }  
         }
     };
