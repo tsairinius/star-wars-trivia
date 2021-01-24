@@ -3,6 +3,7 @@ html {
     justify-content: center;
     background-color: rgb(24, 24, 24);
     padding: 1rem 5rem;
+    font-size: 1vw;
 }
 
 * {
@@ -10,7 +11,8 @@ html {
 }
 
 body {
-    width: 90%;
+    width: 90rem;
+    height: 50rem;
     display: grid;
     grid-template-columns: 8fr 2fr;
     column-gap: 1rem;
@@ -115,8 +117,8 @@ button:disabled {
 
 .lightbulb {
     border-radius: 50%;
-    width: 4rem;
-    height: 4rem;
+    width: 6rem;
+    height: 6rem;
     border: 0.1rem solid black;
     box-shadow: 0.01rem 0.01rem 0.1rem black;
 }
