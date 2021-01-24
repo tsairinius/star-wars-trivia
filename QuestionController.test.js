@@ -48,17 +48,18 @@ describe("startQuiz", () => {
     });
 });
 
-describe("validateAndGetNextQuestion", () => {
+describe("handleNextQuestion", () => {
     test("Calls view to trigger lightbulb animation based on model's response to user's answer", () => {
         const {model, view, controller} = initializeMVC();
 
         const isValidAnswer = false;
         model.validateAnswerAndGetNextQuestion = jest.fn().mockReturnValueOnce(isValidAnswer);
         view.triggerLightbulbAnimation = jest.fn();
+        view.triggerDataPortAnimation = jest.fn();
 
         expect(model.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
         expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
-        controller.validateAnswerAndGetNextQuestion();
+        controller.handleNextQuestion();
         expect(model.validateAnswerAndGetNextQuestion).toHaveBeenCalledTimes(1);
         expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(isValidAnswer);
     });
@@ -172,14 +173,14 @@ describe("handleTimeChange", () => {
         const {model, view, controller} = initializeMVC();
 
         view.getChosenAnswer = jest.fn();
-        controller.validateAnswerAndGetNextQuestion = jest.fn();
+        controller.handleNextQuestion = jest.fn();
         view.updateTimeBar = jest.fn();
 
         const badArg = undefined;
         controller.handleTimeChange(badArg);
 
         expect(view.getChosenAnswer).not.toHaveBeenCalled();
-        expect(controller.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
+        expect(controller.handleNextQuestion).not.toHaveBeenCalled();
         expect(view.updateTimeBar).not.toHaveBeenCalled();
         expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid argument passed as time left: undefined. Must be a percentage of type Number`);
     });
@@ -188,13 +189,13 @@ describe("handleTimeChange", () => {
         const {model, view, controller} = initializeMVC();
 
         view.getChosenAnswer = jest.fn();
-        controller.validateAnswerAndGetNextQuestion = jest.fn();
+        controller.handleNextQuestion = jest.fn();
         view.updateTimeBar = jest.fn();
 
         controller.handleTimeChange(0);
 
         expect(view.getChosenAnswer).toHaveBeenCalledTimes(1);
-        expect(controller.validateAnswerAndGetNextQuestion).toHaveBeenCalledTimes(1);
+        expect(controller.handleNextQuestion).toHaveBeenCalledTimes(1);
         expect(view.updateTimeBar).not.toHaveBeenCalled();
     });
 
@@ -202,13 +203,13 @@ describe("handleTimeChange", () => {
         const {model, view, controller} = initializeMVC();
 
         view.getChosenAnswer = jest.fn();
-        controller.validateAnswerAndGetNextQuestion = jest.fn();
+        controller.handleNextQuestion = jest.fn();
         view.updateTimeBar = jest.fn();
 
         controller.handleTimeChange(1);
 
         expect(view.getChosenAnswer).not.toHaveBeenCalled();
-        expect(controller.validateAnswerAndGetNextQuestion).not.toHaveBeenCalled();
+        expect(controller.handleNextQuestion).not.toHaveBeenCalled();
         expect(view.updateTimeBar).toHaveBeenCalledTimes(1);
     });
 });

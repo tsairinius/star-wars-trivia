@@ -163,8 +163,7 @@ export class QuestionView {
                 `;
             
                 questionContainer.querySelector(".next-button").onclick = () => {
-                    this.validateAnswerAndGetNextQuestion(this.getChosenAnswer());
-                    this.triggerDataPortAnimation();
+                    this.onNextClick(this.getChosenAnswer());
                 }
                     
                 questionContainer.querySelectorAll("input[type=radio]")
@@ -229,7 +228,6 @@ export class QuestionView {
                 console.error(`Could not find time bar in DOM to update`);
             }
             else {
-                // timeBar.style.transform = `scale(${timeLeftPct/100}, 1)`;
                 timeBar.style.width = `${timeLeftPct}%`;
             }  
         }

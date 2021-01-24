@@ -20,9 +20,10 @@ export class QuestionController {
             this.questionView.renderStartScreen();
         };
 
-        this.validateAnswerAndGetNextQuestion = (chosenAnswer) => {
+        this.handleNextQuestion = (chosenAnswer) => {
             const isValid = this.questionModel.validateAnswerAndGetNextQuestion(chosenAnswer);
             this.questionView.triggerLightbulbAnimation(isValid);
+            this.questionView.triggerDataPortAnimation();
         };
 
         this.handleModelChange = (data) => {
@@ -50,7 +51,7 @@ export class QuestionController {
             if (isPercentage(timeLeft)) {
                 if (timeLeft === 0) {
                     const chosenAnswer = this.questionView.getChosenAnswer();
-                    this.validateAnswerAndGetNextQuestion(chosenAnswer);
+                    this.handleNextQuestion(chosenAnswer);
                 }
                 else {
                     this.questionView.updateTimeBar(timeLeft);
@@ -64,7 +65,7 @@ export class QuestionController {
         this.questionModel.addSubscriber(this.handleModelChange);
         this.questionModel.onTimeChange = this.handleTimeChange;
 
-        this.questionView.validateAnswerAndGetNextQuestion = this.validateAnswerAndGetNextQuestion;
+        this.questionView.onNextClick = this.handleNextQuestion;
         this.questionView.onBeginClick = this.startQuiz;
         this.questionView.onStartScreenRender = this.questionModel.createQuestionSet;
         this.questionView.onMainButtonClick = this.resetQuiz;

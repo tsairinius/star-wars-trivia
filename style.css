@@ -129,6 +129,8 @@ body {
     height: 6rem;
     border: 0.1rem solid black;
     box-shadow: 0.01rem 0.01rem 0.1rem black;
+    margin: 1rem;
+    display: inline-block;
 }
 
 .lightbulb__correct {
