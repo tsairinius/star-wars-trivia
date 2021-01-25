@@ -5,7 +5,7 @@ import { validateProperties } from "./utilities/validateProperties.js";
 export function getBirthYearQuestionAndAnswer(person) {
     if (validateProperties(person, ["birth_year", "name"])) {
         return {
-            question: `What is the birth year of ${person.name}?`,
+            question: `What year was ${person.name} born?`,
             answer: person.birth_year
         }
     }

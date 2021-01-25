@@ -13,7 +13,7 @@ describe("getBirthYearQuestionAndAnswer", () => {
     const invalidPersonError = "Invalid person object passed in as argument. Must have valid name and birth_year properties";
     test("Returns object with personalized question and answer", () => {
         const expectedResult = {
-            question: "What is the birth year of Plo Koon?",
+            question: "What year was Plo Koon born?",
             answer: "22BBY"
         };
 
@@ -109,7 +109,7 @@ describe("createBirthYearQuestion", () => {
 
     test("Returns object with a question, its answer, and three other choices", async () => {
         const result = await birthYear.createBirthYearQuestion();
-        expect(result.question).toBe("What is the birth year of Luke Skywalker?");
+        expect(result.question).toBe("What year was Luke Skywalker born?");
         expect(result.answer).toBe("19BBY");
         expect(result.otherOptions.length).toBe(3);
     });
@@ -121,7 +121,7 @@ describe("createBirthYearQuestion", () => {
         }));
 
         const result = await birthYear.createBirthYearQuestion();
-        expect(result.question).toBe("What is the birth year of Luke Skywalker?");
+        expect(result.question).toBe("What year was Luke Skywalker born?");
         expect(result.answer).toBe("19BBY");
     });
 
@@ -132,7 +132,7 @@ describe("createBirthYearQuestion", () => {
         }));
 
         const result = await birthYear.createBirthYearQuestion();
-        expect(result.question).toBe("What is the birth year of Luke Skywalker?");
+        expect(result.question).toBe("What year was Luke Skywalker born?");
         expect(result.answer).toBe("19BBY");
     });
 

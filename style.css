@@ -1,8 +1,5 @@
 html {
-    display: flex;
-    justify-content: center;
     background-color: rgb(24, 24, 24);
-    padding: 1rem 5rem;
     font-size: 1vw;
 }
 
@@ -12,8 +9,15 @@ html {
 }
 
 body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.trivia-container {
     width: 90rem;
-    height: 40rem;
+    height: 45rem;
     display: grid;
     grid-template-columns: 8fr 2fr;
     grid-template-rows: 1fr;
@@ -123,6 +127,11 @@ body {
     padding: 1rem 0;
 }
 
+.lightbulbs-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .lightbulb {
     border-radius: 50%;
     width: 6rem;
@@ -134,7 +143,7 @@ body {
 }
 
 .lightbulb__correct {
-    background: radial-gradient(rgb(0, 95, 0), rgb(0, 75, 0));
+    background: radial-gradient(rgb(0, 121, 0), rgb(0, 75, 0));
 }
 
 .lightbulb__incorrect {
@@ -143,6 +152,44 @@ body {
 
 .lightbulb__active {
     animation: light 1s linear;
+}
+
+.filler-button__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.filler-button {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    animation: flicker 3.5s linear infinite;
+}
+
+.filler-button:first-child {
+    animation-delay: 1s;
+}
+
+.filler-button:nth-child(3) {
+    animation-delay: 2s;
+}
+
+.filler-button:last-child {
+    animation-delay: 3s;
+}
+
+.filler-button__blue {
+    background: radial-gradient(rgb(65, 65, 255), blue);
+    box-shadow: 0.1rem 0.1rem 0.5rem blue, -0.1rem -0.1rem 0.5rem blue;
+}
+
+.filler-button__white {
+    background: radial-gradient(white, rgb(190, 190, 190));
+}
+
+.filler-button_yellow {
+    background: radial-gradient(rgb(255, 202, 102), orange);
 }
 
 .data-port-plate {
@@ -201,16 +248,34 @@ body {
     }
 }
 
-@media (max-width: 600px) {
-    body {
+@keyframes flicker {
+    0% {
+        filter: brightness(250%);
+    }
+    50% {
+        filter: brightness(250%);
+    }
+    51% {
+        filter: brightness(100%);
+    }
+}
+
+@media (max-width: 750px) and (orientation: portrait) {
+    .trivia-container {
         height: 80rem;
         grid-template-columns: 1fr;
         grid-template-rows: 8fr 2fr;
+        border: black solid 0.5rem;
+        padding: 5rem 0;
+        box-shadow: 0 0.5rem 0.1rem black;
     }
 
     .control-panel {
         flex-direction: row;
         justify-content: space-around;
-        align-items: center;
+    }
+
+    .lightbulbs-container {
+        flex-direction: row;
     }
 }
