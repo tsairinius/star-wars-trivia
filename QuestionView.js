@@ -40,7 +40,7 @@ export class QuestionView {
         if (triviaScreen) {
             triviaScreen.innerHTML = `
                 <div class="stats-container">
-                    <div class="score" data-testid="score">0/0</div>
+                    <div class="score" data-testid="score"></div>
                     <div class="time-bar" data-testid="time-bar"></div>
                 </div>
             `;
@@ -121,41 +121,43 @@ export class QuestionView {
                 questionContainer.setAttribute("class", "question-container");
                 questionContainer.innerHTML = `
                     <p class="question">${question.question}</p>
-                    <div>
-                        <label class="answer-choice">
-                            <span class="answer-choice-input"> 
-                                <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]} />
-                                <span class="answer-choice-control"></span>
-                            </span>
-                            <span class="answer-choice-label">${answerChoices[0]}</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class="answer-choice">
-                            <span class="answer-choice-input"> 
-                                <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]} />
-                                <span class="answer-choice-control"></span>
-                            </span>
-                            <span class="answer-choice-label">${answerChoices[1]}</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class="answer-choice">
-                            <span class="answer-choice-input"> 
-                                <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]} />
-                                <span class="answer-choice-control"></span>
-                            </span>
-                            <span class="answer-choice-label">${answerChoices[2]}</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class="answer-choice">
-                            <span class="answer-choice-input"> 
-                                <input data-testid="answer-choice-4" type="radio" name="answer-choice" id="answer-choice-4" value=${answerChoices[3]} />
-                                <span class="answer-choice-control"></span>
-                            </span>
-                            <span class="answer-choice-label">${answerChoices[3]}</span>
-                        </label>
+                    <div class="answer-choice-container">
+                        <div>
+                            <label class="answer-choice">
+                                <span class="answer-choice-input"> 
+                                    <input data-testid="answer-choice-1" type="radio" name="answer-choice" id="answer-choice-1" value=${answerChoices[0]} />
+                                    <span class="answer-choice-control"></span>
+                                </span>
+                                <span class="answer-choice-label">${answerChoices[0]}</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="answer-choice">
+                                <span class="answer-choice-input"> 
+                                    <input data-testid="answer-choice-2" type="radio" name="answer-choice" id="answer-choice-2" value=${answerChoices[1]} />
+                                    <span class="answer-choice-control"></span>
+                                </span>
+                                <span class="answer-choice-label">${answerChoices[1]}</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="answer-choice">
+                                <span class="answer-choice-input"> 
+                                    <input data-testid="answer-choice-3" type="radio" name="answer-choice" id="answer-choice-3" value=${answerChoices[2]} />
+                                    <span class="answer-choice-control"></span>
+                                </span>
+                                <span class="answer-choice-label">${answerChoices[2]}</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="answer-choice">
+                                <span class="answer-choice-input"> 
+                                    <input data-testid="answer-choice-4" type="radio" name="answer-choice" id="answer-choice-4" value=${answerChoices[3]} />
+                                    <span class="answer-choice-control"></span>
+                                </span>
+                                <span class="answer-choice-label">${answerChoices[3]}</span>
+                            </label>
+                        </div>
                     </div>
                     <div class="trivia-button">
                         <button class="next-button" disabled>Next</button>
