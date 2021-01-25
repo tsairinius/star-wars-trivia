@@ -71,7 +71,7 @@ describe("renderScoreAndTimeBar", () => {
         initializeDOM();
         view.renderScoreAndTimeBar();
     
-        expect(screen.getByTestId("score").textContent).toBe("0/0");
+        expect(screen.getByTestId("score")).toBeInTheDocument();
         expect(screen.getByTestId("time-bar")).toBeInTheDocument();
     });
 
@@ -262,11 +262,12 @@ describe("renderQuizComplete", () => {
         expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
     });
 
-    test("Shows user's score and main menu button", () => {
+    test("Shows user's score, appropriate message based on score, main menu button", () => {
         const view = new QuestionView();
 
         view.renderQuizComplete(2, 5);
-        expect(screen.getByText("You answered 2/5 questions correctly!")).toBeInTheDocument();
+        expect(screen.getByText("You scored 2/5!")).toBeInTheDocument();
+        expect(screen.getByText('"Great kid. Don\'t get cocky"'))
         expect(screen.getByRole("button", {name: "Main"})).toBeInTheDocument();
     });
 
@@ -374,4 +375,46 @@ describe("updateTimeBar", () => {
 
         expect(consoleErrorMock).toHaveBeenCalledWith("Could not find time bar in DOM to update");
     });
+});
+
+describe("getQuizCompleteMessage", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    test("Displays appropriate message if user's score is less than 20%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(1, 6)).toBe('"Impressive. Every word in that sentence is wrong"');
+    }); 
+
+    test("Displays appropriate message if user's score is between 20% - 40%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(2, 6)).toBe('"Let\'s keep a little optimism here"');
+    });  
+
+    test("Displays appropriate message if user's score is between 40% - 60%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(3, 6)).toBe('"Great kid. Don\'t get cocky"');
+    });  
+
+    test("Displays appropriate message if user's score is between 60% - 80%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(4, 6)).toBe('"The force is strong with this one"');
+    });  
+
+    test("Displays appropriate message if user's score is between 80% - 99%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(5, 6)).toBe("Well I'll be a son of a bantha!");
+    });  
+
+    test("Displays appropriate message if user's score is 100%", () => {
+        const view = new QuestionView();
+
+        expect(view.getQuizCompleteMessage(6, 6)).toBe("Well done! You've earned yourself a free glass of blue milk on the house.");
+    });     
 });

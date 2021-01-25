@@ -15,6 +15,7 @@ describe("startQuiz", () => {
         const { model, view, controller } = initializeMVC();
 
         view.renderScoreAndTimeBar = jest.fn();
+        view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
         model.setTimer = jest.fn();
@@ -25,6 +26,7 @@ describe("startQuiz", () => {
         controller.startQuiz();
 
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
         expect(model.isQuizRunning).toBeTruthy();
@@ -35,6 +37,7 @@ describe("startQuiz", () => {
         const { model, view, controller } = initializeMVC();
 
         view.renderScoreAndTimeBar = jest.fn();
+        view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
         model.setTimer = jest.fn();
@@ -43,6 +46,7 @@ describe("startQuiz", () => {
 
         expect(model.setTimer).not.toHaveBeenCalled();
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.isQuizRunning).toBeTruthy();
     });

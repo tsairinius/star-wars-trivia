@@ -52,27 +52,67 @@ export class QuestionView {
 
     renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
         const triviaScreen = document.querySelector("div[class=trivia-screen]");
-        const quizCompleteFragment = document.createDocumentFragment();
+        const quizCompleteContainer = document.createElement("div");
+
+        let quizCompleteMessage;
         if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
-            quizCompleteFragment.textContent = "Quiz completed!";
+            quizCompleteMessage = "<p>Quiz completed!<p>";
         }
         else {
-            quizCompleteFragment.textContent = `You answered ${numQuestionsCorrect}/${numQuestionsAsked} questions correctly!`;
+            quizCompleteMessage = 
+            `
+                <p>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!<p>
+                <p>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}<p>
+            `;
         }
 
-        const mainMenuButtonContainer = document.createElement("div");
-        mainMenuButtonContainer.className = "trivia-button";
+        quizCompleteContainer.innerHTML = 
+            `
+                ${quizCompleteMessage}
+                <div class="trivia-button">
+                    <button>Main</button>
+                </div>
+            `;
 
-        const mainMenuButton = document.createElement("button");
+        const mainMenuButton = quizCompleteContainer.querySelector(".trivia-button button");
         mainMenuButton.onclick = this.onMainButtonClick;
-        mainMenuButton.textContent = "Main";
-
-        mainMenuButtonContainer.append(mainMenuButton);
-        quizCompleteFragment.append(mainMenuButtonContainer);
 
         triviaScreen.innerHTML = "";
-        triviaScreen.append(quizCompleteFragment);
+        triviaScreen.append(quizCompleteContainer);
     }
+
+    getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked) {
+        const score = numQuestionsCorrect/numQuestionsAsked;
+        let message;
+        if (score < 0.2) {
+            message = '"Impressive. Every word in that sentence is wrong"';
+        }
+        else if (score >= 0.2 && score < 0.4) {
+            message = '"Let\'s keep a little optimism here"'; 
+        }
+        else if (score >= 0.4 && score < 0.6) {
+            message = '"Great kid. Don\'t get cocky"';
+        }
+        else if (score >= 0.6 && score < 0.8) {
+            message = '"The force is strong with this one"';
+        }
+        else if (score >= 0.8 && score < 1) {
+            message = "Well I'll be a son of a bantha!";
+        }
+        else {
+            message = "Well done! You've earned yourself a free glass of blue milk on the house.";
+        }
+
+        return message;
+    };
+
+    // I find your lack of competence disturbing
+    // Have you been living under a rock on Dagobah? 
+    // You make those bucketheads look smart! 
+    // Well I'll be a son of a Bantha! 
+    // Well done! You've earned yourself 
+    // The force is strong with this one! 
+    // A wookie could do better!
 
     renderLoadingScreen() {
         if (document.querySelector(".question-container")) {
