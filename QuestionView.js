@@ -20,7 +20,7 @@ export class QuestionView {
         const triviaScreen = document.querySelector(".trivia-screen");
         if (triviaScreen) {
             triviaScreen.innerHTML = `
-                <h3>Do you know your Star Wars characters?</h3>
+                <h2>Do you know your Star Wars characters?</h2>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
                 <div class="trivia-button">
                     <button>Begin</button>
@@ -53,17 +53,15 @@ export class QuestionView {
     renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
         const triviaScreen = document.querySelector("div[class=trivia-screen]");
         const quizCompleteContainer = document.createElement("div");
+        quizCompleteContainer.className = "quiz-complete-container";
 
         let quizCompleteMessage;
         if (!this.isValidScore(numQuestionsCorrect, numQuestionsAsked)) {
-            quizCompleteMessage = "<p>Quiz completed!<p>";
+            quizCompleteMessage = "<h3>Quiz completed!</h3>";
         }
         else {
             quizCompleteMessage = 
-            `
-                <p>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!<p>
-                <p>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}<p>
-            `;
+            `<h2>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!</h2>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}`;
         }
 
         quizCompleteContainer.innerHTML = 
@@ -85,34 +83,27 @@ export class QuestionView {
         const score = numQuestionsCorrect/numQuestionsAsked;
         let message;
         if (score < 0.2) {
-            message = '"Impressive. Every word in that sentence is wrong"';
+            message = '<p>"Impressive. Every word in that sentence is wrong"</p>';
         }
         else if (score >= 0.2 && score < 0.4) {
-            message = '"Let\'s keep a little optimism here"'; 
+            message = '<p>"Let\'s keep a little optimism here"</p>'; 
         }
         else if (score >= 0.4 && score < 0.6) {
-            message = '"Great kid. Don\'t get cocky"';
+            message = '<p>"Great kid. Don\'t get cocky"</p>';
         }
         else if (score >= 0.6 && score < 0.8) {
-            message = '"The force is strong with this one"';
+            message = '<p>"The force is strong with this one"</p>';
         }
         else if (score >= 0.8 && score < 1) {
-            message = "Well I'll be a son of a bantha!";
+            message = "<p>Well I'll be a son of a bantha!</p>";
         }
         else {
-            message = "Well done! You've earned yourself a free glass of blue milk on the house.";
+            message = `<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
+                <img src="./blue-milk.png" class="blue-milk-image">`;
         }
 
         return message;
     };
-
-    // I find your lack of competence disturbing
-    // Have you been living under a rock on Dagobah? 
-    // You make those bucketheads look smart! 
-    // Well I'll be a son of a Bantha! 
-    // Well done! You've earned yourself 
-    // The force is strong with this one! 
-    // A wookie could do better!
 
     renderLoadingScreen() {
         if (document.querySelector(".question-container")) {
@@ -123,7 +114,7 @@ export class QuestionView {
         questionContainer.setAttribute("class", "question-container");
 
         const triviaScreen = document.querySelector(".trivia-screen");
-        questionContainer.textContent = "Loading...";
+        questionContainer.innerHTML = `<div class="loading-screen"><h2>Loading...</h2><p>(from a galaxy far far away)</p></div>`;
         if (triviaScreen) {
             triviaScreen.append(questionContainer);
         }

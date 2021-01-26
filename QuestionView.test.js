@@ -385,36 +385,37 @@ describe("getQuizCompleteMessage", () => {
     test("Displays appropriate message if user's score is less than 20%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(1, 6)).toBe('"Impressive. Every word in that sentence is wrong"');
+        expect(view.getQuizCompleteMessage(1, 6)).toBe('<p>"Impressive. Every word in that sentence is wrong"</p>');
     }); 
 
     test("Displays appropriate message if user's score is between 20% - 40%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(2, 6)).toBe('"Let\'s keep a little optimism here"');
+        expect(view.getQuizCompleteMessage(2, 6)).toBe('<p>"Let\'s keep a little optimism here"</p>');
     });  
 
     test("Displays appropriate message if user's score is between 40% - 60%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(3, 6)).toBe('"Great kid. Don\'t get cocky"');
+        expect(view.getQuizCompleteMessage(3, 6)).toBe('<p>"Great kid. Don\'t get cocky"</p>');
     });  
 
     test("Displays appropriate message if user's score is between 60% - 80%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(4, 6)).toBe('"The force is strong with this one"');
+        expect(view.getQuizCompleteMessage(4, 6)).toBe('<p>"The force is strong with this one"</p>');
     });  
 
     test("Displays appropriate message if user's score is between 80% - 99%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(5, 6)).toBe("Well I'll be a son of a bantha!");
+        expect(view.getQuizCompleteMessage(5, 6)).toBe("<p>Well I'll be a son of a bantha!</p>");
     });  
 
     test("Displays appropriate message if user's score is 100%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(6, 6)).toBe("Well done! You've earned yourself a free glass of blue milk on the house.");
+        expect(view.getQuizCompleteMessage(6, 6)).toBe(`<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
+                <img src="./blue-milk.png" class="blue-milk-image">`);
     });     
 });
