@@ -1,15 +1,31 @@
 export function initializeDOM() {
-        document.body.innerHTML = `
-                <div class="trivia-screen-border">
-                        <div class="trivia-screen"></div>
+        document.body.innerHTML = `<div class="trivia-container">
+        <div class="trivia-screen-border">
+            <div class="trivia-screen">
+                <div class="quiz-container"></div>
+                <div class="trivia-button"></div>
+            </div>
+        </div>
+        <div class="control-panel">
+            <div class="lightbulbs-container">
+                <div class="lightbulb lightbulb__correct" data-testid="lightbulb-correct"></div>
+                <div class="lightbulb lightbulb__incorrect" data-testid="lightbulb-incorrect"></div>
+            </div>
+            <div class="filler-button__container">
+                <div class="filler-button__long-duration filler-button__blue"></div>
+                <div class="filler-button__short-duration filler-button__blue"></div>
+                <div class="filler-button__long-duration filler-button_yellow"></div>
+                <div class="filler-button__short-duration filler-button__white"></div>
+                <div class="filler-button__long-duration filler-button__white"></div>
+                <div class="filler-button__short-duration filler-button_yellow"></div>
+                <div class="filler-button__long-duration filler-button__blue"></div>
+                <div class="filler-button__short-duration filler-button_yellow"></div>
+            </div>
+            <div class="data-port-plate">
+                <div class="data-port-hole">
+                    <img src="./data-port.png" class="data-port" />
                 </div>
-                <div class="control-panel">
-                        <div class="lightbulb lightbulb__correct" data-testid="lightbulb-correct"></div>
-                        <div class="lightbulb lightbulb__incorrect" data-testid="lightbulb-incorrect"></div>
-                        <div class="data-port-plate">
-                                <div class="data-port-hole">
-                                        <img src="./data-port.png" class="data-port" />
-                                </div>
-                        </div>
-                </div>`
+            </div>
+        </div>
+    </div>`
 }

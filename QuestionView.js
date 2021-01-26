@@ -16,42 +16,48 @@ export class QuestionView {
         this.onStartScreenRender = null;
     };
 
+    clearQuizContainer() {
+        const quizContainer = document.querySelector(".quiz-container");
+        quizContainer.innerHTML = ``;
+    }
+
     renderStartScreen() {
-        const triviaScreen = document.querySelector(".trivia-screen");
-        if (triviaScreen) {
-            triviaScreen.innerHTML = `
+        const quizContainer = document.querySelector(".quiz-container");
+        const triviaButtonContainer = document.querySelector(".trivia-button");
+        if (quizContainer && triviaButtonContainer) {
+            quizContainer.innerHTML = `
                 <h2>Do you know your Star Wars characters?</h2>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
-                <div class="trivia-button">
-                    <button>Begin</button>
-                </div>
             `;
-        
-            triviaScreen.querySelector("button").onclick = this.onBeginClick;
+
+            triviaButtonContainer.innerHTML = `<button>Begin</button>`;
+            triviaButtonContainer.firstElementChild.onclick = this.onBeginClick;
             this.onStartScreenRender();
         }
         else {
-            throw new Error("Missing trivia container to render in");
+            throw new Error("Missing quiz container and/or button container to render in");
         }
     }
 
     renderScoreAndTimeBar() {
-        const triviaScreen = document.querySelector(".trivia-screen");
-        if (triviaScreen) {
-            triviaScreen.innerHTML = `
-                <div class="stats-container">
-                    <div class="score" data-testid="score"></div>
-                    <div class="time-bar" data-testid="time-bar"></div>
-                </div>
+        const quizContainer = document.querySelector(".quiz-container");
+        if (quizContainer) {
+            const statsContainer = document.createElement("div");
+            statsContainer.className = "stats-container";
+            statsContainer.innerHTML = `
+                <div class="score" data-testid="score"></div>
+                <div class="time-bar" data-testid="time-bar"></div>
             `;
+
+            quizContainer.append(statsContainer);
         }
         else {
-            throw new Error("Missing trivia container to render in");
+            throw new Error("Missing quiz container to render in");
         }
     }
 
     renderQuizComplete(numQuestionsCorrect, numQuestionsAsked) {
-        const triviaScreen = document.querySelector("div[class=trivia-screen]");
+        const quizContainer = document.querySelector("div[class=quiz-container]");
         const quizCompleteContainer = document.createElement("div");
         quizCompleteContainer.className = "quiz-complete-container";
 
@@ -64,19 +70,14 @@ export class QuestionView {
             `<h2>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!</h2>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}`;
         }
 
-        quizCompleteContainer.innerHTML = 
-            `
-                ${quizCompleteMessage}
-                <div class="trivia-button">
-                    <button>Main</button>
-                </div>
-            `;
+        quizCompleteContainer.innerHTML = quizCompleteMessage;
 
-        const mainMenuButton = quizCompleteContainer.querySelector(".trivia-button button");
-        mainMenuButton.onclick = this.onMainButtonClick;
+        const triviaButtonContainer = document.querySelector(".trivia-button");
+        triviaButtonContainer.innerHTML = `<button>Main</button>`;
+        triviaButtonContainer.firstElementChild.onclick = this.onMainButtonClick;
 
-        triviaScreen.innerHTML = "";
-        triviaScreen.append(quizCompleteContainer);
+        quizContainer.innerHTML = "";
+        quizContainer.append(quizCompleteContainer);
     }
 
     getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked) {
@@ -113,13 +114,13 @@ export class QuestionView {
         const questionContainer = document.createElement("div");
         questionContainer.setAttribute("class", "question-container");
 
-        const triviaScreen = document.querySelector(".trivia-screen");
+        const quizContainer = document.querySelector(".quiz-container");
         questionContainer.innerHTML = `<div class="loading-screen"><h2>Loading...</h2><p>(from a galaxy far far away)</p></div>`;
-        if (triviaScreen) {
-            triviaScreen.append(questionContainer);
+        if (quizContainer) {
+            quizContainer.append(questionContainer);
         }
         else {
-            throw new Error("Could not find trivia container to render in");
+            throw new Error("Could not find quiz container to render in");
         }
     }
 
@@ -190,20 +191,17 @@ export class QuestionView {
                             </label>
                         </div>
                     </div>
-                    <div class="trivia-button">
-                        <button class="next-button" disabled>Next</button>
-                    </div>
                 `;
-            
-                questionContainer.querySelector(".next-button").onclick = () => {
-                    this.onNextClick(this.getChosenAnswer());
-                }
                     
                 questionContainer.querySelectorAll("input[type=radio]")
                     .forEach(input => input.onchange = this.enableNextButton);
             
-                const triviaScreen = document.querySelector(".trivia-screen");
-                triviaScreen.appendChild(questionContainer);
+                const quizContainer = document.querySelector(".quiz-container");
+                quizContainer.appendChild(questionContainer); 
+                
+                const triviaButtonContainer = document.querySelector(".trivia-button");
+                triviaButtonContainer.innerHTML = `<button class="next-button" disabled>Next</button>`;
+                triviaButtonContainer.firstElementChild.onclick = () => this.onNextClick(this.getChosenAnswer());
             }
         }       
     };

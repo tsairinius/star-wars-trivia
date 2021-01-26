@@ -14,6 +14,7 @@ describe("startQuiz", () => {
     test("Invokes view and model to render score and time bar, display first question, set timer, and trigger data port animation", () => {
         const { model, view, controller } = initializeMVC();
 
+        view.clearQuizContainer = jest.fn();
         view.renderScoreAndTimeBar = jest.fn();
         view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
@@ -25,6 +26,7 @@ describe("startQuiz", () => {
 
         controller.startQuiz();
 
+        expect(view.clearQuizContainer).toHaveBeenCalledTimes(1);
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
@@ -36,6 +38,7 @@ describe("startQuiz", () => {
     test("Does not set timer if no question can be retrieved from model", () => {
         const { model, view, controller } = initializeMVC();
 
+        view.clearQuizContainer = jest.fn();
         view.renderScoreAndTimeBar = jest.fn();
         view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
@@ -45,6 +48,7 @@ describe("startQuiz", () => {
         controller.startQuiz();
 
         expect(model.setTimer).not.toHaveBeenCalled();
+        expect(view.clearQuizContainer).toHaveBeenCalledTimes(1);
         expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);

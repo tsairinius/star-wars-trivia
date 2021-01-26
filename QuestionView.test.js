@@ -53,7 +53,7 @@ describe("renderStartScreen", () => {
         cleanUpDOM();
         const view = new QuestionView();
 
-        expect(() => view.renderStartScreen()).toThrow(new Error("Missing trivia container to render in"));
+        expect(() => view.renderStartScreen()).toThrow(new Error("Missing quiz container and/or button container to render in"));
     });
 });
 
@@ -77,7 +77,7 @@ describe("renderScoreAndTimeBar", () => {
 
     test("If there's no trivia container to render quiz in, throw error", () => {
         const view = new QuestionView();
-        expect(() => view.renderScoreAndTimeBar()).toThrow(new Error("Missing trivia container to render in"));
+        expect(() => view.renderScoreAndTimeBar()).toThrow(new Error("Missing quiz container to render in"));
     });
 });
 
@@ -91,7 +91,7 @@ describe("displayQuestion", () => {
         initializeDOM();
     });
 
-    test("Displays question with answer choices and Next button", () => {
+    test("Displays question with answer choices and re-renders next button", () => {
         const view = new QuestionView();
         view.displayQuestion(question);
 
@@ -303,7 +303,7 @@ describe("renderLoadingScreen", () => {
     test("Throws error if unable to find trivia container to render in", () => {
         const view = new QuestionView();
 
-        expect(() => view.renderLoadingScreen()).toThrow(new Error("Could not find trivia container to render in"));
+        expect(() => view.renderLoadingScreen()).toThrow(new Error("Could not find quiz container to render in"));
     });
 });
 

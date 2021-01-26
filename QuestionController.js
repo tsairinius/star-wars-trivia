@@ -6,6 +6,7 @@ export class QuestionController {
         this.questionView = questionView;
 
         this.startQuiz = () => {
+            this.questionView.clearQuizContainer();
             this.questionView.renderScoreAndTimeBar();
             this.questionView.updateScore(this.questionModel.numQuestionsCorrect, this.questionModel.numQuestionsAsked);
             this.questionView.displayQuestion(this.questionModel.currentQuestion);

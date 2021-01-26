@@ -40,12 +40,6 @@ describe("Start screen", () => {
 });
 
 describe("Quiz screen", () => {
-    const setUpQuizArea = (view, model) => {
-        initializeDOM();
-        view.renderScoreAndTimeBar();
-        model.isQuizRunning = true;
-    }
-
     let consoleErrorMock;
     let createRandomQuestionMock;
     beforeAll(() => {
@@ -64,12 +58,13 @@ describe("Quiz screen", () => {
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(2);
 
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
-        await model.createQuestion();
+        await view.renderStartScreen();
+
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
         userEvent.click(screen.getByRole("button", {name: "Next"}));
@@ -83,12 +78,13 @@ describe("Quiz screen", () => {
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(2);
 
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
-        await model.createQuestion();
+        await view.renderStartScreen();
+
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
         userEvent.click(screen.getByRole("button", {name: "Next"}));
@@ -100,38 +96,41 @@ describe("Quiz screen", () => {
         expect(screen.getByLabelText("green")).toBeInTheDocument();
     });
 
-    test("When user answers first question correctly, displays that 1/1 questions were answered correctly", async () => {
+    test("When user answers first question correctly, displays 1/2 (1 answered correctly, now on question 2)", async () => {
         createRandomQuestionMock
-            .mockReturnValueOnce(Promise.resolve(question));
+            .mockReturnValueOnce(Promise.resolve(question))
+            .mockReturnValueOnce(Promise.resolve(secondQuestion))
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(2);
 
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
-        expect(screen.getByTestId("score").textContent).toBe("1/1");
+        expect(screen.getByTestId("score").textContent).toBe("1/2");
     });
 
     test("When user answers first question correctly and clicks next, triggers animations accordingly", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(1);
         
         view.triggerLightbulbAnimation = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
 
-        expect(view.triggerDataPortAnimation).not.toHaveBeenCalled();
-        expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
+        view.triggerLightbulbAnimation.mockClear();
+        view.triggerDataPortAnimation.mockClear();
 
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
@@ -139,41 +138,44 @@ describe("Quiz screen", () => {
         expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(true);
     });
 
-    test("When user answers first question incorrectly, displays that 0/1 questions were answered correctly", async () => {
+    test("When user answers first question incorrectly, displays 0/2 (0 questions answer correctly, now on second question)", async () => {
         createRandomQuestionMock
-            .mockReturnValueOnce(Promise.resolve(question));
+            .mockReturnValueOnce(Promise.resolve(question))
+            .mockReturnValueOnce(Promise.resolve(secondQuestion));
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(2);
         
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         const wrongAnswer = question.otherOptions[0];
         userEvent.click(screen.getByLabelText(wrongAnswer));
 
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
-        expect(screen.getByTestId("score").textContent).toBe("0/1");
+        expect(screen.getByTestId("score").textContent).toBe("0/2");
     });
 
     test("When user answers first question incorrectly and clicks next, triggers animations accordingly", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question));
 
-        const { model, view, controller } = initializeMVC();
+        const { model, view, controller } = initializeMVC(1);
         
         view.triggerLightbulbAnimation = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
-        setUpQuizArea(view, model);
+        initializeDOM();
 
-        await model.createQuestion();
+        await view.renderStartScreen();
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         const wrongAnswer = question.otherOptions[0];
         userEvent.click(screen.getByLabelText(wrongAnswer));
 
-        expect(view.triggerDataPortAnimation).not.toHaveBeenCalled();
-        expect(view.triggerLightbulbAnimation).not.toHaveBeenCalled();
+        view.triggerLightbulbAnimation.mockClear();
+        view.triggerDataPortAnimation.mockClear();
 
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
