@@ -25,7 +25,8 @@ export class QuestionView {
         const triviaButtonContainer = document.querySelector(".trivia-button");
         if (quizContainer && triviaButtonContainer) {
             quizContainer.innerHTML = `
-                <h2>Do you know your Star Wars characters?</h2>
+                <h4>CHALMUN'S CANTINA PRESENTS</h2>
+                <h2>STAR WARS CHARACTERS TRIVIA</h2>
                 <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
             `;
 
