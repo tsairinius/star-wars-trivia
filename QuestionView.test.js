@@ -449,25 +449,37 @@ describe("getQuizCompleteMessage", () => {
     test("Displays appropriate message if user's score is less than 20%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(1, 6)).toBe('<p>"Impressive. Every word in that sentence is wrong"</p>');
+        expect(view.getQuizCompleteMessage(1, 6)).toBe(`
+                <p>"Impressive. Every word in that sentence is wrong"</p>
+                <p>- Luke Skywalker</p>
+            `);
     }); 
 
     test("Displays appropriate message if user's score is between 20% - 40%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(2, 6)).toBe('<p>"Let\'s keep a little optimism here"</p>');
+        expect(view.getQuizCompleteMessage(2, 6)).toBe(`
+                <p>"Let\'s keep a little optimism here"</p>
+                <p>- Han Solo</p>
+            `);
     });  
 
     test("Displays appropriate message if user's score is between 40% - 60%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(3, 6)).toBe('<p>"Great kid. Don\'t get cocky"</p>');
+        expect(view.getQuizCompleteMessage(3, 6)).toBe(`
+                <p>"Great kid. Don\'t get cocky"</p>
+                <p>- Han Solo</p>
+            `);
     });  
 
     test("Displays appropriate message if user's score is between 60% - 80%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(4, 6)).toBe('<p>"The force is strong with this one"</p>');
+        expect(view.getQuizCompleteMessage(4, 6)).toBe(`
+                <p>"The force is strong with this one"</p>
+                <p>- Darth Vader</p>
+            `);
     });  
 
     test("Displays appropriate message if user's score is between 80% - 99%", () => {

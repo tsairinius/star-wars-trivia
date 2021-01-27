@@ -291,6 +291,10 @@ body {
     margin: 0;
 }
 
+.quiz-complete-container p {
+    margin-bottom: 1rem;
+}
+
 .quiz-complete-container img {
     margin: 1rem;
 }

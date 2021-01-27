@@ -88,19 +88,31 @@ export class QuestionView {
         const score = numQuestionsCorrect/numQuestionsAsked;
         let message;
         if (score < 0.2) {
-            message = '<p>"Impressive. Every word in that sentence is wrong"</p>';
+            message = `
+                <p>"Impressive. Every word in that sentence is wrong"</p>
+                <p>- Luke Skywalker</p>
+            `;
         }
         else if (score >= 0.2 && score < 0.4) {
-            message = '<p>"Let\'s keep a little optimism here"</p>'; 
+            message = `
+                <p>"Let\'s keep a little optimism here"</p>
+                <p>- Han Solo</p>
+            `; 
         }
         else if (score >= 0.4 && score < 0.6) {
-            message = '<p>"Great kid. Don\'t get cocky"</p>';
+            message = `
+                <p>"Great kid. Don\'t get cocky"</p>
+                <p>- Han Solo</p>
+            `;
         }
         else if (score >= 0.6 && score < 0.8) {
-            message = '<p>"The force is strong with this one"</p>';
+            message = `
+                <p>"The force is strong with this one"</p>
+                <p>- Darth Vader</p>
+            `;
         }
         else if (score >= 0.8 && score < 1) {
-            message = "<p>Well I'll be a son of a bantha!</p>";
+            message = `<p>Well I'll be a son of a bantha!</p>`;
         }
         else {
             message = `<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
