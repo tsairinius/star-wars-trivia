@@ -57,7 +57,7 @@ describe("renderStartScreen", () => {
     });
 });
 
-describe("renderScoreAndTimeBar", () => {
+describe("renderScoreAndTime", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
     });
@@ -69,15 +69,15 @@ describe("renderScoreAndTimeBar", () => {
     test("Displays score and time bar", () => {
         const view = new QuestionView();
         initializeDOM();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
     
         expect(screen.getByTestId("score")).toBeInTheDocument();
         expect(screen.getByTestId("time-bar")).toBeInTheDocument();
     });
 
-    test("If there's no trivia container to render quiz in, throw error", () => {
+    test("If there's no quiz container to render elements in, throw error", () => {
         const view = new QuestionView();
-        expect(() => view.renderScoreAndTimeBar()).toThrow(new Error("Missing quiz container to render in"));
+        expect(() => view.renderScoreAndTime()).toThrow(new Error("Missing quiz container to render in"));
     });
 });
 
@@ -141,7 +141,7 @@ describe("Next button behavior", () => {
 
     test("Next button is enabled when an answer choice is selected", async () => {
         const view = new QuestionView();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
 
         view.displayQuestion(question);
 
@@ -220,7 +220,7 @@ describe("updateScore", () => {
     test("Displays 'Score unavailable' if score is invalid", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
 
         view.updateScore(5);
 
@@ -229,7 +229,7 @@ describe("updateScore", () => {
 
     test("Updates score", () => {
         const view = new QuestionView();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
 
         expect(screen.queryByText("4/10")).not.toBeInTheDocument();
 
@@ -348,32 +348,96 @@ describe("updateTimeBar", () => {
         initializeDOM();
     });
 
-    test("Sets width of time bar element based on percentage passed in", () => {
+    test("Scales width of time bar element based on fraction passed in", () => {
         const view = new QuestionView();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
 
-        view.updateTimeBar(45);
+        view.updateTimeBar(0.45);
 
-        expect(screen.getByTestId("time-bar")).toHaveStyle("width: 45%");
+        expect(screen.getByTestId("time-bar")).toHaveStyle("transform: scaleX(0.45)");
     });
 
     test("Prints error if no argument is passed in", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
-        view.renderScoreAndTimeBar();
+        view.renderScoreAndTime();
 
         view.updateTimeBar();
 
-        expect(consoleErrorMock).toHaveBeenCalledWith("Invalid arg. Skipped updating time left on screen. Percentage passed in: undefined");
+        expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid arg. Must be a number between 0 and 1. Skipped updating time left on screen. Arg passed in: undefined`);
+    });
+
+    test("Prints error if argument is greater than 1", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+        view.renderScoreAndTime();
+
+        view.updateTimeBar(1.1);
+
+        expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid arg. Must be a number between 0 and 1. Skipped updating time left on screen. Arg passed in: 1.1`);
+    });
+
+    test("Prints error if argument is less than 0", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+        view.renderScoreAndTime();
+
+        view.updateTimeBar(-0.1);
+
+        expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid arg. Must be a number between 0 and 1. Skipped updating time left on screen. Arg passed in: -0.1`);
     });
 
     test("Prints error if time bar element cannot be found", () => {
         consoleErrorMock.mockReturnValueOnce();
         const view = new QuestionView();
 
-        view.updateTimeBar(45);
+        view.updateTimeBar(0.45);
 
         expect(consoleErrorMock).toHaveBeenCalledWith("Could not find time bar in DOM to update");
+    });
+});
+
+describe("updateTimeInSeconds", () => {
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeDOM();
+    });
+
+    test("Displays time passed in", () => {
+        const view = new QuestionView();
+
+        view.renderScoreAndTime();
+        view.updateTimeInSeconds(15721);
+
+        expect(screen.getByText(15721)).toBeInTheDocument();
+    });
+
+    test("Prints error if time is passed in is invalid. Skips updating time on screen", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.renderScoreAndTime();
+        view.updateTimeInSeconds();
+
+        expect(consoleErrorMock).toHaveBeenCalledWith("Invalid arg: undefined. Must pass in a whole number");
+        expect(screen.queryByText("undefined")).not.toBeInTheDocument();
+    });
+
+    test("Prints error and skips updating time if unable to find time element to update", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        const view = new QuestionView();
+
+        view.updateTimeInSeconds(15721);
+
+        expect(consoleErrorMock).toHaveBeenCalledWith("Could not find time element in DOM to update");
+        expect(screen.queryByText(15721)).not.toBeInTheDocument();
     });
 });
 

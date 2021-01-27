@@ -347,7 +347,7 @@ describe("getTimeLeft", () => {
         model.timeLeft = initialTimeLeft;
         model.getTimeLeft(currentTimestamp);
 
-        expect(model.onTimeChange).toHaveBeenCalledWith(computePercentage(model.timeLeft, TIME_PER_QUESTION_MS));
+        expect(model.onTimeChange).toHaveBeenCalledWith(model.timeLeft);
     });
 
     test("Queues itself to be called again and saves the new request ID if time left is greater than 0", () => {

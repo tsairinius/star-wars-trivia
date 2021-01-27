@@ -15,7 +15,7 @@ describe("startQuiz", () => {
         const { model, view, controller } = initializeMVC();
 
         view.clearQuizContainer = jest.fn();
-        view.renderScoreAndTimeBar = jest.fn();
+        view.renderScoreAndTime = jest.fn();
         view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
@@ -27,7 +27,7 @@ describe("startQuiz", () => {
         controller.startQuiz();
 
         expect(view.clearQuizContainer).toHaveBeenCalledTimes(1);
-        expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.renderScoreAndTime).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.setTimer).toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("startQuiz", () => {
         const { model, view, controller } = initializeMVC();
 
         view.clearQuizContainer = jest.fn();
-        view.renderScoreAndTimeBar = jest.fn();
+        view.renderScoreAndTime = jest.fn();
         view.updateScore = jest.fn();
         view.displayQuestion = jest.fn();
         view.triggerDataPortAnimation = jest.fn();
@@ -49,7 +49,7 @@ describe("startQuiz", () => {
 
         expect(model.setTimer).not.toHaveBeenCalled();
         expect(view.clearQuizContainer).toHaveBeenCalledTimes(1);
-        expect(view.renderScoreAndTimeBar).toHaveBeenCalledTimes(1);
+        expect(view.renderScoreAndTime).toHaveBeenCalledTimes(1);
         expect(view.updateScore).toHaveBeenCalledTimes(1);
         expect(view.displayQuestion).toHaveBeenCalledTimes(1);
         expect(model.isQuizRunning).toBeTruthy();
@@ -175,7 +175,7 @@ describe("handleTimeChange", () => {
         jest.clearAllMocks();
     });
 
-    test("If percentage passed in is not valid, print an error message", () => {
+    test("If argument passed in is not a number, print an error message", () => {
         consoleErrorMock.mockReturnValue();
 
         const {model, view, controller} = initializeMVC();
@@ -190,7 +190,7 @@ describe("handleTimeChange", () => {
         expect(view.getChosenAnswer).not.toHaveBeenCalled();
         expect(controller.handleNextQuestion).not.toHaveBeenCalled();
         expect(view.updateTimeBar).not.toHaveBeenCalled();
-        expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid argument passed as time left: undefined. Must be a percentage of type Number`);
+        expect(consoleErrorMock).toHaveBeenCalledWith(`Invalid argument passed as time left: undefined. Must be of type Number`);
     });
 
     test("If percentage passed in is equal to 0, validate currently chosen answer and get next question", () => {

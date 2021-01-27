@@ -1,4 +1,4 @@
-import { isPercentage } from "./utilities/isPercentage.js";
+import { TIME_PER_QUESTION_MS } from "./constants.js";
 
 export class QuestionController {
     constructor(questionModel, questionView) {
@@ -7,7 +7,7 @@ export class QuestionController {
 
         this.startQuiz = () => {
             this.questionView.clearQuizContainer();
-            this.questionView.renderScoreAndTimeBar();
+            this.questionView.renderScoreAndTime();
             this.questionView.updateScore(this.questionModel.numQuestionsCorrect, this.questionModel.numQuestionsAsked);
             this.questionView.displayQuestion(this.questionModel.currentQuestion);
             if (this.questionModel.currentQuestion) {
@@ -50,17 +50,18 @@ export class QuestionController {
         }
 
         this.handleTimeChange = (timeLeft) => {
-            if (isPercentage(timeLeft)) {
-                if (timeLeft === 0) {
+            if (typeof timeLeft === "number") {
+                if (timeLeft <= 0) {
                     const chosenAnswer = this.questionView.getChosenAnswer();
                     this.handleNextQuestion(chosenAnswer);
                 }
                 else {
-                    this.questionView.updateTimeBar(timeLeft);
+                    this.questionView.updateTimeBar(timeLeft/TIME_PER_QUESTION_MS);
+                    this.questionView.updateTimeInSeconds(Math.ceil(timeLeft/1000));
                 }
             }
             else {
-                console.error(`Invalid argument passed as time left: ${timeLeft}. Must be a percentage of type Number`);
+                console.error(`Invalid argument passed as time left: ${timeLeft}. Must be of type Number`);
             }
         }
 

@@ -1,7 +1,6 @@
 import { QuestionQueue } from "./QuestionQueue.js";
 import { createRandomQuestion } from "./utilities/createRandomQuestion.js";
 import { TIME_PER_QUESTION_MS } from "./constants.js";
-import { computePercentage } from "./utilities/computePercentage.js";
 
 export class QuestionModel {
     constructor(maxQuestions = 5) {
@@ -63,14 +62,12 @@ export class QuestionModel {
     
             this.timeLeft = this.timeLeft - timeElapsed;
             this.prevTime = timestamp;
-
-            const timeLeftPercentage = computePercentage(this.timeLeft, TIME_PER_QUESTION_MS);
     
-            this.onTimeChange(timeLeftPercentage);
-    
-            if (timeLeftPercentage > 0) {
+            if (this.timeLeft > 0) {
                 this.animationId = requestAnimationFrame(this.getTimeLeft);
             }
+
+            this.onTimeChange(this.timeLeft);
         }
     }
 

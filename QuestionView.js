@@ -1,6 +1,5 @@
 import * as utils from "./utilities/utilities.js";
 import { isWholeNumber } from "./utilities/NumberValidation.js";
-import { isPercentage } from "./utilities/isPercentage.js";
 import { TIME_PER_QUESTION_MS } from "./constants.js";
 
 export class QuestionView {
@@ -39,14 +38,19 @@ export class QuestionView {
         }
     }
 
-    renderScoreAndTimeBar() {
+    renderScoreAndTime() {
         const quizContainer = document.querySelector(".quiz-container");
         if (quizContainer) {
             const statsContainer = document.createElement("div");
             statsContainer.className = "stats-container";
             statsContainer.innerHTML = `
-                <div class="score" data-testid="score"></div>
-                <div class="time-bar" data-testid="time-bar"></div>
+                <div class="score-container">
+                    <div class="score" data-testid="score"></div>
+                </div>
+                <div class="time-container">
+                    <div class="time-in-seconds"></div>
+                    <div class="time-bar" data-testid="time-bar"></div>
+                </div>    
             `;
 
             quizContainer.append(statsContainer);
@@ -249,9 +253,9 @@ export class QuestionView {
         return checkedElement ? checkedElement.value : null;
     }
 
-    updateTimeBar(timeLeftPct) {
-        if (!isPercentage(timeLeftPct)) {
-            console.error(`Invalid arg. Skipped updating time left on screen. Percentage passed in: ${timeLeftPct}`);
+    updateTimeBar(timeLeftFraction) {
+        if (typeof timeLeftFraction !== "number" || timeLeftFraction > 1 || timeLeftFraction < 0) {
+            console.error(`Invalid arg. Must be a number between 0 and 1. Skipped updating time left on screen. Arg passed in: ${timeLeftFraction}`);
         }
         else {
             const timeBar = document.querySelector("div[class=time-bar]");
@@ -259,8 +263,23 @@ export class QuestionView {
                 console.error(`Could not find time bar in DOM to update`);
             }
             else {
-                timeBar.style.width = `${timeLeftPct}%`;
+                timeBar.style.transform = `scaleX(${timeLeftFraction})`;
             }  
+        }
+    };
+
+    updateTimeInSeconds(timeLeft) {
+        if (!isWholeNumber(timeLeft)) {
+            console.error(`Invalid arg: ${timeLeft}. Must pass in a whole number`)
+        }
+        else {
+            const timeElement = document.querySelector("div[class=time-in-seconds]");
+            if (!timeElement) {
+                console.error(`Could not find time element in DOM to update`);
+            }
+            else {
+                timeElement.textContent = `${timeLeft}`
+            }
         }
     };
 
