@@ -4,8 +4,12 @@
     <head>
         <link href="./style.css" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="module" src="./app.js" defer></script>
     </head>
     <body>
+        <audio class="cantina-song" loop="true">
+            <source src="./cantina-song.mp3" type="audio/mp3"/>
+        </audio>
         <div class="trivia-container">
             <div class="trivia-screen-border">
                 <div class="trivia-screen">
@@ -34,7 +38,7 @@
                     </div>
                 </div>
             </div>
+            <p class="audio-control">Bartender, can you put on some tunes?</p>
         </div>
-        <script type="module" src="./app.js"></script>
     </body>
 </html>

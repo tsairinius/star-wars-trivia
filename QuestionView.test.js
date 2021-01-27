@@ -23,7 +23,8 @@ describe("renderStartScreen", () => {
 
         view.renderStartScreen();
 
-        expect(screen.getByText("Do you know your Star Wars characters?")).toBeInTheDocument();
+        expect(screen.getByText("CHALMUN'S CANTINA PRESENTS")).toBeInTheDocument();
+        expect(screen.getByText("STAR WARS CHARACTERS TRIVIA")).toBeInTheDocument();
         expect(screen.getByText(`5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each`)).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "Begin"}));
     });
@@ -494,4 +495,82 @@ describe("getQuizCompleteMessage", () => {
         expect(view.getQuizCompleteMessage(6, 6)).toBe(`<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
                 <img src="./blue-milk.png" class="blue-milk-image">`);
     });     
+});
+
+describe("initializeAudioButtonBehavior", () => {
+    let audioPlayMock;
+    let audioPauseMock;
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        audioPlayMock = jest.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation();
+        audioPauseMock = jest.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation();
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeDOM();
+    });
+
+    test("Clicking audio button to play music changes text of button appropriately", () => {
+        const view = new QuestionView();
+
+        view.initializeAudioButtonBehavior();
+        userEvent.click(screen.getByText("Bartender, can you put on some tunes?"));
+
+        expect(screen.queryByText("Bartender, can you put on some tunes?")).not.toBeInTheDocument();
+        expect(screen.getByText("Bartender, turn that noise off!")).toBeInTheDocument();
+        expect(audioPlayMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("Clicking audio button to stop music changes text of button appropriately", () => {
+        const view = new QuestionView();
+        view.isAudioPaused = jest.fn()
+            .mockReturnValueOnce(true)
+            .mockReturnValue(false);
+
+        view.initializeAudioButtonBehavior();
+        userEvent.click(screen.getByText("Bartender, can you put on some tunes?"));
+        userEvent.click(screen.getByText("Bartender, turn that noise off!"));
+
+        expect(screen.queryByText("Bartender, turn that noise off!")).not.toBeInTheDocument();
+        expect(screen.getByText("Bartender, can you put on some tunes?")).toBeInTheDocument();
+        expect(audioPauseMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("If unable to find audio element to play/pause, prints error and returns", () => {
+        consoleErrorMock.mockReturnValueOnce();
+        cleanUpDOM();
+        const view = new QuestionView();
+
+        view.initializeAudioButtonBehavior();
+
+        expect(consoleErrorMock).toHaveBeenCalledWith("Unable to set onClick callback for audio button: TypeError: Cannot set property 'onclick' of null");
+    });
+});
+
+describe("initializeView", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeDOM();
+    });
+
+    test("Calls functions to initialize audio behavior for audio button and render start screen", () => {
+        const view = new QuestionView();
+
+        view.initializeAudioButtonBehavior = jest.fn();
+        view.renderStartScreen = jest.fn();
+
+        view.initializeView();
+
+        expect(view.initializeAudioButtonBehavior).toHaveBeenCalledTimes(1);
+        expect(view.renderStartScreen).toHaveBeenCalledTimes(1);
+    });
 });

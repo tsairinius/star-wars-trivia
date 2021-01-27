@@ -20,7 +20,7 @@ body {
     height: 49rem;
     display: grid;
     grid-template-columns: 8fr 2fr;
-    grid-template-rows: 1fr;
+    grid-template-rows: 9fr 1fr;
     column-gap: 1rem;
 }
 
@@ -303,6 +303,18 @@ body {
     width: 20%;
     border-radius: 1rem;
     box-shadow: 0.5rem 0.5rem 1rem white, -0.5rem -0.5rem 1rem white, 0.5rem -0.5rem 1rem white, -0.5rem 0.5rem 1rem white;
+}
+
+.audio-control {
+    justify-self: start;
+    color: rgb(0, 150, 196);
+    font-size: 2rem;
+    margin: 1rem 0;
+}
+
+.audio-control:hover {
+    filter: brightness(150%);
+    cursor: pointer;
 }
 
 @keyframes rotation {

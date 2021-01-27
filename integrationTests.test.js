@@ -29,7 +29,7 @@ describe("Start screen", () => {
         createRandomQuestionMock.mockReturnValueOnce(Promise.resolve(fakeQuestions[0]));
 
         initializeDOM();
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         expect(screen.getByText(fakeQuestions[0].question)).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("Quiz screen", () => {
 
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
@@ -82,7 +82,7 @@ describe("Quiz screen", () => {
 
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
@@ -105,7 +105,7 @@ describe("Quiz screen", () => {
 
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
@@ -124,7 +124,7 @@ describe("Quiz screen", () => {
         view.triggerDataPortAnimation = jest.fn();
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         userEvent.click(screen.getByLabelText(question.answer));
@@ -147,7 +147,7 @@ describe("Quiz screen", () => {
         
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         const wrongAnswer = question.otherOptions[0];
@@ -168,7 +168,7 @@ describe("Quiz screen", () => {
         view.triggerDataPortAnimation = jest.fn();
         initializeDOM();
 
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
         const wrongAnswer = question.otherOptions[0];
@@ -200,7 +200,7 @@ describe("Returning to start screen after quiz is complete", () => {
         userEvent.click(screen.getByRole("button", {name: "Main"}));
 
         expect(screen.getByRole("button", {name: "Begin"})).toBeInTheDocument();
-        expect(screen.getByText("Do you know your Star Wars characters?")).toBeInTheDocument();
+        expect(screen.getByText("CHALMUN'S CANTINA PRESENTS")).toBeInTheDocument();
         expect(screen.queryByRole("button", {name: "Main"})).not.toBeInTheDocument();
     });
 });
@@ -222,7 +222,7 @@ describe("Showing 'quiz complete' screen when quiz is finished", () => {
         const { model, view, controller } = initializeMVC(numQuestions);
 
         initializeDOM();
-        await view.renderStartScreen();
+        await view.initializeView();
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
         userEvent.click(screen.getByLabelText(question.answer));
         userEvent.click(screen.getByRole("button", {name: "Next"}));
@@ -246,7 +246,7 @@ describe("Loading screen behavior", () => {
         view.onStartScreenRender = jest.fn();
 
         initializeDOM();
-        view.renderStartScreen();
+        view.initializeView();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 
@@ -263,7 +263,7 @@ describe("Loading screen behavior", () => {
         view.onStartScreenRender = jest.fn();
 
         initializeDOM();
-        view.renderStartScreen();
+        view.initializeView();
 
         userEvent.click(screen.getByRole("button", {name: "Begin"}));
 

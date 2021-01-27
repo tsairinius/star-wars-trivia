@@ -20,6 +20,37 @@ export class QuestionView {
         quizContainer.innerHTML = ``;
     }
 
+    initializeView() {
+        this.renderStartScreen();
+        this.initializeAudioButtonBehavior();
+    }
+
+    initializeAudioButtonBehavior() {
+        try {
+            const audio = document.querySelector(".cantina-song");
+            const audioButton = document.querySelector(".audio-control");
+            audioButton.onclick = () => {
+                if (this.isAudioPaused(audio)) {
+                    audio.play();
+                    audioButton.textContent = "Bartender, turn that noise off!";
+                }
+                else {
+                    audio.pause();
+                    audioButton.textContent = "Bartender, can you put on some tunes?";
+                }
+            }
+
+            // audio.addEventListener("en")
+        }
+        catch (e) {
+            console.error(`Unable to set onClick callback for audio button: ${e}`);
+        }
+    }
+
+    isAudioPaused(audioElement) {
+        return audioElement.paused;
+    }
+
     renderStartScreen() {
         const quizContainer = document.querySelector(".quiz-container");
         const triviaButtonContainer = document.querySelector(".trivia-button");
