@@ -9,7 +9,7 @@ export function createOtherAnswerChoices(correctAnswer, createChoice) {
         do {
             newChoice = createChoice();
         }
-        while (choiceArray.some(choice => (choice === newChoice || (correctAnswer === newChoice))))
+        while (choiceArray.some(choice => choice === newChoice) || (correctAnswer === newChoice))
 
         choiceArray = [...choiceArray, newChoice];
     }
