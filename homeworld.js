@@ -20,7 +20,7 @@ export async function createHomeworldQuestion() {
         const { person, homeworld } = await getPersonAndProperty("homeworld");
 
         const questionAndAnswer = getHomeworldQuestionAndAnswer(person, homeworld);
-        const otherAnswerChoices = createOtherAnswerChoices(() => getRandomItem(PLANETS));
+        const otherAnswerChoices = createOtherAnswerChoices(questionAndAnswer.answer, () => getRandomItem(PLANETS));
 
         return {
             ...questionAndAnswer,

@@ -9,7 +9,7 @@ export async function createSpeciesQuestion() {
         const { person, species } = await getPersonAndProperty("species");
 
         const questionAndAnswer = getSpeciesQuestionAndAnswer(person, species);
-        const otherAnswerChoices = createOtherAnswerChoices(() => getRandomItem(SPECIES));
+        const otherAnswerChoices = createOtherAnswerChoices(questionAndAnswer.answer, () => getRandomItem(SPECIES));
 
         return {
             ...questionAndAnswer,

@@ -47,12 +47,12 @@ export async function createBirthYearQuestion() {
     try {
         const randomPerson = await getRandomPersonWithProps(["name", "birth_year"]);
 
-        const result = getBirthYearQuestionAndAnswer(randomPerson);
-        const otherOptions = createOtherAnswerChoices(() => createRandomBirthYear(result.answer));
+        const questionAndAnswer = getBirthYearQuestionAndAnswer(randomPerson);
+        const otherAnswerChoices = createOtherAnswerChoices(questionAndAnswer.answer, () => createRandomBirthYear(questionAndAnswer.answer));
 
         return {
-            ...result,
-            otherOptions
+            ...questionAndAnswer,
+            otherOptions: [...otherAnswerChoices]
         };
     }
     catch (e) {
