@@ -232,11 +232,11 @@ describe("updateScore", () => {
         const view = new QuestionView();
         view.renderScoreAndTime();
 
-        expect(screen.queryByText("4/10")).not.toBeInTheDocument();
+        expect(screen.queryByText("4-10")).not.toBeInTheDocument();
 
         view.updateScore(4, 10);
 
-        expect(screen.getByText("4/10")).toBeInTheDocument();
+        expect(screen.getByText("4-10")).toBeInTheDocument();
     });
 });
 
@@ -492,7 +492,7 @@ describe("getQuizCompleteMessage", () => {
     test("Displays appropriate message if user's score is 100%", () => {
         const view = new QuestionView();
 
-        expect(view.getQuizCompleteMessage(6, 6)).toBe(`<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
+        expect(view.getQuizCompleteMessage(6, 6)).toBe(`<p>Well done! You've earned yourself a glass of blue milk on the house.</p>
                 <img src="./blue-milk.png" class="blue-milk-image">`);
     });     
 });

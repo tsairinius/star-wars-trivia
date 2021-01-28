@@ -96,7 +96,7 @@ describe("Quiz screen", () => {
         expect(screen.getByLabelText("green")).toBeInTheDocument();
     });
 
-    test("When user answers first question correctly, displays 1/2 (1 answered correctly, now on question 2)", async () => {
+    test("When user answers first question correctly, displays 1-2 (1 answered correctly, now on question 2)", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion))
@@ -111,7 +111,7 @@ describe("Quiz screen", () => {
         userEvent.click(screen.getByLabelText(question.answer));
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
-        expect(screen.getByTestId("score").textContent).toBe("1/2");
+        expect(screen.getByTestId("score").textContent).toBe("1-2");
     });
 
     test("When user answers first question correctly and clicks next, triggers animations accordingly", async () => {
@@ -138,7 +138,7 @@ describe("Quiz screen", () => {
         expect(view.triggerLightbulbAnimation).toHaveBeenCalledWith(true);
     });
 
-    test("When user answers first question incorrectly, displays 0/2 (0 questions answer correctly, now on second question)", async () => {
+    test("When user answers first question incorrectly, displays 0-2 (0 questions answer correctly, now on second question)", async () => {
         createRandomQuestionMock
             .mockReturnValueOnce(Promise.resolve(question))
             .mockReturnValueOnce(Promise.resolve(secondQuestion));
@@ -155,7 +155,7 @@ describe("Quiz screen", () => {
 
         userEvent.click(screen.getByRole("button", {name: "Next"}));
 
-        expect(screen.getByTestId("score").textContent).toBe("0/2");
+        expect(screen.getByTestId("score").textContent).toBe("0-2");
     });
 
     test("When user answers first question incorrectly and clicks next, triggers animations accordingly", async () => {

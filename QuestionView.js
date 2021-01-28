@@ -39,8 +39,6 @@ export class QuestionView {
                     audioButton.textContent = "Bartender, can you put on some tunes?";
                 }
             }
-
-            // audio.addEventListener("en")
         }
         catch (e) {
             console.error(`Unable to set onClick callback for audio button: ${e}`);
@@ -56,9 +54,11 @@ export class QuestionView {
         const triviaButtonContainer = document.querySelector(".trivia-button");
         if (quizContainer && triviaButtonContainer) {
             quizContainer.innerHTML = `
-                <h4>CHALMUN'S CANTINA PRESENTS</h2>
-                <h2>STAR WARS CHARACTERS TRIVIA</h2>
-                <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
+                <div class="main-menu">
+                    <h4>CHALMUN'S CANTINA PRESENTS</h4>
+                    <h1>STAR WARS CHARACTERS TRIVIA</h1>
+                    <h4>5 questions, ${TIME_PER_QUESTION_MS/1000} seconds for each</h4>
+                </div>
             `;
 
             triviaButtonContainer.innerHTML = `<button>Begin</button>`;
@@ -103,7 +103,7 @@ export class QuestionView {
         }
         else {
             quizCompleteMessage = 
-            `<h2>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!</h2>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}`;
+            `<h1>You scored ${numQuestionsCorrect}/${numQuestionsAsked}!</h1>${this.getQuizCompleteMessage(numQuestionsCorrect, numQuestionsAsked)}`;
         }
 
         quizCompleteContainer.innerHTML = quizCompleteMessage;
@@ -147,7 +147,7 @@ export class QuestionView {
             message = `<p>Well I'll be a son of a bantha!</p>`;
         }
         else {
-            message = `<p>Well done! You've earned yourself a free glass of blue milk on the house.</p>
+            message = `<p>Well done! You've earned yourself a glass of blue milk on the house.</p>
                 <img src="./blue-milk.png" class="blue-milk-image">`;
         }
 
@@ -178,7 +178,7 @@ export class QuestionView {
             scoreElement.textContent = "Score unavailable";
         }
         else {
-            scoreElement.textContent = `${numQuestionsCorrect}/${numQuestionsAsked}`;
+            scoreElement.textContent = `${numQuestionsCorrect}-${numQuestionsAsked}`;
         }
     }
 
