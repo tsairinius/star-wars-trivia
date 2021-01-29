@@ -1,8 +1,8 @@
 export function initializeDOM() {
         document.body.innerHTML = `
             <audio class="cantina-song" loop="true">
-                <source src="./cantina-song.mp3" type="audio/mp3">
-                <source src="./cantina-song.wav" type="audio/wav">
+                <source src="./audio/cantina-song.mp3" type="audio/mp3">
+                <source src="./audio/cantina-song.wav" type="audio/wav">
             </audio>
             <div class="trivia-container">
                 <div class="trivia-screen-border">
@@ -28,7 +28,7 @@ export function initializeDOM() {
                     </div>
                     <div class="data-port-plate">
                         <div class="data-port-hole">
-                            <img src="./data-port.png" class="data-port" alt="">
+                            <img src="./img/data-port.svg" class="data-port" alt="">
                         </div>
                     </div>
                 </div>

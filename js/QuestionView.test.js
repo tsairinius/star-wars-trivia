@@ -493,7 +493,7 @@ describe("getQuizCompleteMessage", () => {
         const view = new QuestionView();
 
         expect(view.getQuizCompleteMessage(6, 6)).toBe(`<p>Well done! You've earned yourself a glass of blue milk on the house.</p>
-                <img src="./blue-milk.png" class="blue-milk-image">`);
+                <img src="./img/blue-milk.png" class="blue-milk-image">`);
     });     
 });
 
