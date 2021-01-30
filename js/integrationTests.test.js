@@ -205,6 +205,42 @@ describe("Returning to start screen after quiz is complete", () => {
     });
 });
 
+describe("Playing another round of trivia after completing a round", () => {
+    let createRandomQuestionMock;
+    let consoleErrorMock;
+    beforeAll(() => {
+        jest.restoreAllMocks();
+        createRandomQuestionMock = jest.spyOn(creator, "createRandomQuestion");
+        consoleErrorMock = jest.spyOn(console, "error");
+    });
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+        cleanUpDOM();
+        initializeDOM();
+    });
+
+    test("Shows question when clicking Begin to start second round", async () => {
+        consoleErrorMock.mockReturnValueOnce();
+        createRandomQuestionMock
+            .mockReturnValueOnce(Promise.resolve(question))
+            .mockReturnValueOnce(Promise.resolve(secondQuestion));
+
+        const {model, view, controller} = initializeMVC(1);
+
+        await view.initializeView();
+
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+        userEvent.click(screen.getByLabelText(question.answer));
+        userEvent.click(screen.getByRole("button", {name: "Next"}));
+        await userEvent.click(screen.getByRole("button", {name: "Main"}));
+        userEvent.click(screen.getByRole("button", {name: "Begin"}));
+
+        expect(screen.getByText(secondQuestion.question)).toBeInTheDocument();
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+});
+
 describe("Showing 'quiz complete' screen when quiz is finished", () => {
     beforeAll(() => {
         jest.restoreAllMocks();
@@ -277,7 +313,3 @@ describe("Loading screen behavior", () => {
         expect(screen.getByText(question.question)).toBeInTheDocument();
     });
 });
-
-
-
-

@@ -155,12 +155,12 @@ describe("resetQuiz", () => {
         const { model, view, controller } = initializeMVC();
 
         model.resetData = jest.fn();
-        view.renderStartScreen = jest.fn();
+        view.returnToStartScreen = jest.fn();
 
         controller.resetQuiz();
 
         expect(model.resetData).toHaveBeenCalledTimes(1);
-        expect(view.renderStartScreen).toHaveBeenCalledTimes(1);
+        expect(view.returnToStartScreen).toHaveBeenCalledTimes(1);
     });
 });
 

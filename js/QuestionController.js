@@ -19,7 +19,7 @@ export class QuestionController {
 
         this.resetQuiz = () => {
             this.questionModel.resetData();
-            this.questionView.renderStartScreen();
+            this.questionView.returnToStartScreen();
         };
 
         this.handleNextQuestion = (chosenAnswer) => {

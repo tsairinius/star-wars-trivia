@@ -19,7 +19,6 @@ describe("renderStartScreen", () => {
 
     test("Shows intro text and begin button", () => {
         const view = new QuestionView();
-        view.onStartScreenRender = jest.fn();
 
         view.renderStartScreen();
 
@@ -29,19 +28,9 @@ describe("renderStartScreen", () => {
         expect(screen.getByRole("button", {name: "Begin"}));
     });
 
-    test("Invokes callback when start screen is rendered", () => {
-        const view = new QuestionView();
-        view.onStartScreenRender = jest.fn();
-
-        view.renderStartScreen();
-
-        expect(view.onStartScreenRender).toHaveBeenCalledTimes(1);
-    });
-
     test("Clicking Begin invokes function to initiate quiz", () => {
         const view = new QuestionView();
         view.onBeginClick = jest.fn();
-        view.onStartScreenRender = jest.fn();
 
         view.renderStartScreen();
 
@@ -567,10 +556,36 @@ describe("initializeView", () => {
 
         view.initializeAudioButtonBehavior = jest.fn();
         view.renderStartScreen = jest.fn();
+        view.onStartScreenRender = jest.fn();
 
         view.initializeView();
 
         expect(view.initializeAudioButtonBehavior).toHaveBeenCalledTimes(1);
         expect(view.renderStartScreen).toHaveBeenCalledTimes(1);
+        expect(view.onStartScreenRender).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("returnToStartScreen", () => {
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        cleanUpDOM();
+        initializeDOM();
+    });
+
+    test("Calls functions to render start screen and request model to create questions", () => {
+        const view = new QuestionView();
+
+        view.renderStartScreen = jest.fn();
+        view.onStartScreenRender = jest.fn();
+
+        view.returnToStartScreen();
+
+        expect(view.renderStartScreen).toHaveBeenCalledTimes(1);
+        expect(view.onStartScreenRender).toHaveBeenCalledTimes(1);
     });
 });

@@ -23,6 +23,7 @@ export class QuestionView {
     initializeView() {
         this.renderStartScreen();
         this.initializeAudioButtonBehavior();
+        this.onStartScreenRender();
     }
 
     initializeAudioButtonBehavior() {
@@ -63,11 +64,15 @@ export class QuestionView {
 
             triviaButtonContainer.innerHTML = `<button>Begin</button>`;
             triviaButtonContainer.firstElementChild.onclick = this.onBeginClick;
-            this.onStartScreenRender();
         }
         else {
             throw new Error("Missing quiz container and/or button container to render in");
         }
+    }
+
+    returnToStartScreen() {
+        this.renderStartScreen();
+        this.onStartScreenRender();
     }
 
     renderScoreAndTime() {
