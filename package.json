@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "webpack --config webpack.config.cjs"
+    "start": "webpack serve --config webpack.dev.cjs --open",
+    "build": "webpack --config webpack.prod.cjs"
   },
   "author": "Eric Tsai",
   "license": "ISC",
@@ -29,7 +30,9 @@
     "open": "^7.3.0",
     "style-loader": "^2.0.0",
     "webpack": "^5.19.0",
-    "webpack-cli": "^4.4.0"
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.7.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5"
