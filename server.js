@@ -6,6 +6,7 @@ const app = express();
 const port = 8000;
 
 const __dirname = path.resolve();
+console.log(__dirname)
 
 app.use(express.static(__dirname));
 

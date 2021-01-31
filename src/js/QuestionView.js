@@ -153,7 +153,7 @@ export class QuestionView {
         }
         else {
             message = `<p>Well done! You've earned yourself a glass of blue milk on the house.</p>
-                <img src="./img/blue-milk.png" class="blue-milk-image">`;
+                <img src="./src/img/blue-milk.png" class="blue-milk-image">`;
         }
 
         return message;
