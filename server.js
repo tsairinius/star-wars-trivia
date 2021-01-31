@@ -6,12 +6,11 @@ const app = express();
 const port = 8000;
 
 const __dirname = path.resolve();
-console.log(__dirname)
 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "./dist")));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "./index.html"));
+    res.sendFile(path.join(__dirname, "./dist/index.html"));
 });
 
 app.listen(port, (error) => {
