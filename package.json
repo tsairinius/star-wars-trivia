@@ -2,7 +2,7 @@
   "name": "star-wars-trivia",
   "version": "1.0.0",
   "description": "A Star Wars trivia game",
-  "main": "app.js",
+  "private": true,
   "type": "module",
   "jest": {
     "transform": {
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "node server.js"
+    "start": "webpack --config webpack.config.cjs"
   },
   "author": "Eric Tsai",
   "license": "ISC",
@@ -24,7 +24,9 @@
     "babel-jest": "^26.6.3",
     "express": "^4.17.1",
     "jest": "^26.6.3",
-    "open": "^7.3.0"
+    "open": "^7.3.0",
+    "webpack": "^5.19.0",
+    "webpack-cli": "^4.4.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5"
