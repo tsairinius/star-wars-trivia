@@ -12,7 +12,7 @@
   "scripts": {
     "test": "jest",
     "start": "webpack serve --config webpack.dev.cjs --open",
-    "build": "webpack --config webpack.prod.cjs"
+    "build": "npm install && webpack --config webpack.prod.cjs"
   },
   "author": "Eric Tsai",
   "license": "ISC",
