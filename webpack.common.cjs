@@ -21,6 +21,11 @@ module.exports = {
         generator: {
             filename: 'audio/[hash][ext][query]'
         }
+      },
+      {
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
       }
     ],
   },
