@@ -23,6 +23,10 @@ module.exports = merge(common, {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
+      {
+        test: /\.js$/,
+        use: ['babel-loader']
+      }
     ]
   }
 });
