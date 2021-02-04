@@ -17,7 +17,7 @@ body {
 
 .trivia-container {
     width: 90rem;
-    height: 50rem;
+    height: 45rem;
     display: grid;
     grid-template-columns: 8fr 2fr;
     grid-template-rows: 12fr 1fr;
@@ -38,7 +38,7 @@ body {
     color: yellow;
     width: 95%;
     height: 95%;
-    font-size: 2rem;
+    font-size: 1.8rem;
     background-color: rgb(37, 37, 37);
     border-radius: 1rem;
     padding: 2rem;
@@ -314,7 +314,7 @@ body {
 }
 
 .blue-milk-image {
-    width: 20%;
+    width: 14%;
     border-radius: 1rem;
     box-shadow: 0.5rem 0.5rem 1rem white, -0.5rem -0.5rem 1rem white, 0.5rem -0.5rem 1rem white, -0.5rem 0.5rem 1rem white;
 }
@@ -373,7 +373,7 @@ body {
 }
 
 /* Moves control panel to bottom of trivia computer screen  */
-@media (max-width: 800px) and (orientation: portrait) {
+@media (orientation: portrait) and (max-aspect-ratio: 630/720) {
     html {
         background-color: rgb(78, 76, 76);
     }
@@ -387,7 +387,7 @@ body {
         grid-template-columns: 1fr;
         grid-template-rows: 8fr 2fr;
         border: black solid 0.5rem;
-        padding: 5rem 0;
+        padding-top: 5rem;
         border-radius: 2rem;
         box-shadow: 0 1rem 1rem black;
         background-color: black;
@@ -423,19 +423,15 @@ body {
         width: 30%;
         border-radius: 0.5em;
     }
-}
-
-/* Allows app to fit within screen on most mobile devices in landscape orientation */
-@media (orientation: landscape) {
-    .trivia-container {
-        height: 45rem;
-    }
-
-    .trivia-screen {
-        font-size: 1.8rem;
-    }
 
     .blue-milk-image {
-        width: 14%;
+        width: 20%;
+    }
+}
+
+/* Shrinks app to fit screen with a higher width:height aspect ratio */
+@media (min-aspect-ratio: 6/3) {
+    html {
+        font-size: 0.9vw;
     }
 }
