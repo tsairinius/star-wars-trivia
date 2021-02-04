@@ -174,6 +174,7 @@ body {
 
 /* Control panel */
 .control-panel {
+    font-size: 2.5vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -188,8 +189,8 @@ body {
 
 .lightbulb {
     border-radius: 50%;
-    width: 6rem;
-    height: 6rem;
+    width: 4em;
+    height: 4em;
     border: 0.1rem solid black;
     box-shadow: 0.01rem 0.01rem 0.1rem black;
     margin: 1rem;
@@ -215,8 +216,8 @@ body {
 }
 
 .filler-button__long-duration, .filler-button__short-duration {
-    width: 3rem;
-    height: 3rem;
+    width: 2em;
+    height: 2em;
     border-radius: 0.5rem;
 }
 
@@ -284,8 +285,8 @@ body {
 }
 
 .data-port {
-    width: 15rem;
-    height: 15rem;
+    width: 8em;
+    height: 8em;
 }
 
 .data-port__rotate {
@@ -383,7 +384,7 @@ body {
     }
 
     .trivia-container {
-        height: 99rem;
+        height: 110rem;
         grid-template-columns: 1fr;
         grid-template-rows: 8fr 2fr;
         border: black solid 0.5rem;
@@ -394,7 +395,7 @@ body {
     }
 
     .trivia-screen {
-        font-size: 4rem;
+        font-size: 4.3rem;
     }
 
     .control-panel {
@@ -404,6 +405,21 @@ body {
 
     .lightbulbs-container {
         flex-direction: row;
+    }
+
+    .lightbulb {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .filler-button__long-duration, .filler-button__short-duration {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .data-port {
+        width: 15rem;
+        height: 15rem;
     }
 
     .answer-choice-container {
@@ -426,9 +442,9 @@ body {
 }
 
 /* Allows app to fit within screen on most mobile devices in landscape orientation */
-@media (max-height: 420px) and (orientation: landscape) {
+@media (orientation: landscape) {
     .trivia-container {
-        height: 95%;
+        height: 45rem;
     }
 
     .trivia-screen {
@@ -436,6 +452,6 @@ body {
     }
 
     .blue-milk-image {
-        width: 15%;
+        width: 14%;
     }
 }
