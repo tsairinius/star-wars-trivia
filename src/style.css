@@ -397,6 +397,11 @@ body {
         font-size: 4.3rem;
     }
 
+    .answer-choice-control {
+        width: 2rem;
+        height: 2rem;
+    }
+
     .control-panel {
         flex-direction: row;
         justify-content: space-around;
