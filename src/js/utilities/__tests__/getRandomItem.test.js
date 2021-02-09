@@ -1,6 +1,6 @@
-import * as randNum from "./getRandomWholeNumber.js";
-import { getRandomItem } from "./getRandomItem.js";
-import { PLANETS } from "../planets.js";
+import * as randNum from "../getRandomWholeNumber.js";
+import { getRandomItem } from "../getRandomItem.js";
+import { PLANETS } from "../../planets.js";
 
 describe("getRandomItem", () => {
     let getRandomWholeNumberMock;

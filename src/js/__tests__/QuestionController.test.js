@@ -1,6 +1,6 @@
-import { QuestionController } from "./QuestionController.js";
-import { initializeMVC } from "./utilities/initializeMVC.js";
-import { question } from "./fakeQuestions.js";
+import { QuestionController } from "../QuestionController.js";
+import { initializeMVC } from "../utilities/initializeMVC.js";
+import { question } from "../fakeQuestions.js";
 
 describe("startQuiz", () => {
     beforeAll(() => {

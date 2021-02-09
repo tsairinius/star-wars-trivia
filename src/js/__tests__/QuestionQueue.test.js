@@ -1,5 +1,5 @@
-import { QuestionQueue } from "./QuestionQueue.js";
-import { question } from "./fakeQuestions.js";
+import { QuestionQueue } from "../QuestionQueue.js";
+import { question } from "../fakeQuestions.js";
 
 describe("getQuestion", () => {
     beforeAll(() => {

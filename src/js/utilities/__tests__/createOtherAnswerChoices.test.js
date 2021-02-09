@@ -1,4 +1,4 @@
-import { createOtherAnswerChoices } from "./createOtherAnswerChoices.js";
+import { createOtherAnswerChoices } from "../createOtherAnswerChoices.js";
 
 describe("createOtherAnswerChoices", () => {
     const correctAnswer = 10;

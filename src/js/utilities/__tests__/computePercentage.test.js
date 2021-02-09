@@ -1,4 +1,4 @@
-import { computePercentage } from "./computePercentage.js";
+import { computePercentage } from "../computePercentage.js";
 
 describe("computePercentage", () => {
     const divisor = 100;

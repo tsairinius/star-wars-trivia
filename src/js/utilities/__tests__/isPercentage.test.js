@@ -1,4 +1,4 @@
-import { isPercentage } from "./isPercentage.js";
+import { isPercentage } from "../isPercentage.js";
 
 describe("isPercentage", () => {
     test("Returns true if argument is a number between 0 and 100", () => {

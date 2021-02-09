@@ -1,11 +1,11 @@
-import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
+import { cleanUpDOM } from "../utilities/cleanUpDOM.js";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import { question, secondQuestion, fakeQuestions } from "./fakeQuestions.js";
-import * as creator from "./utilities/createRandomQuestion.js";
-import { initializeMVC } from "./utilities/initializeMVC.js";
-import { initializeDOM } from "./utilities/initializeDOM.js";
+import { question, secondQuestion, fakeQuestions } from "../fakeQuestions.js";
+import * as creator from "../utilities/createRandomQuestion.js";
+import { initializeMVC } from "../utilities/initializeMVC.js";
+import { initializeDOM } from "../utilities/initializeDOM.js";
 
 describe("Start screen", () => {
     let createRandomQuestionMock;

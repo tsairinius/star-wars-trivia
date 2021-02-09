@@ -1,6 +1,6 @@
-import { createSpeciesQuestion } from "./createSpeciesQuestion.js";
-import * as p from "./getPersonAndProperty.js";
-import * as choices from "./createOtherAnswerChoices.js";
+import { createSpeciesQuestion } from "../createSpeciesQuestion.js";
+import * as p from "../getPersonAndProperty.js";
+import * as choices from "../createOtherAnswerChoices.js";
 
 describe("createSpeciesQuestion", () => {
     let getPersonAndPropertyMock, createOtherAnswerChoicesMock;

@@ -1,5 +1,5 @@
-import * as utils from "./utilities.js";
-import * as num from "./getRandomWholeNumber.js";
+import * as utils from "../utilities.js";
+import * as num from "../getRandomWholeNumber.js";
 
 describe("getItemCountIn", () => {
     const numPeople = 15;

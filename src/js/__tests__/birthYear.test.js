@@ -1,7 +1,7 @@
-import * as birthYear from "./birthYear.js";
-import * as utils from "./utilities/utilities";
-import * as p from "./utilities/getRandomPersonWithProps.js";
-import * as valid from "./utilities/validateProperties.js";
+import * as birthYear from "../birthYear.js";
+import * as utils from "../utilities/utilities";
+import * as p from "../utilities/getRandomPersonWithProps.js";
+import * as valid from "../utilities/validateProperties.js";
 
 describe("getBirthYearQuestionAndAnswer", () => {
     let validatePropertiesMock;

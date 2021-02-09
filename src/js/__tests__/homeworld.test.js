@@ -1,6 +1,6 @@
-import * as hw from "./homeworld.js";
-import * as choices from "./utilities/createOtherAnswerChoices.js";
-import * as p from "./utilities/getPersonAndProperty.js";
+import * as hw from "../homeworld.js";
+import * as choices from "../utilities/createOtherAnswerChoices.js";
+import * as p from "../utilities/getPersonAndProperty.js";
 
 describe("createHomeworldQuestion", () => {
     let getPersonAndPropertyMock, createOtherAnswerChoicesMock;

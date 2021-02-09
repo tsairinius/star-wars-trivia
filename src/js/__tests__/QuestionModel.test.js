@@ -1,8 +1,8 @@
-import { QuestionModel } from "./QuestionModel.js";
-import { question, secondQuestion } from "./fakeQuestions.js";
-import * as creator from "./utilities/createRandomQuestion.js";
-import { TIME_PER_QUESTION_MS } from "./constants.js"
-import { computePercentage } from "./utilities/computePercentage.js";
+import { QuestionModel } from "../QuestionModel.js";
+import { question, secondQuestion } from "../fakeQuestions.js";
+import * as creator from "../utilities/createRandomQuestion.js";
+import { TIME_PER_QUESTION_MS } from "../constants.js"
+import { computePercentage } from "../utilities/computePercentage.js";
 
 describe("resetData", () => {
     beforeAll(() => {

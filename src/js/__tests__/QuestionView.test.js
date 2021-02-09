@@ -1,11 +1,11 @@
-import { QuestionView } from "./QuestionView.js";
-import { queryByTestId, screen } from "@testing-library/dom";
+import { QuestionView } from "../QuestionView.js";
+import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import { question } from "./fakeQuestions.js";
-import { cleanUpDOM } from "./utilities/cleanUpDOM.js";
-import { TIME_PER_QUESTION_MS } from "./constants.js";
-import { initializeDOM } from "./utilities/initializeDOM.js";
+import { question } from "../fakeQuestions.js";
+import { cleanUpDOM } from "../utilities/cleanUpDOM.js";
+import { TIME_PER_QUESTION_MS } from "../constants.js";
+import { initializeDOM } from "../utilities/initializeDOM.js";
 
 describe("renderStartScreen", () => {
     beforeAll(() => {

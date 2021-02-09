@@ -1,4 +1,4 @@
-import { validateProperties } from "./validateProperties.js";
+import { validateProperties } from "../validateProperties.js";
 
 describe("validateProperties", () => {
     const properties = Object.freeze(["name", "birth_year"]);

@@ -1,4 +1,4 @@
-import { getSpeciesQuestionAndAnswer } from "./getSpeciesQuestionAndAnswer.js";
+import { getSpeciesQuestionAndAnswer } from "../getSpeciesQuestionAndAnswer.js";
 
 describe("getSpeciesQuestionAndAnswer", () => {
     const name = "Luke Skywalker";

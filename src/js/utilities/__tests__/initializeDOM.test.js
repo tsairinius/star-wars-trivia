@@ -1,5 +1,5 @@
-import { initializeDOM } from "./initializeDOM.js";
-import { cleanUpDOM } from "./cleanUpDOM.js";
+import { initializeDOM } from "../initializeDOM.js";
+import { cleanUpDOM } from "../cleanUpDOM.js";
 
 describe("initializeDOM", () => {
     beforeAll(() => {

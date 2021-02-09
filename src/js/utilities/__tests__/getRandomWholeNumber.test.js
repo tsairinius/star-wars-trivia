@@ -1,4 +1,4 @@
-import { getRandomWholeNumber } from "./getRandomWholeNumber.js";
+import { getRandomWholeNumber } from "../getRandomWholeNumber.js";
 
 describe("getRandomWholeNumber", () => {
     const min = 3;

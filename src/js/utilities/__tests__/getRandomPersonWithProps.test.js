@@ -1,5 +1,5 @@
-import { getRandomPersonWithProps } from "./getRandomPersonWithProps.js";
-import * as utils from "./utilities.js";
+import { getRandomPersonWithProps } from "../getRandomPersonWithProps.js";
+import * as utils from "../utilities.js";
 
 describe("getRandomPersonWithProps", () => {
     const properties = Object.freeze(["name", "birth_year"]);
