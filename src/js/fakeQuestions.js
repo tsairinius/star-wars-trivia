@@ -34,6 +34,6 @@ export const fakeQuestions = [
     Object.freeze({
         question: "Who is C3PO's best friend?",
         answer: "R2-D2",
-        otherOptioners: Object.freeze(["Han Solo", "Leia Organa", "Luke Skywalker"])
+        otherOptions: Object.freeze(["Han Solo", "Leia Organa", "Luke Skywalker"])
     })
 ]
