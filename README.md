@@ -1,4 +1,5 @@
 # Star Wars Characters Trivia
+### Check out the website [here](https://happy-curran-8b2efc.netlify.app/)!
 
 ## Intro
 Prior to this project, I primarily worked with React, and I wanted to take a step back to gain a greater appreciation for vanilla JavaScript. I came up with the idea to create a Star Wars trivia game when searching for public API's that I could use to practice fetching data with JS promises. I discovered [SWAPI](https://swapi.dev/), which provided all sorts of data pertaining to the Star Wars universe, including info like what year a certain character was born or what planet they were from. I thought, "Hey, this info could make for a great trivia game!". 
