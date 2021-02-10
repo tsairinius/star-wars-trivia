@@ -11,8 +11,8 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "webpack serve --config webpack.dev.cjs --open",
-    "build": "webpack --config webpack.prod.cjs"
+    "start": "webpack serve --config ./webpack/webpack.dev.cjs --open",
+    "build": "webpack --config ./webpack/webpack.prod.cjs"
   },
   "author": "Eric Tsai",
   "license": "ISC",
